@@ -44,7 +44,7 @@
 }
 
 .event-title-banner {
-  background-color: #a020f0;
+  background-color: #9b5cf6;
   padding: 1rem;
   display: flex;
   align-items: center;
@@ -83,7 +83,7 @@
 
 .info-icon {
   font-size: 1.1rem;
-  color: #a020f0;
+  color: #9b5cf6;
   display: flex;
   justify-content: center;
   min-width: 1.5rem;
@@ -100,7 +100,7 @@
 }
 
 .check-details-btn {
-  background-color: #a020f0;
+  background-color: #9b5cf6;
   color: white;
   font-family: inherit;
   font-weight: 600;
@@ -136,11 +136,11 @@
 }
 
 .icon-only-btn:hover {
-  color: #a020f0;
+  color: #9b5cf6;
 }
 
 .heart-filled {
-  color: #a020f0;
+  color: #9b5cf6;
 }
 
 .edit-btn-color:hover {
