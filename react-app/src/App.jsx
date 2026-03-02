@@ -3,6 +3,7 @@ import NavigationBar from "./components/NavigationBar";
 import { SearchBar } from "./components/SearchBar";
 import EventCard from "./components/EventCard";
 import sportImg from "./assets/sportImage.webp";
+import SignUpForm from "./components/SignUpForm";
 import LoginForm from "./components/LoginForm";
 
 
@@ -22,6 +23,7 @@ function App() {
         isAdmin={1}
       />
       <LoginForm />
+      <SignUpForm />
     </div>
   );
 }
