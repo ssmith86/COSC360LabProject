@@ -3,6 +3,8 @@ import NavigationBar from "./components/NavigationBar";
 import { SearchBar } from "./components/SearchBar";
 import EventCard from "./components/EventCard";
 import sportImg from "./assets/sportImage.webp";
+import LoginForm from "./components/LoginForm";
+
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
         isOwner={1}
         isAdmin={1}
       />
+      <LoginForm />
     </div>
   );
 }
