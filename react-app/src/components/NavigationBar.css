@@ -16,3 +16,42 @@
   width:100%;
   background: white;
 }
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-right: 0.5rem;
+}
+
+.navbar-btn-signin {
+  background-color: #f0f0f0;
+  color: #1a1a1a;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 8px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.navbar-btn-signin:hover {
+  background-color: #e0e0e0;
+}
+
+.navbar-btn-register {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.navbar-btn-register:hover {
+  background-color: #9b5cf6;
+}

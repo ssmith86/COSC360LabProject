@@ -10,7 +10,9 @@ import LoginForm from "./components/LoginForm";
 function App() {
   return (
     <div className="App">
-      <NavigationBar />
+      <NavigationBar variant="basic" />
+      <NavigationBar variant="auth"/>
+      <NavigationBar variant="loggedIn"/>
       <SearchBar />
       <EventCard
         image={sportImg}
