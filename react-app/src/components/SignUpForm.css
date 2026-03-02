@@ -1,0 +1,70 @@
+.signup-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.signup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.signup-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+/* Override global input styles from SearchBar.css */
+.signup-input {
+  background: #ffffff !important;
+  border: 1.5px solid #d0d0d0 !important;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-size: 1rem;
+  color: #1a1a1a;
+  width: 100%;
+  height: auto;
+  margin-left: 0;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.signup-input:focus {
+  outline: none;
+  border-color: #9b5cf6 !important;
+}
+
+.signup-input::placeholder {
+  color: #b0b0b0;
+}
+
+.signup-btn {
+  background-color: #9b5cf6;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.signup-btn:hover {
+  background-color: #7c3aed;
+}
