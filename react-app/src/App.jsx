@@ -1,15 +1,26 @@
-import './App.css'
-import NavigationBar from './components/NavigationBar';
-import {SearchBar} from './components/SearchBar';
-
+import "./App.css";
+import NavigationBar from "./components/NavigationBar";
+import { SearchBar } from "./components/SearchBar";
+import EventCard from "./components/EventCard";
+import sportImg from "./assets/sportImage.webp";
 
 function App() {
   return (
     <div className="App">
       <NavigationBar />
       <SearchBar />
+      <EventCard
+        image={sportImg}
+        title="Alamo Bowl 2025"
+        startDateTime="12/31/2025 17:00"
+        endDateTime="12/31/2025 23:00"
+        location="Alamodome, San Antonio, TX"
+        isSaved={1}
+        isOwner={1}
+        isAdmin={1}
+      />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
