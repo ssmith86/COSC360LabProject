@@ -1,0 +1,18 @@
+
+.navbar-logo img{
+    max-height: 5rem;
+    width: auto;
+}
+
+.navbar-container{
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar{
+  width:100%;
+  background: white;
+}

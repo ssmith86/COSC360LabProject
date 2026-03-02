@@ -1,0 +1,21 @@
+.profile-menu{
+    display: flex;
+    background:transparent;
+    border: none;
+    cursor: pointer;
+    color:#9B5CF6;
+    padding: 0 2rem;
+}
+
+.profile-icon{
+    font-size: 48px; /*changes circle size */
+}
+
+.chevron-icon{
+    font-size: 28px; /*also changes chevron size*/
+    color: black;
+}
+
+.chevron-icon:hover{
+    color:#9B5CF6;
+}
