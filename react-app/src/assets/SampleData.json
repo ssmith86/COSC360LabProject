@@ -1,0 +1,19 @@
+{
+  "owner": {
+    "name": "Sam Smith",
+    "id": 12345
+  },
+  "event": {
+    "name": "Birthday Party",
+    "start_date": "2026-03-20T14:00:00.000Z",
+    "end_date": "2026-03-20T20:00:00.000Z",
+    "location": {
+      "country": "Canada",
+      "provence": "British Columbia",
+      "city": "Kelowna",
+      "street": "Enterprise Way",
+      "address": 123
+    }
+  },
+  "description": "Come to my birthday party. It will probably be fun"
+}
