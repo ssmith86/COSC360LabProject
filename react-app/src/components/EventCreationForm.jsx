@@ -1,4 +1,22 @@
+import { useState } from "react";
+
 function EventCreationForm() {
+  // set up what we need for each data field
+  const [form, setForm] = useState({
+    name: "",
+    start_date: "",
+    end_date: "",
+    image: "",
+    address: "",
+    city: "",
+    province: "",
+    country: "",
+    description: "",
+  });
+
+  // use resposneMessage to handle feedback to user and fetch success/failure
+  const [responseMessage, setResponseMessage] = useState("");
+
   return (
     <div className="event-creation-form-container">
       <h2>Create a New Event</h2>
