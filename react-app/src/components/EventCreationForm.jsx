@@ -56,6 +56,24 @@ function EventCreationForm() {
       },
       description: form.description,
     };
+
+    // implement the fetch to send data
+    fetch("http://localhost:3001/api/createEventsForm", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventData),
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        setResponseMessage(data.message);
+      })
+      .catch(function () {
+        setResponseMessage("An error occurred, please try again");
+      });
   };
 
   // retactored below component html
