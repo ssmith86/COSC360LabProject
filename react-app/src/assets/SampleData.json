@@ -1,168 +1,169 @@
+[
+  {
+    "owner": {
+      "name": "Sam Smith",
+      "id": 123456
+    },
+    "event": {
+      "name": "Birthday Party",
+      "start_date": "2026-03-20T14:00:00.000Z",
+      "end_date": "2026-03-20T20:00:00.000Z",
+      "image": "/sportImage.webp",
+      "location": {
+        "country": "Canada",
+        "province": "British Columbia",
+        "city": "Kelowna",
+        "street": "Enterprise Way",
+        "address": 123
+      }
+    },
+    "description": "Come to my birthday party. It will probably be fun"
+  },
 
-[{
-  "owner": {
-    "name": "Sam Smith",
-    "id": 123456
+  {
+    "owner": {
+      "name": "Jason Born",
+      "id": 876394
+    },
+    "event": {
+      "name": "Hot Dog Event",
+      "start_date": "2027-03-20T14:00:00.000Z",
+      "end_date": "2027-03-20T20:00:00.000Z",
+      "image": "/sportImage.webp",
+      "location": {
+        "country": "Canada",
+        "province": "British Columbia",
+        "city": "Vancouver",
+        "street": "East Hastings",
+        "address": 123
+      }
+    },
+    "description": "Come to Hot Dog Event. We will eat all of the hot dogs"
   },
-  "event": {
-    "name": "Birthday Party",
-    "start_date": "2026-03-20T14:00:00.000Z",
-    "end_date": "2026-03-20T20:00:00.000Z",
-    "image": "/sportImage.webp",
-    "location": {
-      "country": "Canada",
-      "provence": "British Columbia",
-      "city": "Kelowna",
-      "street": "Enterprise Way",
-      "address": 123
-    }
-  },
-  "description": "Come to my birthday party. It will probably be fun"
-},
 
-{
-  "owner": {
-    "name": "Jason Born",
-    "id": 876394
+  {
+    "owner": {
+      "name": "Clark Kent",
+      "id": 826153
+    },
+    "event": {
+      "name": "Barn Party",
+      "start_date": "2026-07-20T09:00:00.000Z",
+      "end_date": "2026-08-20T17:00:00.000Z",
+      "image": "/sportImage.webp",
+      "location": {
+        "country": "USA",
+        "province": "Kansas",
+        "city": "Smallville",
+        "street": "Kent Farms",
+        "address": 123
+      }
+    },
+    "description": "Come enjoy our barn party"
   },
-  "event": {
-    "name": "Hot Dog Event",
-    "start_date": "2027-03-20T14:00:00.000Z",
-    "end_date": "2027-03-20T20:00:00.000Z",
-    "image": "/sportImage.webp",
-    "location": {
-      "country": "Canada",
-      "provence": "British Columbia",
-      "city": "Vancouver",
-      "street": "East Hastings",
-      "address": 123
-    }
-  },
-  "description": "Come to Hot Dog Event. We will eat all of the hot dogs"
-},
 
-{
-  "owner": {
-    "name": "Clark Kent",
-    "id": 826153
+  {
+    "owner": {
+      "name": "Bruce Wayne",
+      "id": 9127540
+    },
+    "event": {
+      "name": "Christmas Bat Cave Party",
+      "start_date": "2026-12-25T18:00:00.000Z",
+      "end_date": "2026-03-25T14:00:00.000Z",
+      "image": "/sportImage.webp",
+      "location": {
+        "country": "USA",
+        "province": "Gotham",
+        "city": "Gotham City",
+        "street": "Bat Cave",
+        "address": 123
+      }
+    },
+    "description": "Come have fun in my bat cave"
   },
-  "event": {
-    "name": "Barn Party",
-    "start_date": "2026-07-20T09:00:00.000Z",
-    "end_date": "2026-08-20T17:00:00.000Z",
-    "image": "/sportImage.webp",
-    "location": {
-      "country": "USA",
-      "provence": "Kansas",
-      "city": "Smallville",
-      "street": "Kent Farms",
-      "address": 123
-    }
-  },
-  "description": "Come enjoy our barn party"
-},
 
-{
-  "owner": {
-    "name": "Bruce Wayne",
-    "id": 9127540
+  {
+    "owner": {
+      "name": "Goofy",
+      "id": 712940
+    },
+    "event": {
+      "name": "Pluto's Birthday Party",
+      "start_date": "2026-04-20T14:00:00.000Z",
+      "end_date": "2026-04-20T20:00:00.000Z",
+      "image": "/sportImage.webp",
+      "location": {
+        "country": "USA",
+        "province": "California",
+        "city": "Disneyland",
+        "street": "Disney Way",
+        "address": 123
+      }
+    },
+    "description": "Come celebrate Pluto's birthday"
   },
-  "event": {
-    "name": "Christmas Bat Cave Party",
-    "start_date": "2026-12-25T18:00:00.000Z",
-    "end_date": "2026-03-25T14:00:00.000Z",
-    "image": "/sportImage.webp",
-    "location": {
-      "country": "USA",
-      "provence": "Gotham",
-      "city": "Gotham City",
-      "street": "Bat Cave",
-      "address": 123
-    }
-  },
-  "description": "Come have fun in my bat cave"
-},
 
-{
-  "owner": {
-    "name": "Goofy",
-    "id": 712940
+  {
+    "owner": {
+      "name": "Donald Duck",
+      "id": 172942
+    },
+    "event": {
+      "name": "Daisies Garden Party",
+      "start_date": "2026-07-01T11:00:00.000Z",
+      "end_date": "2026-07-20T14:00:00.000Z",
+      "image": "/sportImage.webp",
+      "location": {
+        "country": "USA",
+        "province": "California",
+        "city": "Disneyland",
+        "street": "Disney Way",
+        "address": 123
+      }
+    },
+    "description": "Enjoy a tasteful lunch in Daisies garden"
   },
-  "event": {
-    "name": "Pluto's Birthday Party",
-    "start_date": "2026-04-20T14:00:00.000Z",
-    "end_date": "2026-04-20T20:00:00.000Z",
-    "image": "/sportImage.webp",
-    "location": {
-      "country": "USA",
-      "provence": "California",
-      "city": "Disneyland",
-      "street": "Disney Way",
-      "address": 123
-    }
-  },
-  "description": "Come celebrate Pluto's birthday"
-},
 
-{
-  "owner": {
-    "name": "Donald Duck",
-    "id": 172942
+  {
+    "owner": {
+      "name": "Henrick Sadine",
+      "id": 183627
+    },
+    "event": {
+      "name": "Hockey Party",
+      "start_date": "2026-08-20T14:00:00.000Z",
+      "end_date": "2026-08-20T20:00:00.000Z",
+      "image": "/sportImage.webp",
+      "location": {
+        "country": "Canada",
+        "province": "British Columbia",
+        "city": "Vancouver",
+        "street": "Enterprise Way",
+        "address": 123
+      }
+    },
+    "description": "Come have fun"
   },
-  "event": {
-    "name": "Daisies Garden Party",
-    "start_date": "2026-07-01T11:00:00.000Z",
-    "end_date": "2026-07-20T14:00:00.000Z",
-    "image": "/sportImage.webp",
-    "location": {
-      "country": "USA",
-      "provence": "California",
-      "city": "Disneyland",
-      "street": "Disney Way",
-      "address": 123
-    }
-  },
-  "description": "Enjoy a tasteful lunch in Daisies garden"
-},
 
-{
-  "owner": {
-    "name": "Henrick Sadine",
-    "id": 183627
-  },
-  "event": {
-    "name": "Hockey Party",
-    "start_date": "2026-08-20T14:00:00.000Z",
-    "end_date": "2026-08-20T20:00:00.000Z",
-    "image": "/sportImage.webp",
-    "location": {
-      "country": "Canada",
-      "provence": "British Columbia",
-      "city": "Vancouver",
-      "street": "Enterprise Way",
-      "address": 123
-    }
-  },
-  "description": "Come have fun"
-},
-
-{
-  "owner": {
-    "name": "Charles Xavier",
-    "id": 129483
-  },
-  "event": {
-    "name": "Mutant Birthday Party",
-    "start_date": "2026-10-20T14:00:00.000Z",
-    "end_date": "2026-10-20T20:00:00.000Z",
-    "image": "/sportImage.webp",
-    "location": {
-      "country": "USA",
-      "provence": "New York",
-      "city": "New York",
-      "street": "Mutant Crescent",
-      "address": 123
-    }
-  },
-  "description": "Come to my birthday party. It will probably be fun"
-}]
+  {
+    "owner": {
+      "name": "Charles Xavier",
+      "id": 129483
+    },
+    "event": {
+      "name": "Mutant Birthday Party",
+      "start_date": "2026-10-20T14:00:00.000Z",
+      "end_date": "2026-10-20T20:00:00.000Z",
+      "image": "/sportImage.webp",
+      "location": {
+        "country": "USA",
+        "province": "New York",
+        "city": "New York",
+        "street": "Mutant Crescent",
+        "address": 123
+      }
+    },
+    "description": "Come to my birthday party. It will probably be fun"
+  }
+]
