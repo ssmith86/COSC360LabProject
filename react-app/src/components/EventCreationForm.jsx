@@ -17,6 +17,47 @@ function EventCreationForm() {
   // use resposneMessage to handle feedback to user and fetch success/failure
   const [responseMessage, setResponseMessage] = useState("");
 
+  // Implement handleChange to deal with event and state update for form
+  const handleChange = (e) => {
+    // spread operator on form and update
+    // use event's target.name and target.value on html input to update form
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // Implement handleSubmit, validate all fields are filled
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    for (let field in form) {
+      if (form[field].trim() == "") {
+        setResponseMessage(
+          "Please fill out all the fields before creating the event",
+        );
+        return;
+      }
+    }
+
+    // Once fields are all field, build the event data, matching the SampleData.json
+    // for now we add all created events under a hardcoded owner
+    // as we proceed with DB, we'll change this behavior
+    const eventData = {
+      event: {
+        name: form.name,
+        start_date: form.start_date,
+        end_date: form.end_date,
+        image: form.image,
+        location: {
+          address: form.address,
+          street: form.street,
+          city: form.city,
+          province: form.province,
+          country: form.country,
+        },
+      },
+      description: form.description,
+    };
+  };
+
   return (
     <div className="event-creation-form-container">
       <h2>Create a New Event</h2>
