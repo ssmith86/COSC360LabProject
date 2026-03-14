@@ -58,115 +58,136 @@ function EventCreationForm() {
     };
   };
 
+  // retactored below component html
   return (
-    <div className="event-creation-form-container">
-      <h2>Create a New Event</h2>
-      <form>
-        {/* Event Title */}
-        <div className="form-item">
-          <label>Event Title:</label>
+    <div className="event-creation-card">
+      <form className="event-creation-form" onSubmit={handleSubmit}>
+        <div className="event-creation-field">
+          <label className="event-creation-label">Event Title</label>
           <input
+            className="event-creation-input"
             type="text"
             name="name"
-            value="todo"
+            value={form.name}
             onChange={handleChange}
-            placeholder="My Event Name"
+            placeholder="e.g. An Awesome Event"
           />
         </div>
-        {/* Event Start and End Dates */}
-        <div className="form-row">
-          <div className="form-item">
-            <label>Start Date and Time</label>
-            <input
-              type="datetime-local"
-              name="start_date"
-              value="todo"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-item">
-            <label>End Date and Time</label>
-            <input
-              type="datetime-local"
-              name="end_date"
-              value="todo"
-              onChange={handleChange}
-            />
-          </div>
+
+        <div className="event-creation-field">
+          <label className="event-creation-label">Start Date and Time</label>
+          <input
+            className="event-creation-input"
+            type="datetime-local"
+            name="start_date"
+            value={form.start_date}
+            onChange={handleChange}
+          />
         </div>
-        {/* Image Upload */}
-        <div className="form-item">
-          <label>Upload Event Image</label>
-          <input type="file" onChange={handleImageChange} accept="image/*" />
+
+        <div className="event-creation-field">
+          <label className="event-creation-label">End Date and Time</label>
+          <input
+            className="event-creation-input"
+            type="datetime-local"
+            name="end_date"
+            value={form.end_date}
+            onChange={handleChange}
+          />
         </div>
-        {/* Location Information */}
-        <fieldset>
-          <legend>Location</legend>
-          <div className="form-item">
-            <label>Address</label>
-            <input
-              type="text"
-              name="location.address"
-              value="todo"
-              onChange={handleChange}
-              placeholder="e.g. 321"
-            />
-          </div>
-          <div className="form-item">
-            <label>Street</label>
-            <input
-              type="text"
-              name="location.street"
-              value="todo"
-              onChange={handleChange}
-              placeholder="Enterprise Way"
-            />
-          </div>
-          <div className="form-item">
-            <label>City</label>
-            <input
-              type="text"
-              name="location.city"
-              value="todo"
-              onChange={handleChange}
-              placeholder="Kelowna"
-            />
-          </div>
-          <div className="form-item">
-            <label>Province</label>
-            <input
-              type="text"
-              name="location.province"
-              value="todo"
-              onChange={handleChange}
-              placeholder="British Columbia"
-            />
-          </div>
-          <div className="form-item">
-            <label>Country</label>
-            <input
-              type="text"
-              name="location.country"
-              value="todo"
-              onChange={handleChange}
-              placeholder="Canada"
-            />
-          </div>
-        </fieldset>
-        {/* Description Section */}
-        <div className="form-item">
-          <label>Description</label>
+
+        {/* For now the image only accepts URL */}
+        <div className="event-creation-field">
+          <label className="event-creation-label">Image URL</label>
+          <input
+            className="event-creation-input"
+            type="text"
+            name="image"
+            value={form.image}
+            onChange={handleChange}
+            placeholder="e.g. /myImage.webp"
+          />
+        </div>
+
+        <div className="event-creation-field">
+          <label className="event-creation-label">Address</label>
+          <input
+            className="event-creation-input"
+            type="text"
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+            placeholder="e.g. 321"
+          />
+        </div>
+
+        <div className="event-creation-field">
+          <label className="event-creation-label">Street</label>
+          <input
+            className="event-creation-input"
+            type="text"
+            name="street"
+            value={form.street}
+            onChange={handleChange}
+            placeholder="Enterprise Way"
+          />
+        </div>
+
+        <div className="event-creation-field">
+          <label className="event-creation-label">City</label>
+          <input
+            className="event-creation-input"
+            type="text"
+            name="city"
+            value={form.city}
+            onChange={handleChange}
+            placeholder="Kelowna"
+          />
+        </div>
+
+        <div className="event-creation-field">
+          <label className="event-creation-label">Province</label>
+          <input
+            className="event-creation-input"
+            type="text"
+            name="province"
+            value={form.province}
+            onChange={handleChange}
+            placeholder="British Columbia"
+          />
+        </div>
+
+        <div className="event-creation-field">
+          <label className="event-creation-label">Country</label>
+          <input
+            className="event-creation-input"
+            type="text"
+            name="country"
+            value={form.country}
+            onChange={handleChange}
+            placeholder="Canada"
+          />
+        </div>
+
+        <div className="event-creation-field">
+          <label className="event-creation-label">Description</label>
           <textarea
+            className="event-creation-input"
             name="description"
-            value="todo"
+            value={form.description}
             onChange={handleChange}
-            rows={10}
-            placeholder="Describe in a few sentences what this event is about..."
+            rows={4}
+            placeholder="Describe your event..."
           />
         </div>
-        <button type="submit" className="submit-btn">
+
+        <button className="event-creation-btn" type="submit">
           Create Event
         </button>
+
+        {responseMessage && (
+          <p className="event-creation-response">{responseMessage}</p>
+        )}
       </form>
     </div>
   );
