@@ -192,3 +192,5 @@ function EventCreationForm() {
     </div>
   );
 }
+
+export default EventCreationForm;
