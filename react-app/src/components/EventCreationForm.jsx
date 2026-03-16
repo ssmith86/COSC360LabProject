@@ -41,6 +41,43 @@ function EventCreationForm() {
       }
     }
 
+    // Add logic to ensure certain minimum length for certain fields
+    // Validate minimum length for each field
+    if (form.name.trim().length < 3) {
+      setResponseMessage("Event title must be at least 3 characters.");
+      return;
+    }
+
+    if (form.address.trim().length < 1) {
+      setResponseMessage("Address must be at least 1 character.");
+      return;
+    }
+
+    if (form.street.trim().length < 3) {
+      setResponseMessage("Street must be at least 3 characters.");
+      return;
+    }
+
+    if (form.city.trim().length < 2) {
+      setResponseMessage("City must be at least 2 characters.");
+      return;
+    }
+
+    if (form.province.trim().length < 2) {
+      setResponseMessage("Province must be at least 2 characters.");
+      return;
+    }
+
+    if (form.country.trim().length < 2) {
+      setResponseMessage("Country must be at least 2 characters.");
+      return;
+    }
+
+    if (form.description.trim().length < 10) {
+      setResponseMessage("Description must be at least 10 characters.");
+      return;
+    }
+
     // check if start_date is after current date time
     if (new Date(form.start_date) <= new Date()) {
       setResponseMessage(
