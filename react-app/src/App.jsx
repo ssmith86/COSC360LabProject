@@ -5,8 +5,8 @@ import EventCard from "./components/EventCard";
 import sportImg from "./assets/sportImage.webp";
 import SignUpForm from "./components/SignUpForm";
 import LoginForm from "./components/LoginForm";
-import {useState } from "react";
-
+import { useState } from "react";
+import EventCreationForm from "./components/EventCreationForm";
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="App">
       <NavigationBar />
-      <SearchBar 
+      <SearchBar
         setSearchResults={setSearchResults}
         setHasSearched={setHasSearched}
       />
@@ -50,6 +50,7 @@ function App() {
         />
       )}
 
+      <EventCreationForm />
       <LoginForm />
       <SignUpForm />
     </div>
