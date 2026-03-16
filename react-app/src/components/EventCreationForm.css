@@ -1,0 +1,73 @@
+.event-creation-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.event-creation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.event-creation-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.event-creation-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.event-creation-input {
+  background: #ffffff;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-size: 1rem;
+  color: #1a1a1a;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.event-creation-input:focus {
+  outline: none;
+  border-color: #9b5cf6;
+}
+
+.event-creation-input::placeholder {
+  color: #b0b0b0;
+}
+
+.event-creation-btn {
+  background-color: #9b5cf6;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.event-creation-btn:hover {
+  background-color: #7c3aed;
+}
+
+.event-creation-response {
+  text-align: center;
+  color: #9b5cf6;
+  margin-top: 0.5rem;
+}
