@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./EventCreationForm.css";
 
 function EventCreationForm() {
   // set up what we need for each data field
@@ -7,12 +8,16 @@ function EventCreationForm() {
     start_date: "",
     end_date: "",
     image: "",
+    street: "",
     address: "",
     city: "",
     province: "",
     country: "",
     description: "",
   });
+
+  // Add the current time to ensure user cannot choose start_date before current date time
+  const now = new Date().toISOString().slice(0, 16);
 
   // use resposneMessage to handle feedback to user and fetch success/failure
   const [responseMessage, setResponseMessage] = useState("");
@@ -28,13 +33,74 @@ function EventCreationForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    for (let field in form) {
-      if (form[field].trim() == "") {
-        setResponseMessage(
-          "Please fill out all the fields before creating the event",
-        );
-        return;
-      }
+    // for (let field in form) {
+    //   if (form[field].trim() == "") {
+    //     setResponseMessage(
+    //       "Please fill out all the fields before creating the event",
+    //     );
+    //     return;
+    //   }
+    // }
+
+    // Add logic to ensure certain minimum length for certain fields
+    // Validate minimum length for each field
+    if (form.name.trim().length < 3) {
+      setResponseMessage("Event title must be at least 3 characters.");
+      return;
+    }
+
+    if (form.start_date === "") {
+      setResponseMessage("Please select a start date.");
+      return;
+    }
+
+    if (form.end_date === "") {
+      setResponseMessage("Please select an end date.");
+      return;
+    }
+
+    // check if start_date is after current date time
+    if (new Date(form.start_date) <= new Date()) {
+      setResponseMessage(
+        "The Start Date must be later than the current date and time.",
+      );
+      return;
+    }
+
+    // check and ensure end_date is later than start_date
+    if (new Date(form.end_date) <= new Date(form.start_date)) {
+      setResponseMessage("End Date must be later than the Start Date.");
+      return;
+    }
+
+    if (form.address.trim().length < 1) {
+      setResponseMessage("Address must be at least 1 character.");
+      return;
+    }
+
+    if (form.street.trim().length < 3) {
+      setResponseMessage("Street must be at least 3 characters.");
+      return;
+    }
+
+    if (form.city.trim().length < 2) {
+      setResponseMessage("City must be at least 2 characters.");
+      return;
+    }
+
+    if (form.province.trim().length < 2) {
+      setResponseMessage("Province must be at least 2 characters.");
+      return;
+    }
+
+    if (form.country.trim().length < 2) {
+      setResponseMessage("Country must be at least 2 characters.");
+      return;
+    }
+
+    if (form.description.trim().length < 10) {
+      setResponseMessage("Description must be at least 10 characters.");
+      return;
     }
 
     // Once fields are all field, build the event data, matching the SampleData.json
@@ -79,7 +145,7 @@ function EventCreationForm() {
   // retactored below component html
   return (
     <div className="event-creation-card">
-      <form className="event-creation-form" onSubmit={handleSubmit}>
+      <form className="event-creation-form" onSubmit={handleSubmit} noValidate>
         <div className="event-creation-field">
           <label className="event-creation-label">Event Title</label>
           <input
@@ -100,6 +166,7 @@ function EventCreationForm() {
             name="start_date"
             value={form.start_date}
             onChange={handleChange}
+            min={now}
           />
         </div>
 
@@ -111,6 +178,7 @@ function EventCreationForm() {
             name="end_date"
             value={form.end_date}
             onChange={handleChange}
+            min={form.start_date || now}
           />
         </div>
 
