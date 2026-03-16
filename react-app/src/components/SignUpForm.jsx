@@ -9,14 +9,28 @@ export default function SignUpForm() {
     password: "",
     confirmPassword: "",
   });
+  const [responseMessage, setResponseMessage] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: connect to backend
+
+    const response = await fetch("http://localhost:3001/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        password: form.password,
+      }),
+    });
+
+    const data = await response.json();
+    setResponseMessage(data.message);
   };
 
   return (
@@ -100,6 +114,9 @@ export default function SignUpForm() {
         <button className="signup-btn" type="submit">
           Save
         </button>
+        {responseMessage && (
+          <p className="signup-response">{responseMessage}</p>
+        )}
       </form>
     </div>
   );

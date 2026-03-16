@@ -68,3 +68,10 @@
 .signup-btn:hover {
   background-color: #7c3aed;
 }
+
+.signup-response {
+  text-align: center;
+  color: #7c3aed;
+  font-size: 0.95rem;
+  margin: 0;
+}
