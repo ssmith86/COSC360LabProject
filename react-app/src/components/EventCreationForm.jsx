@@ -8,6 +8,7 @@ function EventCreationForm() {
     start_date: "",
     end_date: "",
     image: "",
+    street: "",
     address: "",
     city: "",
     province: "",
@@ -32,19 +33,43 @@ function EventCreationForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    for (let field in form) {
-      if (form[field].trim() == "") {
-        setResponseMessage(
-          "Please fill out all the fields before creating the event",
-        );
-        return;
-      }
-    }
+    // for (let field in form) {
+    //   if (form[field].trim() == "") {
+    //     setResponseMessage(
+    //       "Please fill out all the fields before creating the event",
+    //     );
+    //     return;
+    //   }
+    // }
 
     // Add logic to ensure certain minimum length for certain fields
     // Validate minimum length for each field
     if (form.name.trim().length < 3) {
       setResponseMessage("Event title must be at least 3 characters.");
+      return;
+    }
+
+    if (form.start_date === "") {
+      setResponseMessage("Please select a start date.");
+      return;
+    }
+
+    if (form.end_date === "") {
+      setResponseMessage("Please select an end date.");
+      return;
+    }
+
+    // check if start_date is after current date time
+    if (new Date(form.start_date) <= new Date()) {
+      setResponseMessage(
+        "The Start Date must be later than the current date and time.",
+      );
+      return;
+    }
+
+    // check and ensure end_date is later than start_date
+    if (new Date(form.end_date) <= new Date(form.start_date)) {
+      setResponseMessage("End Date must be later than the Start Date.");
       return;
     }
 
@@ -75,20 +100,6 @@ function EventCreationForm() {
 
     if (form.description.trim().length < 10) {
       setResponseMessage("Description must be at least 10 characters.");
-      return;
-    }
-
-    // check if start_date is after current date time
-    if (new Date(form.start_date) <= new Date()) {
-      setResponseMessage(
-        "The Start Date must be later than the current date and time",
-      );
-      return;
-    }
-
-    // check and ensure end_date is later than start_date
-    if (new Date(form.end_date) <= new Date(form.start_date)) {
-      setResponseMessage("End Date must be later than the Start Date");
       return;
     }
 
@@ -134,7 +145,7 @@ function EventCreationForm() {
   // retactored below component html
   return (
     <div className="event-creation-card">
-      <form className="event-creation-form" onSubmit={handleSubmit}>
+      <form className="event-creation-form" onSubmit={handleSubmit} noValidate>
         <div className="event-creation-field">
           <label className="event-creation-label">Event Title</label>
           <input

@@ -12,27 +12,29 @@ app.use(function (req, res, next) {
   next();
 });
 
+// add use json to parse incoming JSON Request
+app.use(express.json());
+
 // route event creation form (when submit)
 app.use("/api/createEventsForm", handleEventCreationForm);
 
 // search route
-const sampleData = require('./SampleData.json');
+const sampleData = require("./SampleData.json");
 
-app.get('/search', (req, res) => {
+app.get("/search", (req, res) => {
   const searchTerm = req.query.q?.toLowerCase() || "";
 
-  const results = sampleData.filter(item =>
-    item.event.name.toLowerCase().includes(searchTerm) ||
-    item.owner.name.toLowerCase().includes(searchTerm) ||
-    item.description.toLowerCase().includes(searchTerm) ||
-
-    item.event.location.country.toLowerCase().includes(searchTerm) ||
-    item.event.location.province.toLowerCase().includes(searchTerm) ||
-    item.event.location.city.toLowerCase().includes(searchTerm) ||
-    item.event.location.street.toLowerCase().includes(searchTerm) ||
-    item.event.location.address.toString().includes(searchTerm) ||
-    
-    item.event.start_date.toLowerCase().includes(searchTerm)
+  const results = sampleData.filter(
+    (item) =>
+      item.event.name.toLowerCase().includes(searchTerm) ||
+      item.owner.name.toLowerCase().includes(searchTerm) ||
+      item.description.toLowerCase().includes(searchTerm) ||
+      item.event.location.country.toLowerCase().includes(searchTerm) ||
+      item.event.location.province.toLowerCase().includes(searchTerm) ||
+      item.event.location.city.toLowerCase().includes(searchTerm) ||
+      item.event.location.street.toLowerCase().includes(searchTerm) ||
+      item.event.location.address.toString().includes(searchTerm) ||
+      item.event.start_date.toLowerCase().includes(searchTerm),
   );
 
   res.json(results);
