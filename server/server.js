@@ -1,8 +1,15 @@
 const express = require("express");
+
+// connect to MongoDB using functionality in db.js file
+const { connectDB } = require("./db");
+require("dotenv").config();
+
 const app = express();
 const port = 3001;
 
 const handleEventCreationForm = require("./handleEventCreationForm");
+const handleRegister = require("./handleRegister");
+const handleSearch = require("./handleSearch");
 
 // cross origin reseources sharing middleware to allow req from react
 app.use(function (req, res, next) {
@@ -15,43 +22,19 @@ app.use(function (req, res, next) {
 // add use json to parse incoming JSON Request
 app.use(express.json());
 
-// route event creation form (when submit)
+// routes used by the app
 app.use("/api/createEventsForm", handleEventCreationForm);
+app.use("/search", handleSearch);
+app.use("/api/register", handleRegister);
 
-// search route
-const sampleData = require("./SampleData.json");
-
-app.get("/search", (req, res) => {
-  const searchTerm = req.query.q?.toLowerCase() || "";
-
-  const results = sampleData.filter(
-    (item) =>
-      item.event.name.toLowerCase().includes(searchTerm) ||
-      item.owner.name.toLowerCase().includes(searchTerm) ||
-      item.description.toLowerCase().includes(searchTerm) ||
-      item.event.location.country.toLowerCase().includes(searchTerm) ||
-      item.event.location.province.toLowerCase().includes(searchTerm) ||
-      item.event.location.city.toLowerCase().includes(searchTerm) ||
-      item.event.location.street.toLowerCase().includes(searchTerm) ||
-      item.event.location.address.toString().includes(searchTerm) ||
-      item.event.start_date.toLowerCase().includes(searchTerm),
-  );
-
-  res.json(results);
-});
-
-app.post("/api/register", (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
-
-  if (!firstName || !lastName || !email || !password) {
-    return res.status(400).json({ message: "All fields are required." });
-  }
-
-  console.log("New user registered:", { firstName, lastName, email });
-
-  res.status(200).json({ message: `Welcome, ${firstName}! Your account has been created.` });
-});
-
-app.listen(port, function () {
-  console.log("Server is running on http://localhost: " + port);
-});
+// Connect to MongoDB and start
+connectDB()
+  .then(() => {
+    app.listen(port, () =>
+      console.log(`Server is running on http://localhost:${port}`),
+    );
+  })
+  .catch((err) => {
+    console.error("Failed to connect MongoDB DB cosc360db: ", err);
+    process.exit(1);
+  });
