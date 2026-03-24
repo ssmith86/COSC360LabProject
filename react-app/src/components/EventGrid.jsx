@@ -1,4 +1,5 @@
 import EventCard from "./EventCard";
+import "./EventGrid.css";
 
 function EventGrid({ events, currentUser, isSavedMode = false }) {
   // implement date and location helper functions for display
