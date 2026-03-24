@@ -12,6 +12,30 @@ export default function MyEventsPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
 
+  // TODO in the future: our sample data are mainly on default user Sam Smith, id 123456
+  // we'll have to replace this with actual logged in user information in the future
+  const currentUser = { name: "Sam Smith", id: 123456 };
+
+  // implement date and location helper functions for display
+  const formatDate = (dateStr) => {
+    // if no date information, display TBD gracefully (though all events should have dates)
+    if (!dateStr) return "TBD";
+    const date = new Date(dateStr);
+    return date.toLocaleString("en-CA", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const formatLocation = (location) => {
+    // if no location, display TBD gracefully (though all events should have location)
+    if (!location) return "Location TBD";
+    return `${location.address} ${location.street}, ${location.city}, ${location.province}`;
+  };
+
   return (
     <div className="page-wrapper">
       <NavigationBar.jsx />
