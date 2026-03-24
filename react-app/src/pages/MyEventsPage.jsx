@@ -24,13 +24,33 @@ export default function MyEventsPage() {
           {/* Display search result if the user has searched events */}
 
           {/* Display the section - Upcoming Events */}
-          <section className="events-section"></section>
+          <section className="events-section">
+            <h2 className="section-title">Upcoming Events</h2>
+            <p className="section-subtitle">
+              Events happening in the next 7 days
+            </p>
+            <div className="events-scroll-container">
+              {/* Display and render upcoming event via a function renderEventsGrid */}
+            </div>
+          </section>
 
           {/* Display the section - My Events */}
-          <section className="events-section"></section>
+          <section className="events-section">
+            <h2 className="section-title">My Events</h2>
+            <p className="section-subtitle">Events you have created</p>
+            <div className="events-scroll-container">
+              {/* Display and render upcoming event via a function renderEventsGrid */}
+            </div>
+          </section>
 
           {/*Display the section - My Saved Events */}
-          <section className="events-section"></section>
+          <section className="events-section">
+            <h2 className="section-title">My Saved Events</h2>
+            <p className="section-subtitle">Events you have saved</p>
+            <div className="events-scroll-container">
+              {/* Display and render upcoming event via a function renderEventsGrid */}
+            </div>
+          </section>
         </div>
       </div>
     </div>
