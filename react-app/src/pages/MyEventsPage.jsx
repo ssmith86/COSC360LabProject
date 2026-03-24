@@ -1,5 +1,4 @@
 import NavigationBar from "../components/NavigationBar";
-import SearchBar from "../components/SearchBar";
 import { SearchBar } from "../components/SearchBar";
 import SideBar from "../components/SideBar";
 import { useState, useEffect } from "react";
@@ -16,25 +15,57 @@ export default function MyEventsPage() {
   // we'll have to replace this with actual logged in user information in the future
   const currentUser = { name: "Sam Smith", id: 123456 };
 
+  // useEffect to fetch three different types of events from cosc360db events collection
+  useEffect(() => {
+    fetch("http://localhost:3001/api/events/upcoming")
+      .then((res) => res.json())
+      .then((data) => setUpcomingEvents(data))
+      .catch((err) => console.error("Error fetching upcoming events:", err));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `http://localhost:3001/api/events/myevents?ownerName=${currentUser.name}`,
+    )
+      .then((res) => res.json())
+      .then((data) => setMyEvents(data))
+      .catch((err) => console.error("Error fetching my events:", err));
+  }, []);
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/api/savedevents?userId=${currentUser.id}`)
+      .then((res) => res.json())
+      .then((data) => setSavedEvents(data))
+      .catch((err) => console.error("Error fetching saved events:", err));
+  }, []);
+
   return (
     <div className="page-wrapper">
-      <NavigationBar.jsx />
+      <NavigationBar />
 
       <div className="page-body">
         {/* Display SideBar here */}
         <aside className="sidebar-area">
           <SideBar />
         </aside>
-      </div>
 
-      <div className="main-content">
-        <div className="search-bar-area">
-          <SearchBar
-            setSearchResults={setSearchResults}
-            setHasSearched={setHasSearched}
-          />
+        <div className="main-content">
+          <div className="search-bar-area">
+            <SearchBar
+              setSearchResults={setSearchResults}
+              setHasSearched={setHasSearched}
+            />
+          </div>
 
           {/* Display search result if the user has searched events */}
+          {hasSearched && (
+            <section className="events-section">
+              <h2 className="section-title">Search Results</h2>
+              <div className="events-scroll-container">
+                <EventGrid events={searchResults} currentUser={currentUser} />
+              </div>
+            </section>
+          )}
 
           {/* Display the section - Upcoming Events */}
           <section className="events-section">

@@ -1,6 +1,6 @@
 import EventCard from "./EventCard";
 
-function EventGrid({ event, currentUser, isSavedMode = false }) {
+function EventGrid({ events, currentUser, isSavedMode = false }) {
   // implement date and location helper functions for display
   const formatDate = (dateStr) => {
     // if no date information, display TBD gracefully (though all events should have dates)
