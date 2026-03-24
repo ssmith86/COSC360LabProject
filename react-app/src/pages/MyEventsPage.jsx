@@ -3,7 +3,7 @@ import SearchBar from "../components/SearchBar";
 import { SearchBar } from "../components/SearchBar";
 import SideBar from "../components/SideBar";
 import { useState, useEffect } from "react";
-import EventCard from "../components/EventCard";
+import EventGrid from "../components/EventGrid";
 
 export default function MyEventsPage() {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -15,26 +15,6 @@ export default function MyEventsPage() {
   // TODO in the future: our sample data are mainly on default user Sam Smith, id 123456
   // we'll have to replace this with actual logged in user information in the future
   const currentUser = { name: "Sam Smith", id: 123456 };
-
-  // implement date and location helper functions for display
-  const formatDate = (dateStr) => {
-    // if no date information, display TBD gracefully (though all events should have dates)
-    if (!dateStr) return "TBD";
-    const date = new Date(dateStr);
-    return date.toLocaleString("en-CA", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatLocation = (location) => {
-    // if no location, display TBD gracefully (though all events should have location)
-    if (!location) return "Location TBD";
-    return `${location.address} ${location.street}, ${location.city}, ${location.province}`;
-  };
 
   return (
     <div className="page-wrapper">
@@ -64,6 +44,7 @@ export default function MyEventsPage() {
             </p>
             <div className="events-scroll-container">
               {/* Display and render upcoming event via a function renderEventsGrid */}
+              <EventGrid events={upcomingEvents} currentUser={currentUser} />
             </div>
           </section>
 
@@ -73,6 +54,7 @@ export default function MyEventsPage() {
             <p className="section-subtitle">Events you have created</p>
             <div className="events-scroll-container">
               {/* Display and render my event via a function renderEventsGrid */}
+              <EventGrid events={myEvents} currentUser={currentUser} />
             </div>
           </section>
 
@@ -82,6 +64,7 @@ export default function MyEventsPage() {
             <p className="section-subtitle">Events you have saved</p>
             <div className="events-scroll-container">
               {/* Display and render my saved event via a function renderEventsGrid */}
+              <EventGrid events={savedEvents} currentUser={currentUser} />
             </div>
           </section>
         </div>
