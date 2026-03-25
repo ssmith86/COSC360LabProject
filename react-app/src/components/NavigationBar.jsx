@@ -2,7 +2,7 @@ import eventy_logo from '../assets/eventy_logo.png';
 import './NavigationBar.css';
 import UserProfileIconButton from "./UserProfileIconButton";
 
-export default function NavigationBar() {
+export function NavigationBar() {
     return(
         <header className="navbar">
             <div className="navbar-container">
