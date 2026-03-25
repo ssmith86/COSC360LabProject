@@ -1,7 +1,7 @@
 import EventCard from "./EventCard";
 import "./EventGrid.css";
 
-function EventGrid({ events, currentUser, isSavedMode = false }) {
+export function EventGrid({ events, currentUser, isSavedMode = false }) {
   // implement date and location helper functions for display
   const formatDate = (dateStr) => {
     // if no date information, display TBD gracefully (though all events should have dates)
@@ -47,4 +47,3 @@ function EventGrid({ events, currentUser, isSavedMode = false }) {
   );
 }
 
-export default EventGrid;

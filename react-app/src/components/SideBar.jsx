@@ -1,3 +1,3 @@
-export default function SideBar() {
+export function SideBar() {
   return <nav>Sidebar Content</nav>;
 }

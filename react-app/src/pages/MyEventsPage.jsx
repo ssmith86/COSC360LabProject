@@ -1,8 +1,8 @@
-import NavigationBar from "../components/NavigationBar";
+import { NavigationBar } from "../components/NavigationBar";
 import { SearchBar } from "../components/SearchBar";
-import SideBar from "../components/SideBar";
+import { SideBar } from "../components/SideBar";
 import { useState, useEffect } from "react";
-import EventGrid from "../components/EventGrid";
+import { EventGrid } from "../components/EventGrid";
 import "./MyEventsPage.css";
 
 export const MyEventsPage = () => {
