@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./EventCreationForm.css";
+import "./css files/EventCreationForm.css";
 
 function EventCreationForm() {
   // set up what we need for each data field

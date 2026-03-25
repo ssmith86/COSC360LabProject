@@ -1,6 +1,7 @@
 import eventy_logo from '../assets/eventy_logo.png';
-import './NavigationBar.css';
-import UserProfileIconButton from "./UserProfileIconButton";
+import './css files/NavigationBar.css';
+import RegisterButton from './RegisterButton';
+import LoginButton from './LoginButton';
 
 export function NavigationBar() {
     return(
@@ -9,8 +10,10 @@ export function NavigationBar() {
                 <div className="navbar-logo">
                     <img src={eventy_logo} alt="Eventy Logo" />
                 </div>
-
-                <UserProfileIconButton />
+                <div className="navbar-buttons">
+                    <LoginButton/>
+                    <RegisterButton/>
+                </div>
             </div>
         </header>
     );

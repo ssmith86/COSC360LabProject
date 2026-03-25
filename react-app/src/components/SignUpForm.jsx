@@ -1,10 +1,11 @@
 import { useState } from "react";
-import "./SignUpForm.css";
+import "./css files/SignUpForm.css";
 
 export default function SignUpForm() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
+    userName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -18,12 +19,28 @@ export default function SignUpForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if(!form.firstName || !form.lastName || !form.password || !form.confirmPassword || !form.userName ||!form.email){
+      setResponseMessage("All fields must be filled");
+      return;
+    }
+
+    if(form.password !== form.confirmPassword){
+      setResponseMessage("Passwords must match");
+      return;
+    }
+
+    if(form.password.length < 8){
+      setResponseMessage("Password must contain at least 8 characters");
+      return;
+    }
+
     const response = await fetch("http://localhost:3001/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         firstName: form.firstName,
         lastName: form.lastName,
+        userName: form.userName,
         email: form.email,
         password: form.password,
       }),
@@ -65,7 +82,20 @@ export default function SignUpForm() {
             onChange={handleChange}
           />
         </div>
-
+        <div className="signup-field">
+          <label className="signup-label" htmlFor="signup-username">
+            User Name
+          </label>
+          <input
+            className="signup-input"
+            id="signup-username"
+            name="userName"
+            type="text"
+            placeholder="Please enter a username"
+            value={form.userName}
+            onChange={handleChange}
+          />
+        </div>
         <div className="signup-field">
           <label className="signup-label" htmlFor="signup-email">
             Email

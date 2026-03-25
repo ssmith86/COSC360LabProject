@@ -1,4 +1,9 @@
 
+.navbar{
+  width:100%;
+  background: white;
+}
+
 .navbar-logo img{
     max-height: 5rem;
     width: auto;
@@ -10,9 +15,13 @@
   padding: 0.75rem 1.5rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
-.navbar{
-  width:100%;
-  background: white;
+
+.navbar-buttons{
+  display:flex;
+  align-items: center;
+  gap: 0.75rem;
 }
+

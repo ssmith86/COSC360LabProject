@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 const { getDB } = require("./db");
 
 router.post("/", async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, userName, email, password } = req.body;
 
   if (!firstName || !lastName || !email || !password) {
     return res.status(400).json({ message: "All fields are required." });
@@ -23,11 +23,20 @@ router.post("/", async (req, res) => {
       return res.status(409).json({ message: "Email already registered." });
     }
 
+
+    // if username already registered, return 409, and message
+    const existingUsername = await db.collection("users").findOne({ userName });
+    if(existingUsername){
+      return res.status(409).json({ message: "Username already exists"});
+    }
+
+
     // Use the bcrypt to hash password for security
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.collection("users").insertOne({
       firstName,
       lastName,
+      userName,
       email,
       password: hashedPassword,
       createdAt: new Date(),
