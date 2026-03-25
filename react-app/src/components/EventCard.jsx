@@ -7,7 +7,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import React from "react";
-import "./EventCard.css";
+import "./css files/EventCard.css";
 
 /**
  * The EventCard shows details of an event, and will display corresponding buttons for users
