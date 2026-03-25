@@ -20,7 +20,7 @@ export const MyEventsPage = () => {
   useEffect(() => {
     fetch("http://localhost:3001/api/events/upcoming")
       .then((res) => res.json())
-      .then((data) => setUpcomingEvents(data))
+      .then((data) => setUpcomingEvents(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error fetching upcoming events:", err));
   }, []);
 
@@ -29,14 +29,14 @@ export const MyEventsPage = () => {
       `http://localhost:3001/api/events/myevents?ownerName=${currentUser.name}`,
     )
       .then((res) => res.json())
-      .then((data) => setMyEvents(data))
+      .then((data) => setMyEvents(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error fetching my events:", err));
   }, []);
 
   useEffect(() => {
     fetch(`http://localhost:3001/api/savedevents?userId=${currentUser.id}`)
       .then((res) => res.json())
-      .then((data) => setSavedEvents(data))
+      .then((data) => setSavedEvents(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error fetching saved events:", err));
   }, []);
 

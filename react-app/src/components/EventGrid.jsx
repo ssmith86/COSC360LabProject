@@ -23,7 +23,7 @@ function EventGrid({ events, currentUser, isSavedMode = false }) {
   };
 
   // handle situation where there is no event to display
-  if (!events || events.length === 0) {
+  if (!events || !Array.isArray(events) || events.length === 0) {
     return <p className="no-events-msg">No events to display</p>;
   }
 
