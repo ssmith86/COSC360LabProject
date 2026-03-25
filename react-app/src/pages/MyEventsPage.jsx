@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import EventGrid from "../components/EventGrid";
 import "./MyEventsPage.css";
 
-export default function MyEventsPage() {
+export function MyEventsPage() {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
   const [savedEvents, setSavedEvents] = useState([]);
