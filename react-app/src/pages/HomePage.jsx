@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SearchBar } from "../components/SearchBar";
 import EventCard from "../components/EventCard";
 import sportImg from "../assets/sportImage.webp";
-import NavigationBar from "../components/NavigationBar";
+import { NavigationBar } from "../components/NavigationBar";
 
 export const HomePage = () => {
     const [searchResults, setSearchResults] = useState([]);

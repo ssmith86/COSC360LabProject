@@ -1,0 +1,18 @@
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 700px) {
+  .event-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.no-events-msg {
+  color: #aaaaaa;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 1.5rem 0;
+}

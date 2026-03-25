@@ -3,7 +3,7 @@ import './css files/NavigationBar.css';
 import RegisterButton from './RegisterButton';
 import LoginButton from './LoginButton';
 
-export default function NavigationBar() {
+export function NavigationBar() {
     return(
         <header className="navbar">
             <div className="navbar-container">

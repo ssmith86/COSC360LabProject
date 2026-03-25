@@ -10,11 +10,13 @@ const port = 3001;
 const handleEventCreationForm = require("./handleEventCreationForm");
 const handleRegister = require("./handleRegister");
 const handleSearch = require("./handleSearch");
+const handleMyEvents = require("./handleMyEvents");
+const handleSavedEvents = require("./handleSavedEvents");
 
 // cross origin reseources sharing middleware to allow req from react
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // we allow our react-ap on 5173 to communicate
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST", "DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
@@ -26,6 +28,8 @@ app.use(express.json());
 app.use("/api/createEventsForm", handleEventCreationForm);
 app.use("/search", handleSearch);
 app.use("/api/register", handleRegister);
+app.use("/api/events", handleMyEvents);
+app.use("/api/savedevents", handleSavedEvents);
 
 // Connect to MongoDB and start
 connectDB()
