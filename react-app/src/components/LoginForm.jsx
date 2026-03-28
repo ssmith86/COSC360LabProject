@@ -1,13 +1,31 @@
 import { useState } from "react";
 import "./css files/LoginForm.css";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: connect to backend
+    
+   const response = await fetch("http://localhost:3001/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+
+    const data = await response.json();
+    setResponseMessage(data.message);
+    if(response.ok){
+      navigate('/dashboard');
+      localStorage.setItem('isLoggedIn', 'true');
+    }
   };
 
   return (
@@ -44,6 +62,8 @@ export default function LoginForm() {
         <button className="login-btn" type="submit">
           Login
         </button>
+
+        {responseMessage && <p>{responseMessage}</p>}
       </form>
     </div>
   );
