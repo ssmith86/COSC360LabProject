@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./css files/SignUpForm.css";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpForm() {
   const [form, setForm] = useState({
@@ -11,6 +12,7 @@ export default function SignUpForm() {
     confirmPassword: "",
   });
   const [responseMessage, setResponseMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -48,6 +50,10 @@ export default function SignUpForm() {
 
     const data = await response.json();
     setResponseMessage(data.message);
+    
+    if(response.ok){
+      navigate('/login');
+    }
   };
 
   return (
