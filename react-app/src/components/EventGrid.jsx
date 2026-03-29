@@ -7,6 +7,10 @@ export function EventGrid({
   currentUser,
   savedEventIds = [],
   isSavedMode = false,
+  // allows EventGrid to accept and pass onSave, onEdit, onDelete to EventCard
+  onSave,
+  onEdit,
+  onDelete,
 }) {
   // implement date and location helper functions for display
   const formatDate = (dateStr) => {
@@ -53,7 +57,7 @@ export function EventGrid({
           isOwner={currentUserId === doc.owner?.id}
           isAdmin={isAdmin}
           isLoggedIn={isLoggedIn}
-          onSave={() => console.log("save", doc._id)}
+          onSave={() => onSave && onSave(doc._id?.toString())}
           onEdit={() => console.log("edit", doc._id)}
           onDelete={() => console.log("delete", doc._id)}
         />

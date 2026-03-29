@@ -3,6 +3,7 @@ import { SearchBar } from "../components/SearchBar";
 import { SideBar } from "../components/SideBar";
 import { useState, useEffect } from "react";
 import { EventGrid } from "../components/EventGrid";
+import { useNavigate } from "react-router-dom";
 import "./MyEventsPage.css";
 
 export const MyEventsPage = () => {
@@ -14,7 +15,12 @@ export const MyEventsPage = () => {
 
   // TODO in the future: our sample data are mainly on default user Sam Smith, id 123456
   // we'll have to replace this with actual logged in user information in the future
-  const currentUser = { name: "Sam Smith", id: 123456 };
+  // update with logic to fetch current user to replace hard code
+  // const currentUser = { name: "Sam Smith", id: 123456 };
+  const currentUserId = localStorage.getItem("userId");
+  // keep using name "Sam Smith"
+  // TODO: need to implement query by user Id to replace this hard code
+  const currentUser = { name: "Sam Smith", id: currentUserId };
 
   // useEffect to fetch three different types of events from cosc360db events collection
   useEffect(() => {
@@ -40,6 +46,27 @@ export const MyEventsPage = () => {
       .catch((err) => console.error("Error fetching saved events:", err));
   }, []);
 
+  // Add handleSave function based on eventId
+  const handleSave = (eventId) => {
+    // invalid currentUserId will just return
+    if (!currentUserId) return;
+
+    fetch("http://localhost:3001/api/savedevents", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: currentUserId, eventId: eventId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.message);
+        // re-fetch saved events to update the UI
+        fetch(`http://localhost:3001/api/savedevents?userId=${currentUserId}`)
+          .then((res) => res.json())
+          .then((data) => setSavedEvents(Array.isArray(data) ? data : []));
+      })
+      .catch((err) => console.error("Error occurred when saving event:", err));
+  };
+
   return (
     <div className="page-wrapper">
       <NavigationBar />
@@ -63,7 +90,11 @@ export const MyEventsPage = () => {
             <section className="events-section">
               <h2 className="section-title">Search Results</h2>
               <div className="events-scroll-container">
-                <EventGrid events={searchResults} currentUser={currentUser} />
+                <EventGrid
+                  events={searchResults}
+                  currentUser={currentUser}
+                  onSave={handleSave}
+                />
               </div>
             </section>
           )}
@@ -76,7 +107,11 @@ export const MyEventsPage = () => {
             </p>
             <div className="events-scroll-container">
               {/* Display and render upcoming event via a function renderEventsGrid */}
-              <EventGrid events={upcomingEvents} currentUser={currentUser} />
+              <EventGrid
+                events={upcomingEvents}
+                currentUser={currentUser}
+                onSave={handleSave}
+              />
             </div>
           </section>
 
@@ -86,7 +121,11 @@ export const MyEventsPage = () => {
             <p className="section-subtitle">Events you have created</p>
             <div className="events-scroll-container">
               {/* Display and render my event via a function renderEventsGrid */}
-              <EventGrid events={myEvents} currentUser={currentUser} />
+              <EventGrid
+                events={myEvents}
+                currentUser={currentUser}
+                onSave={handleSave}
+              />
             </div>
           </section>
 
@@ -96,7 +135,12 @@ export const MyEventsPage = () => {
             <p className="section-subtitle">Events you have saved</p>
             <div className="events-scroll-container">
               {/* Display and render my saved event via a function renderEventsGrid */}
-              <EventGrid events={savedEvents} currentUser={currentUser} />
+              <EventGrid
+                events={savedEvents}
+                currentUser={currentUser}
+                isSavedMode={true}
+                onSave={handleSave}
+              />
             </div>
           </section>
         </div>
