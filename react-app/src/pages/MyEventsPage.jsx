@@ -67,6 +67,33 @@ export const MyEventsPage = () => {
       .catch((err) => console.error("Error occurred when saving event:", err));
   };
 
+  // Add handleDelete function
+  const handleDelete = (eventId) => {
+    if (!currentUserId) return;
+
+    fetch(`http://localhost:3001/api/events/${eventId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.message);
+        // re-fetch all event lists so UI is updated
+        fetch("http://localhost:3001/api/events/upcoming")
+          .then((res) => res.json())
+          .then((data) => setUpcomingEvents(Array.isArray(data) ? data : []));
+
+        fetch(
+          `http://localhost:3001/api/events/myevents?ownerName=${currentUser.name}`,
+        )
+          .then((res) => res.json())
+          .then((data) => setMyEvents(Array.isArray(data) ? data : []));
+      })
+      .catch((err) =>
+        console.error("Error occurred when deleting event:", err),
+      );
+  };
+
   return (
     <div className="page-wrapper">
       <NavigationBar />
@@ -94,6 +121,7 @@ export const MyEventsPage = () => {
                   events={searchResults}
                   currentUser={currentUser}
                   onSave={handleSave}
+                  onDelete={handleDelete}
                 />
               </div>
             </section>
@@ -111,6 +139,7 @@ export const MyEventsPage = () => {
                 events={upcomingEvents}
                 currentUser={currentUser}
                 onSave={handleSave}
+                onDelete={handleDelete}
               />
             </div>
           </section>
@@ -125,6 +154,7 @@ export const MyEventsPage = () => {
                 events={myEvents}
                 currentUser={currentUser}
                 onSave={handleSave}
+                onDelete={handleDelete}
               />
             </div>
           </section>
@@ -140,6 +170,7 @@ export const MyEventsPage = () => {
                 currentUser={currentUser}
                 isSavedMode={true}
                 onSave={handleSave}
+                onDelete={handleDelete}
               />
             </div>
           </section>

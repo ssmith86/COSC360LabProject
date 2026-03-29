@@ -59,7 +59,7 @@ export function EventGrid({
           isLoggedIn={isLoggedIn}
           onSave={() => onSave && onSave(doc._id?.toString())}
           onEdit={() => console.log("edit", doc._id)}
-          onDelete={() => console.log("delete", doc._id)}
+          onDelete={() => onDelete && onDelete(doc._id?.toString())}
         />
       ))}
     </div>
