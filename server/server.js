@@ -1,4 +1,6 @@
 const express = require("express");
+// add multer for image upload
+const path = require("path");
 
 // connect to MongoDB using functionality in db.js file
 const { connectDB } = require("./db");
@@ -17,13 +19,19 @@ const handleLogin = require("./handleLogin");
 // cross origin reseources sharing middleware to allow req from react
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // we allow our react-ap on 5173 to communicate
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST", "DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE");
+  // updated to allow multer
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, multipart/form-data",
+  );
   next();
 });
 
 // add use json to parse incoming JSON Request
 app.use(express.json());
+// handle image upload with multer
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes used by the app
 app.use("/api/createEventsForm", handleEventCreationForm);

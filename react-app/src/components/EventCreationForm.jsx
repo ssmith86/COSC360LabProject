@@ -7,7 +7,6 @@ function EventCreationForm() {
     name: "",
     start_date: "",
     end_date: "",
-    image: "",
     street: "",
     address: "",
     city: "",
@@ -15,6 +14,8 @@ function EventCreationForm() {
     country: "",
     description: "",
   });
+  // replace orignal image, and add a new image useState
+  const [imageFile, setImageFile] = useState(null);
 
   // Add the current time to ensure user cannot choose start_date before current date time
   const now = new Date().toISOString().slice(0, 16);
@@ -27,6 +28,11 @@ function EventCreationForm() {
     // spread operator on form and update
     // use event's target.name and target.value on html input to update form
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // Implement handleFileChange to deal with image upload event and handle state change
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0]);
   };
 
   // Implement handleSubmit, validate all fields are filled
@@ -106,30 +112,48 @@ function EventCreationForm() {
     // Once fields are all field, build the event data, matching the SampleData.json
     // for now we add all created events under a hardcoded owner
     // as we proceed with DB, we'll change this behavior
-    const eventData = {
-      event: {
-        name: form.name,
-        start_date: form.start_date,
-        end_date: form.end_date,
-        image: form.image,
-        location: {
-          address: form.address,
-          street: form.street,
-          city: form.city,
-          province: form.province,
-          country: form.country,
-        },
-      },
-      description: form.description,
-    };
+    // const eventData = {
+    //   event: {
+    //     name: form.name,
+    //     start_date: form.start_date,
+    //     end_date: form.end_date,
+    //     image: form.image,
+    //     location: {
+    //       address: form.address,
+    //       street: form.street,
+    //       city: form.city,
+    //       province: form.province,
+    //       country: form.country,
+    //     },
+    //   },
+    //   description: form.description,
+    // };
+
+    // Update handling below for handling image file upload when submit
+    // add data step by step to eventData to have separate handling on image file
+    const eventData = new FormData();
+    eventData.append("event_name", form.name);
+    eventData.append("start_date", form.start_date);
+    eventData.append("end_date", form.end_date);
+    eventData.append("address", form.address);
+    eventData.append("street", form.street);
+    eventData.append("city", form.city);
+    eventData.append("province", form.province);
+    eventData.append("country", form.country);
+    eventData.append("description", form.description);
+    // add handling of image upload
+    if (imageFile) {
+      eventData.append("image", imageFile);
+    }
 
     // implement the fetch to send data
     fetch("http://localhost:3001/api/createEventsForm", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(eventData),
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      // body: JSON.stringify(eventData),
+      body: eventData,
     })
       .then(function (response) {
         return response.json();
@@ -184,14 +208,15 @@ function EventCreationForm() {
 
         {/* For now the image only accepts URL */}
         <div className="event-creation-field">
-          <label className="event-creation-label">Image URL</label>
+          <label className="event-creation-label">Event Image</label>
           <input
             className="event-creation-input"
-            type="text"
-            name="image"
-            value={form.image}
-            onChange={handleChange}
-            placeholder="e.g. /myImage.webp"
+            type="file"
+            // name="image"
+            // value={form.image}
+            accept="image/*"
+            onChange={handleFileChange}
+            // placeholder="e.g. /myImage.webp"
           />
         </div>
 
