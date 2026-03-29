@@ -8,6 +8,9 @@ import { NewEventCreationPage } from './pages/NewEventCreationPage';
 import { RegistrationPage } from './pages/RegisterationPage';
 import { RegisteredUserDashboard } from './pages/RegisteredUserDashboard';
 import { UnregisteredUserPage } from './pages/UnregisteredUserPage';
+import { SettingsPage } from './pages/SettingsPage';
+import { ProfilePage } from './pages/ProfilePage';
+import { SavedEventsPage } from './pages/SavedEventsPage';
 
 export const Routes = () => {
     return(
@@ -24,6 +27,7 @@ export const Routes = () => {
                 <Route path="/browse" element={<UnregisteredUserPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/saved-events" element={<SavedEventsPage />} />
             </RouterRoutes>
         </Router>
     )

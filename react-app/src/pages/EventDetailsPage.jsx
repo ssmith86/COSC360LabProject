@@ -1,5 +1,13 @@
+import { NavigationBar } from '../components/NavigationBar';
+import { SideBar } from '../components/SideBar';
+import { SearchBar } from "../components/SearchBar";
+
 export const EventDetailsPage = () => {
     return(
-        <h1>Event Details</h1>
+        <>
+            <NavigationBar/>
+            <SearchBar/>
+            <SideBar/>
+        </>
     );
 }

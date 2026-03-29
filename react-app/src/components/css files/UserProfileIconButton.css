@@ -29,7 +29,7 @@
     right: 0;
     background: white;
     border: 1px solid black;
-    border-radius: 8px;
+    border-radius: 4px;
     box-shadow: 0 2px 12px grey;
     padding: 0.5rem;
     z-index: 100;
@@ -45,6 +45,6 @@
     text-align: left;
 }
 
-.prifile-dropdown button:hover{
+.profile-dropdown button:hover{
     color: #9B5CF6;
 }

@@ -1,0 +1,45 @@
+.sidebar{
+    width: 220px;
+    margin-top: 1rem;
+}
+
+.sidebar.collapsed{
+    width: 60px;
+    transition: width 0.3s
+}
+
+.sidebar li{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.25rem 0.75rem;
+    gap: 0.5rem;
+}
+
+.sidebar li:hover{
+    color: #9b5cf6;
+}
+
+.sidebar ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li.active {
+    color: #9b5cf6;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.collapse-button{
+    color: white;
+    background-color:#9b5cf6;
+    border-radius: 7px;
+    font-size: 1rem;
+    padding: 0.15rem 0.25rem;
+}
+
+.collapse-button:hover{
+    background-color:blueviolet;
+}
