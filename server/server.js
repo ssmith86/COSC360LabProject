@@ -15,11 +15,12 @@ const handleSearch = require("./handleSearch");
 const handleMyEvents = require("./handleMyEvents");
 const handleSavedEvents = require("./handleSavedEvents");
 const handleLogin = require("./handleLogin");
+const handleEventActions = require("./handleEventActions");
 
 // cross origin reseources sharing middleware to allow req from react
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // we allow our react-ap on 5173 to communicate
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   // updated to allow multer
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -40,6 +41,7 @@ app.use("/api/register", handleRegister);
 app.use("/api/events", handleMyEvents);
 app.use("/api/savedevents", handleSavedEvents);
 app.use("/api/login", handleLogin);
+app.use("/api/events", handleEventActions);
 
 // Connect to MongoDB and start
 connectDB()
