@@ -1,4 +1,6 @@
 const express = require("express");
+// add multer for image upload
+const path = require("path");
 
 // connect to MongoDB using functionality in db.js file
 const { connectDB } = require("./db");
@@ -24,6 +26,8 @@ app.use(function (req, res, next) {
 
 // add use json to parse incoming JSON Request
 app.use(express.json());
+// handle image upload with multer
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes used by the app
 app.use("/api/createEventsForm", handleEventCreationForm);
