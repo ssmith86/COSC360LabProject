@@ -22,6 +22,8 @@ export const Routes = () => {
                 <Route path="/register" element={<RegistrationPage />} />
                 <Route path="/dashboard" element={<RegisteredUserDashboard />} />
                 <Route path="/browse" element={<UnregisteredUserPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
             </RouterRoutes>
         </Router>
     )

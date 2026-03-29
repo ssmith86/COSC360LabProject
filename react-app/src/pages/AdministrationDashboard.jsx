@@ -1,5 +1,11 @@
+import { NavigationBar } from '../components/NavigationBar';
+import { SideBar } from '../components/SideBar';
+
 export const AdministrationDashboard = () => {
     return(
-        <h1>Administration Dashboard</h1>
+        <>
+            <NavigationBar/>
+            <SideBar/>
+        </>
     );
 }

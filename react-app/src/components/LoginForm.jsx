@@ -23,7 +23,13 @@ export default function LoginForm() {
     const data = await response.json();
     setResponseMessage(data.message);
     if(response.ok){
-      navigate('/dashboard');
+      if(data.isAdmin){
+        navigate('/admin');
+        localStorage.setItem('isAdmin', 'true');
+      } else{
+        navigate('/dashboard');
+        localStorage.setItem('isAdmin', 'false');
+      }
       localStorage.setItem('isLoggedIn', 'true');
     }
   };
