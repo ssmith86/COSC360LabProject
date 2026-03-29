@@ -1,5 +1,11 @@
+import { NavigationBar } from '../components/NavigationBar';
+import { SearchBar } from "../components/SearchBar";
+
 export const UnregisteredUserPage = () => {
     return(
-        <h1>Unregistered User Page</h1>
+       <>
+            <NavigationBar/>
+            <SearchBar/>
+        </>
     );
 }
