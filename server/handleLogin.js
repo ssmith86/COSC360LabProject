@@ -23,7 +23,8 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    res.status(200).json({ message: `Welcome back, ${user.firstName}!` });
+    res.status(200).json({ message: `Welcome back, ${user.firstName}!`, isAdmin: user.isAdmin });
+    
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
