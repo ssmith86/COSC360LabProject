@@ -34,10 +34,10 @@ router.post("/", upload.single("image"), async function (req, res) {
   const eventData = req.body; // the json file of event data
 
   // check whether data is empty or missing event or name
-  if (!eventData || !eventData.event) {
+  if (!eventData || !eventData.event_name) {
     // if invalid data, send 400 status with invalid message
     res.status(400).json({ message: "Invalid event data received." });
-    // return;
+    return;
   }
 
   try {
