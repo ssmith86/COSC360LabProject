@@ -5,8 +5,7 @@ export const RegistrationPage = () => {
     return(
         <>
             <NavigationBar/>
-            <SearchBar/>
-            <SideBar/>
+            <SignUpForm/>
         </>
     );
 }

@@ -20,6 +20,7 @@ export default function SignUpForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("password value:", form.password, "length:", form.password.length);
 
     if(!form.firstName || !form.lastName || !form.password || !form.confirmPassword || !form.userName ||!form.email){
       setResponseMessage("All fields must be filled");
