@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import "./MyEventsPage.css";
 
 export const MyEventsPage = () => {
+  const navigate = useNavigate();
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
   const [savedEvents, setSavedEvents] = useState([]);
@@ -94,6 +95,11 @@ export const MyEventsPage = () => {
       );
   };
 
+  // add handleEdit function
+  const handleEdit = (eventId) => {
+    navigate(`/edit-event/${eventId}`);
+  };
+
   return (
     <div className="page-wrapper">
       <NavigationBar />
@@ -122,6 +128,7 @@ export const MyEventsPage = () => {
                   currentUser={currentUser}
                   onSave={handleSave}
                   onDelete={handleDelete}
+                  onEdit={handleEdit}
                 />
               </div>
             </section>
@@ -140,6 +147,7 @@ export const MyEventsPage = () => {
                 currentUser={currentUser}
                 onSave={handleSave}
                 onDelete={handleDelete}
+                onEdit={handleEdit}
               />
             </div>
           </section>
@@ -155,6 +163,7 @@ export const MyEventsPage = () => {
                 currentUser={currentUser}
                 onSave={handleSave}
                 onDelete={handleDelete}
+                onEdit={handleEdit}
               />
             </div>
           </section>
@@ -171,6 +180,7 @@ export const MyEventsPage = () => {
                 isSavedMode={true}
                 onSave={handleSave}
                 onDelete={handleDelete}
+                onEdit={handleEdit}
               />
             </div>
           </section>
