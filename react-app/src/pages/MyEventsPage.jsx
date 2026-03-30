@@ -23,6 +23,9 @@ export const MyEventsPage = () => {
   // TODO: need to implement query by user Id to replace this hard code
   const currentUser = { name: "Sam Smith", id: currentUserId };
 
+  // create savedEventIds to pass to EventGrid
+  const savedEventIds = savedEvents.map((event) => event._id?.toString());
+
   // useEffect to fetch three different types of events from cosc360db events collection
   useEffect(() => {
     fetch("http://localhost:3001/api/events/upcoming")
@@ -126,6 +129,7 @@ export const MyEventsPage = () => {
                 <EventGrid
                   events={searchResults}
                   currentUser={currentUser}
+                  savedEventIds={savedEventIds}
                   onSave={handleSave}
                   onDelete={handleDelete}
                   onEdit={handleEdit}
@@ -145,6 +149,7 @@ export const MyEventsPage = () => {
               <EventGrid
                 events={upcomingEvents}
                 currentUser={currentUser}
+                savedEventIds={savedEventIds}
                 onSave={handleSave}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
@@ -161,6 +166,7 @@ export const MyEventsPage = () => {
               <EventGrid
                 events={myEvents}
                 currentUser={currentUser}
+                savedEventIds={savedEventIds}
                 onSave={handleSave}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
