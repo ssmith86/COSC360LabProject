@@ -53,7 +53,11 @@ export function EventGrid({
           startDateTime={formatDate(doc.event?.start_date)}
           endDateTime={formatDate(doc.event?.end_date)}
           location={formatLocation(doc.event?.location)}
-          isSaved={isSavedMode || savedEventIds.includes(doc._id?.toString())}
+          isSaved={
+            isSavedMode ||
+            currentUserId === doc.owner?.id ||
+            savedEventIds.includes(doc._id?.toString())
+          }
           isOwner={currentUserId === doc.owner?.id}
           isAdmin={isAdmin}
           isLoggedIn={isLoggedIn}
