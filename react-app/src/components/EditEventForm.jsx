@@ -90,28 +90,57 @@ export function EditEventForm({ eventId, initialData }) {
     }
 
     // build updated event object matching the events collection structure
-    const updatedEvent = {
-      "event.name": form.name,
-      "event.start_date": form.start_date,
-      "event.end_date": form.end_date,
-      "event.location.address": form.address,
-      "event.location.street": form.street,
-      "event.location.city": form.city,
-      "event.location.province": form.province,
-      "event.location.country": form.country,
-      description: form.description,
-    };
+    // const updatedEvent = {
+    //   "event.name": form.name,
+    //   "event.start_date": form.start_date,
+    //   "event.end_date": form.end_date,
+    //   "event.location.address": form.address,
+    //   "event.location.street": form.street,
+    //   "event.location.city": form.city,
+    //   "event.location.province": form.province,
+    //   "event.location.country": form.country,
+    //   description: form.description,
+    // };
+
+    // fetch(`http://localhost:3001/api/events/${eventId}`, {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(updatedEvent),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setResponseMessage(data.message);
+    //     if (data.message === "Event updated successfully.") {
+    //       // navigate back to my events page after successful update
+    //       setTimeout(() => navigate("/my-events"), 1500);
+    //     }
+    //   })
+    //   .catch(() => setResponseMessage("An error occurred, please try again."));
+
+    // Update to build FormData in order to support image upload
+    const formData = new FormData();
+    formData.append("event.name", form.name);
+    formData.append("event.start_date", form.start_date);
+    formData.append("event.end_date", form.end_date);
+    formData.append("event.location.address", form.address);
+    formData.append("event.location.street", form.street);
+    formData.append("event.location.city", form.city);
+    formData.append("event.location.province", form.province);
+    formData.append("event.location.country", form.country);
+    formData.append("description", form.description);
+    // only append image if user selected a new file
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
 
     fetch(`http://localhost:3001/api/events/${eventId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedEvent),
+      body: formData,
     })
       .then((res) => res.json())
       .then((data) => {
         setResponseMessage(data.message);
         if (data.message === "Event updated successfully.") {
-          // navigate back to my events page after successful update
           setTimeout(() => navigate("/my-events"), 1500);
         }
       })
