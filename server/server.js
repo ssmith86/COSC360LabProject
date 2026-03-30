@@ -19,8 +19,12 @@ const handleUsers = require("./handleUsers");
 // cross origin reseources sharing middleware to allow req from react
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // we allow our react-ap on 5173 to communicate
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST", "DELETE");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if(req.method === "OPTIONS"){
+    return res.sendStatus(200);
+  }
+
   next();
 });
 
