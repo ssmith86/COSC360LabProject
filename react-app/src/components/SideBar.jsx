@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {MdDashboard, MdEvent, MdFavorite, MdPerson, MdAdminPanelSettings} from "react-icons/md";
+import {MdDashboard, MdEvent, MdFavorite, MdPerson, MdAdminPanelSettings, MdSettings} from "react-icons/md";
 import {MdArrowForward, MdArrowBack} from "react-icons/md";
 import './css files/SideBar.css';
 import {useNavigate, useLocation} from "react-router-dom";
@@ -32,6 +32,10 @@ export function SideBar() {
         <li className={location.pathname === '/saved-events' ? 'active' : ''} onClick={() => navigate('/saved-events')}>
             <MdFavorite/>
             {!collapsed && <span>My Favourite Events</span>}
+        </li>
+        <li className={location.pathname === '/profile' ? 'active' : ''} onClick={() => navigate('/profile')}>
+            <MdPerson/>
+            {!collapsed && <span>My Profile</span>}
         </li>
     </ul>
     {/* collapse button at the bottom */}

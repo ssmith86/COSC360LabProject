@@ -1,0 +1,131 @@
+.profile-page-body {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    padding: 2rem;
+}
+
+.profile-content h1 {
+    margin-bottom: 1rem;
+}
+
+.profile-message {
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.profile-message.success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.profile-message.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.profile-info {
+    background-color: #f9fafb;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    width: 100%;
+    max-width: 450px;
+    margin-bottom: 1.5rem;
+}
+
+.profile-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.profile-info-row:last-child {
+    border-bottom: none;
+}
+
+.profile-info-label {
+    font-weight: 500;
+    color: #666;
+}
+
+.profile-info-value {
+    color: #1a1a1a;
+}
+
+.profile-section {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    width: 100%;
+    max-width: 450px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.profile-section h2 {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.profile-field label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+.profile-field input {
+    background: #ffffff;
+    border: 1.5px solid #d0d0d0;
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-size: 1rem;
+    color: #1a1a1a;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.profile-field input:focus {
+    outline: none;
+    border-color: #9b5cf6;
+}
+
+.profile-btn {
+    background-color: #9b5cf6;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.profile-btn:hover {
+    background-color: #7c3aed;
+}
