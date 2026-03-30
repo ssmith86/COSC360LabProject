@@ -1,7 +1,17 @@
 import EventCard from "./EventCard";
 import "./css files/EventGrid.css";
-
-export function EventGrid({ events, currentUser, isSavedMode = false }) {
+// update new prop savedEventIds which holds an array of ID string for
+// events that the current user has saved. This is for parent to fetch
+export function EventGrid({
+  events,
+  // currentUser,
+  savedEventIds = [],
+  isSavedMode = false,
+  // allows EventGrid to accept and pass onSave, onEdit, onDelete to EventCard
+  onSave,
+  onEdit,
+  onDelete,
+}) {
   // implement date and location helper functions for display
   const formatDate = (dateStr) => {
     // if no date information, display TBD gracefully (though all events should have dates)
@@ -22,6 +32,11 @@ export function EventGrid({ events, currentUser, isSavedMode = false }) {
     return `${location.address} ${location.street}, ${location.city}, ${location.province}`;
   };
 
+  // Update user related information and status
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const currentUserId = localStorage.getItem("userId");
+
   // handle situation where there is no event to display
   if (!events || !Array.isArray(events) || events.length === 0) {
     return <p className="no-events-msg">No events to display</p>;
@@ -38,12 +53,19 @@ export function EventGrid({ events, currentUser, isSavedMode = false }) {
           startDateTime={formatDate(doc.event?.start_date)}
           endDateTime={formatDate(doc.event?.end_date)}
           location={formatLocation(doc.event?.location)}
-          isSaved={isSavedMode}
-          isOwner={!isSavedMode && doc.owner?.name === currentUser?.name}
-          isAdmin={false}
+          isSaved={
+            isSavedMode ||
+            currentUserId === doc.owner?.id ||
+            savedEventIds.includes(doc._id?.toString())
+          }
+          isOwner={currentUserId === doc.owner?.id}
+          isAdmin={isAdmin}
+          isLoggedIn={isLoggedIn}
+          onSave={() => onSave && onSave(doc._id?.toString())}
+          onEdit={() => onEdit && onEdit(doc._id?.toString())}
+          onDelete={() => onDelete && onDelete(doc._id?.toString())}
         />
       ))}
     </div>
   );
 }
-

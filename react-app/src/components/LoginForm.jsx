@@ -10,8 +10,8 @@ export default function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-   const response = await fetch("http://localhost:3001/api/login", {
+
+    const response = await fetch("http://localhost:3001/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -22,15 +22,17 @@ export default function LoginForm() {
 
     const data = await response.json();
     setResponseMessage(data.message);
-    if(response.ok){
-      if(data.isAdmin){
-        navigate('/admin');
-        localStorage.setItem('isAdmin', 'true');
-      } else{
-        navigate('/dashboard');
-        localStorage.setItem('isAdmin', 'false');
+    if (response.ok) {
+      if (data.isAdmin) {
+        navigate("/admin");
+        localStorage.setItem("isAdmin", "true");
+      } else {
+        navigate("/dashboard");
+        localStorage.setItem("isAdmin", "false");
       }
-      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem("isLoggedIn", "true");
+      // add userId to local storage for front-end handling
+      localStorage.setItem("userId", data.userId);
     }
   };
 
