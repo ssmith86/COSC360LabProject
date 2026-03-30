@@ -7,9 +7,10 @@ const { getDB } = require("./db");
 // TODO: need to update this later
 // get all saved events for a given user (joins with events collection)
 router.get("/", async (req, res) => {
-  const userId = parseInt(req.query.userId);
+  // const userId = parseInt(req.query.userId);
+  const userId = req.query.userId;
 
-  if (!userId) {
+  if (!userId || userId.trim() === "") {
     return res
       .status(400)
       .json({ message: "userId query parameter is required" });
