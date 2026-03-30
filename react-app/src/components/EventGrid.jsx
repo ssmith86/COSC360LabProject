@@ -4,7 +4,7 @@ import "./css files/EventGrid.css";
 // events that the current user has saved. This is for parent to fetch
 export function EventGrid({
   events,
-  currentUser,
+  // currentUser,
   savedEventIds = [],
   isSavedMode = false,
   // allows EventGrid to accept and pass onSave, onEdit, onDelete to EventCard

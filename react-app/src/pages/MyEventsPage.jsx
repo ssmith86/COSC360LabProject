@@ -21,7 +21,7 @@ export const MyEventsPage = () => {
   const currentUserId = localStorage.getItem("userId");
   // keep using name "Sam Smith"
   // TODO: need to implement query by user Id to replace this hard code
-  const currentUser = { name: "Sam Smith", id: currentUserId };
+  // const currentUser = { name: "Sam Smith", id: currentUserId };
 
   // create savedEventIds to pass to EventGrid
   const savedEventIds = savedEvents.map((event) => event._id?.toString());
@@ -36,7 +36,8 @@ export const MyEventsPage = () => {
 
   useEffect(() => {
     fetch(
-      `http://localhost:3001/api/events/myevents?ownerName=${currentUser.name}`,
+      // `http://localhost:3001/api/events/myevents?ownerName=${currentUser.name}`,
+      `http://localhost:3001/api/events/myevents?ownerId=${currentUserId}`,
     )
       .then((res) => res.json())
       .then((data) => setMyEvents(Array.isArray(data) ? data : []))
@@ -44,7 +45,7 @@ export const MyEventsPage = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/savedevents?userId=${currentUser.id}`)
+    fetch(`http://localhost:3001/api/savedevents?userId=${currentUserId}`)
       .then((res) => res.json())
       .then((data) => setSavedEvents(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error fetching saved events:", err));
@@ -88,7 +89,7 @@ export const MyEventsPage = () => {
           .then((data) => setUpcomingEvents(Array.isArray(data) ? data : []));
 
         fetch(
-          `http://localhost:3001/api/events/myevents?ownerName=${currentUser.name}`,
+          `http://localhost:3001/api/events/myevents?ownerId=${currentUserId}`,
         )
           .then((res) => res.json())
           .then((data) => setMyEvents(Array.isArray(data) ? data : []));
@@ -128,7 +129,6 @@ export const MyEventsPage = () => {
               <div className="events-scroll-container">
                 <EventGrid
                   events={searchResults}
-                  currentUser={currentUser}
                   savedEventIds={savedEventIds}
                   onSave={handleSave}
                   onDelete={handleDelete}
@@ -148,7 +148,6 @@ export const MyEventsPage = () => {
               {/* Display and render upcoming event via a function renderEventsGrid */}
               <EventGrid
                 events={upcomingEvents}
-                currentUser={currentUser}
                 savedEventIds={savedEventIds}
                 onSave={handleSave}
                 onDelete={handleDelete}
@@ -165,7 +164,6 @@ export const MyEventsPage = () => {
               {/* Display and render my event via a function renderEventsGrid */}
               <EventGrid
                 events={myEvents}
-                currentUser={currentUser}
                 savedEventIds={savedEventIds}
                 onSave={handleSave}
                 onDelete={handleDelete}
@@ -182,7 +180,6 @@ export const MyEventsPage = () => {
               {/* Display and render my saved event via a function renderEventsGrid */}
               <EventGrid
                 events={savedEvents}
-                currentUser={currentUser}
                 isSavedMode={true}
                 onSave={handleSave}
                 onDelete={handleDelete}
