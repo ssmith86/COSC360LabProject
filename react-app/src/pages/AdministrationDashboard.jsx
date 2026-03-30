@@ -1,6 +1,5 @@
 import { NavigationBar } from '../components/NavigationBar';
 import { SideBar } from '../components/SideBar';
-import { SearchBar } from "../components/SearchBar";
 import { useState, useEffect } from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import './AdministrationDashboard.css';
@@ -10,6 +9,7 @@ export const AdministrationDashboard = () => {
     const [userToDelete, setUserToDelete] = useState(null);
     const [userToEdit, setUserToEdit] = useState(null);
     const [editForm, setEditForm] = useState({ userName: "", isAdmin: false, isBanned: false });
+    const [searchTerm, setSearchTerm] = useState("");
 
 useEffect(() => {
     fetch("http://localhost:3001/api/users")
@@ -54,12 +54,18 @@ useEffect(() => {
     return(
         <>
             <NavigationBar/>
-            <SearchBar/>
 
             <div className="admin-page-body">
                 <SideBar/>
                 <div className="admin-content">
                     <h1>Admin Dashboard</h1>
+                    <input
+                        type="text"
+                        placeholder="Search users..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="user-search"
+                    />
                     <table className="users-table">
                         <thead>
                             <tr>
@@ -70,7 +76,7 @@ useEffect(() => {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user) => (
+                            {users.filter(u => u.userName.toLowerCase().includes(searchTerm.toLowerCase())).map((user) => (
                                 <tr key={user._id}>
                                     <td>{user.userName}</td>
                                     <td>{user.isBanned ? "Banned" : "Active"}</td>

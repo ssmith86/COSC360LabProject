@@ -4,26 +4,22 @@ const router = express.Router();
 const { getDB } = require("./db");
 
 router.get("/", async (req, res) => {
-  const searchTerm = req.query.q?.toLowerCase() || "";
+  const searchTerm = req.query.q || "";
 
   try {
-    // get databse cosc360db
     const db = getDB();
-    // get all events from the collection events in our cosc360db MongoDB
-    const allEvents = await db.collection("events").find({}).toArray();
-
-    const results = allEvents.filter(
-      (item) =>
-        item.event.name.toLowerCase().includes(searchTerm) ||
-        item.owner.name.toLowerCase().includes(searchTerm) ||
-        item.description.toLowerCase().includes(searchTerm) ||
-        item.event.location.country.toLowerCase().includes(searchTerm) ||
-        item.event.location.province.toLowerCase().includes(searchTerm) ||
-        item.event.location.city.toLowerCase().includes(searchTerm) ||
-        item.event.location.street.toLowerCase().includes(searchTerm) ||
-        item.event.location.address.toString().includes(searchTerm) ||
-        item.event.start_date.toLowerCase().includes(searchTerm),
-    );
+    const results = await db.collection("events").find({
+      $or: [
+        { "event.name": { $regex: searchTerm, $options: "i" } },
+        { "owner.name": { $regex: searchTerm, $options: "i" } },
+        { "description": { $regex: searchTerm, $options: "i" } },
+        { "event.location.country": { $regex: searchTerm, $options: "i" } },
+        { "event.location.province": { $regex: searchTerm, $options: "i" } },
+        { "event.location.city": { $regex: searchTerm, $options: "i" } },
+        { "event.location.street": { $regex: searchTerm, $options: "i" } },
+        { "event.start_date": { $regex: searchTerm, $options: "i" } },
+      ]
+    }).toArray();
 
     res.json(results);
   } catch (err) {
