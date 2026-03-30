@@ -7,7 +7,9 @@ router.post("/", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required." });
+    return res
+      .status(400)
+      .json({ message: "Email and password are required." });
   }
 
   try {
@@ -23,8 +25,12 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    res.status(200).json({ message: `Welcome back, ${user.firstName}!`, isAdmin: user.isAdmin });
-    
+    res.status(200).json({
+      message: `Welcome back, ${user.firstName}!`,
+      isAdmin: user.isAdmin,
+      // return user._id (mongodb object id) for front-end handling
+      userId: user._id.toString(),
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

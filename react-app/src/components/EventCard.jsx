@@ -7,6 +7,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./css files/EventCard.css";
 
 /**
@@ -21,6 +22,10 @@ import "./css files/EventCard.css";
  * @param {boolean} props.isSaved - Wheher the current user has saved/favored this event card
  * @param {boolean} props.isOwner - Whether the current user is the owner of the event card
  * @param {boolean} props.isAdmin - Whether the current user is admin user
+ * @param {boolean} props.isLoggedIn - Whether the current user is logged in
+ * @param {function} props.onSave - handles functionality when event is on save
+ * @param {function} props.onEdit - handles functionality when event is on edit
+ * @param {function} props.isAdmin - handles functionality when event is on delete
  */
 
 const EventCard = ({
@@ -32,7 +37,25 @@ const EventCard = ({
   isSaved,
   isOwner,
   isAdmin,
+  isLoggedIn,
+  onSave,
+  onEdit,
+  onDelete,
 }) => {
+  // Add navigate to direct user to different pages once click on a button
+  const navigate = useNavigate();
+
+  // add handleSaveClick functionality
+  // if unregistered user clicks on save button, direct the person to register page
+  // if registered user clicks on save button, handles save functionality
+  const handleSaveClick = () => {
+    if (!isLoggedIn) {
+      navigate("/register");
+    } else {
+      onSave && onSave();
+    }
+  };
+
   return (
     <div className="event-card">
       {/* Display the image of the event on top of EventCard */}
@@ -73,18 +96,22 @@ const EventCard = ({
 
           {/* Group the SaveHeart, Edit and Delete in one div */}
           <div className="action-btns">
-            <button className="icon-only-btn">
+            {/* Add onClick to handleSaveClick for handling save function */}
+            <button className="icon-only-btn" onClick={handleSaveClick}>
               {isSaved ? <FaHeart className="heart-filled" /> : <FaRegHeart />}
             </button>
-
-            {isOwner && (
-              <button className="icon-only-btn edit-btn-color">
+            {/* Update the edit button logic and add onClick to onEdit */}
+            {(isOwner || isAdmin) && (
+              <button className="icon-only-btn edit-btn-color" onClick={onEdit}>
                 <FaEdit />
               </button>
             )}
-
-            {isAdmin && (
-              <button className="icon-only-btn delete-btn-color">
+            {/* Update the delete button logic and add onClick to onDelete */}
+            {(isAdmin || isOwner) && (
+              <button
+                className="icon-only-btn delete-btn-color"
+                onClick={onDelete}
+              >
                 <FaTrashAlt />
               </button>
             )}
