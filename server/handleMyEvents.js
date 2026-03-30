@@ -33,25 +33,51 @@ router.get("/upcoming", async (req, res) => {
 // get events created by the given owner name, for MyEventsPage.jsx's My Events
 // TODO: right now we do not have any login functionality to tell user
 // once, implemented, we need to replace ownerName with owner id (user id) of the event
+// router.get("/myevents", async (req, res) => {
+//   const ownerName = req.query.ownerName || "";
+
+//   if (!ownerName) {
+//     return res
+//       .status(400)
+//       .json({ message: "ownerName query param is required" });
+//   }
+
+//   try {
+//     const db = getDB();
+
+//     const results = await db
+//       .collection("events")
+//       .find({
+//         "owner.name": ownerName,
+//       })
+//       .toArray();
+
+//     res.json(results);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// GET /api/events/myevents?ownerId
 router.get("/myevents", async (req, res) => {
+  const ownerId = req.query.ownerId || "";
   const ownerName = req.query.ownerName || "";
 
-  if (!ownerName) {
+  if (!ownerId && !ownerName) {
     return res
       .status(400)
-      .json({ message: "ownerName query param is required" });
+      .json({ message: "ownerId or ownerName query parameter is required" });
   }
 
   try {
     const db = getDB();
 
-    const results = await db
-      .collection("events")
-      .find({
-        "owner.name": ownerName,
-      })
-      .toArray();
+    // use ownerId first, otherwise fall back to ownerName
+    const query = ownerId
+      ? { "owner.id": ownerId }
+      : { "owner.name": ownerName };
 
+    const results = await db.collection("events").find(query).toArray();
     res.json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
