@@ -11,7 +11,7 @@ router.get("/upcoming", async (req, res) => {
 
     const now = new Date();
     const sevenDaysLater = new Date();
-    sevenDaysLater.setDate(now.getDate() + 7);
+    sevenDaysLater.setDate(now.getDate() + 30);
 
     const results = await db
       .collection("events")
