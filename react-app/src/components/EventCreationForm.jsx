@@ -141,6 +141,7 @@ function EventCreationForm() {
     eventData.append("province", form.province);
     eventData.append("country", form.country);
     eventData.append("description", form.description);
+    formData.append("userId", localStorage.getItem("userId") || "");
     // add handling of image upload
     if (imageFile) {
       eventData.append("image", imageFile);

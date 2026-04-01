@@ -47,9 +47,13 @@ router.post("/", upload.single("image"), async function (req, res) {
     const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
 
     const newEvent = {
+      // owner: {
+      //   name: "Sam Smith",
+      //   id: "123456",
+      // },
       owner: {
-        name: "Sam Smith",
-        id: "123456",
+        name: eventData.owner_name || "Unknown",
+        id: eventData.userId || "",
       },
       // update event with imagePath
       event: {
