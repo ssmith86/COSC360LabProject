@@ -13,9 +13,9 @@ export function EditEventForm({
   // pre-fill the entire edit event form with data
   const [form, setForm] = useState({
     name: initialData?.event?.name || "",
-    start_date: initialData?.event?.start_date || "",
-    end_date: initialData?.event?.end_date || "",
-    address: initialData?.event?.location?.address || "",
+    start_date: initialData?.event?.start_date?.slice(0, 16) || "",
+    end_date: initialData?.event?.end_date?.slice(0, 16) || "",
+    address: initialData?.event?.location?.address?.toString() || "",
     street: initialData?.event?.location?.street || "",
     city: initialData?.event?.location?.city || "",
     province: initialData?.event?.location?.province || "",
