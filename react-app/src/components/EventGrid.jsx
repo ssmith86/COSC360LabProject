@@ -48,7 +48,13 @@ export function EventGrid({
       {events.map((doc, index) => (
         <EventCard
           key={doc._id || index}
-          image={doc.event?.image || "/sportImage.webp"}
+          // image={doc.event?.image || "/sportImage.webp"}
+          // default back to sportImage.webp (TODO later we need to add a default image for events not showing correct image)
+          image={
+            doc.event?.image
+              ? `http://localhost:3001${doc.event.image}`
+              : "/sportImage.webp"
+          }
           title={doc.event?.name || "Untitled Event"}
           startDateTime={formatDate(doc.event?.start_date)}
           endDateTime={formatDate(doc.event?.end_date)}
