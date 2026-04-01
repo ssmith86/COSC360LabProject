@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { NavigationBar } from "../components/NavigationBar";
 import { EditEventForm } from "../components/EditEventForm";
 
 export const EditEventPage = () => {
   // parameters for various useState, useParams
   const eventId = useParams().eventId;
+  // use useLocation to read returnTo from its state
+  const returnTo = useLocation().state?.returnTo || "/my-events";
   const [eventData, setEventData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -49,7 +51,11 @@ export const EditEventPage = () => {
   return (
     <>
       <NavigationBar />
-      <EditEventForm eventId={eventId} initialData={eventData} />
+      <EditEventForm
+        eventId={eventId}
+        initialData={eventData}
+        returnTo={returnTo}
+      />
     </>
   );
 };
