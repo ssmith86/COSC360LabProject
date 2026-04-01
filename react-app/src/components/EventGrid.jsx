@@ -48,6 +48,8 @@ export function EventGrid({
       {events.map((doc, index) => (
         <EventCard
           key={doc._id || index}
+          // add eventId to link EventDetailsPage
+          eventId={doc._id?.toString()}
           // image={doc.event?.image || "/sportImage.webp"}
           // default back to sportImage.webp (TODO later we need to add a default image for events not showing correct image)
           image={
