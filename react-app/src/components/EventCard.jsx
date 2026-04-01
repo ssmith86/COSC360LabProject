@@ -29,6 +29,7 @@ import "./css files/EventCard.css";
  */
 
 const EventCard = ({
+  eventId, // add eventId to build EventDetailsPage
   image,
   title,
   startDateTime,
@@ -92,7 +93,12 @@ const EventCard = ({
 
         {/* Display the user-related buttons: Event Details, SaveHeart, Edit, Delete */}
         <div className="event-footer">
-          <button className="check-details-btn">Check Details</button>
+          <button
+            className="check-details-btn"
+            onClick={() => navigate(`/event/${eventId}`)}
+          >
+            Check Details
+          </button>
 
           {/* Group the SaveHeart, Edit and Delete in one div */}
           <div className="action-btns">

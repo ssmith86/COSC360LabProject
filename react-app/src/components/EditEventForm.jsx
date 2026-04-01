@@ -3,15 +3,19 @@ import { useNavigate } from "react-router-dom";
 // We re-use the EventCreationForm.css to align and simplify design
 import "./css files/EventCreationForm.css";
 
-export function EditEventForm({ eventId, initialData }) {
+export function EditEventForm({
+  eventId,
+  initialData,
+  returnTo = "/my-events",
+}) {
   const navigate = useNavigate();
 
   // pre-fill the entire edit event form with data
   const [form, setForm] = useState({
     name: initialData?.event?.name || "",
-    start_date: initialData?.event?.start_date || "",
-    end_date: initialData?.event?.end_date || "",
-    address: initialData?.event?.location?.address || "",
+    start_date: initialData?.event?.start_date?.slice(0, 16) || "",
+    end_date: initialData?.event?.end_date?.slice(0, 16) || "",
+    address: initialData?.event?.location?.address?.toString() || "",
     street: initialData?.event?.location?.street || "",
     city: initialData?.event?.location?.city || "",
     province: initialData?.event?.location?.province || "",
@@ -141,7 +145,7 @@ export function EditEventForm({ eventId, initialData }) {
       .then((data) => {
         setResponseMessage(data.message);
         if (data.message === "Event updated successfully.") {
-          setTimeout(() => navigate("/my-events"), 1500);
+          setTimeout(() => navigate(returnTo, { replace: true }), 1500);
         }
       })
       .catch(() => setResponseMessage("An error occurred, please try again."));

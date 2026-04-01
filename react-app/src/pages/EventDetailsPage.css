@@ -1,0 +1,123 @@
+.event-details-layout {
+  display: flex;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+}
+
+.event-details-main {
+  flex: 1;
+  padding: 2rem;
+  color: #333333;
+}
+
+.event-details-status {
+  padding: 2rem;
+  font-family: "Inter", sans-serif;
+  color: #555;
+}
+
+.event-details-back-btn {
+  background: none;
+  border: 1.5px solid #9b5cf6;
+  color: #9b5cf6;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.event-details-back-btn:hover {
+  background-color: #9b5cf6;
+  color: #ffffff;
+}
+
+.event-details-card {
+  background: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 16px;
+  overflow: hidden;
+  max-width: 800px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.event-details-image {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+}
+
+.event-details-body {
+  padding: 2rem;
+}
+
+.event-details-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 1.25rem;
+}
+
+.event-details-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+.event-details-label {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.event-details-description {
+  font-size: 1rem;
+  color: #444444;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.event-details-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.event-details-edit-btn {
+  background-color: #9b5cf6;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.4rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.event-details-edit-btn:hover {
+  background-color: #7c3aed;
+}
+
+.event-details-delete-btn {
+  background-color: #ffffff;
+  color: #dc3545;
+  border: 1.5px solid #dc3545;
+  border-radius: 8px;
+  padding: 0.7rem 1.4rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.event-details-delete-btn:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+}
