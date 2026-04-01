@@ -51,9 +51,9 @@ export function EventGrid({
           // image={doc.event?.image || "/sportImage.webp"}
           // default back to sportImage.webp (TODO later we need to add a default image for events not showing correct image)
           image={
-            doc.event?.image
+            doc.event?.image?.startsWith("/uploads/")
               ? `http://localhost:3001${doc.event.image}`
-              : "/sportImage.webp"
+              : doc.event?.image || "/sportImage.webp"
           }
           title={doc.event?.name || "Untitled Event"}
           startDateTime={formatDate(doc.event?.start_date)}
