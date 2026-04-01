@@ -145,7 +145,7 @@ export function EditEventForm({
       .then((data) => {
         setResponseMessage(data.message);
         if (data.message === "Event updated successfully.") {
-          setTimeout(() => navigate(returnTo), 1500);
+          setTimeout(() => navigate(returnTo, { replace: true }), 1500);
         }
       })
       .catch(() => setResponseMessage("An error occurred, please try again."));
