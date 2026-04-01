@@ -47,9 +47,13 @@ router.post("/", upload.single("image"), async function (req, res) {
     const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
 
     const newEvent = {
+      // owner: {
+      //   name: "Sam Smith",
+      //   id: "123456",
+      // },
       owner: {
-        name: "Sam Smith",
-        id: "123456",
+        name: eventData.owner_name || "Unknown",
+        id: eventData.userId || "",
       },
       // update event with imagePath
       event: {
@@ -69,7 +73,17 @@ router.post("/", upload.single("image"), async function (req, res) {
     };
 
     // add to db collection events in cosc360db in Cluster 0
-    await db.collection("events").insertOne(newEvent);
+    // await db.collection("events").insertOne(newEvent);
+    // console.log("New data event received: ", newEvent);
+    const result = await db.collection("events").insertOne(newEvent);
+
+    // automatically save the event for the owner in savedEvents collection
+    await db.collection("savedEvents").insertOne({
+      userId: eventData.userId,
+      eventId: result.insertedId.toString(),
+      savedAt: new Date(),
+    });
+
     console.log("New data event received: ", newEvent);
 
     res.status(200).json({ message: "Event creation successful." });

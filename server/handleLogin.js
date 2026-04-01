@@ -30,6 +30,8 @@ router.post("/", async (req, res) => {
       isAdmin: user.isAdmin,
       // return user._id (mongodb object id) for front-end handling
       userId: user._id.toString(),
+      // add return of user first name in response
+      firstName: user.firstName,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

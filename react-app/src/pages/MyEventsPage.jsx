@@ -142,7 +142,7 @@ export const MyEventsPage = () => {
           <section className="events-section">
             <h2 className="section-title">Upcoming Events</h2>
             <p className="section-subtitle">
-              Events happening in the next 7 days
+              Events happening in the next 30 days
             </p>
             <div className="events-scroll-container">
               {/* Display and render upcoming event via a function renderEventsGrid */}
