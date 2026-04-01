@@ -33,6 +33,8 @@ export default function LoginForm() {
       localStorage.setItem("isLoggedIn", "true");
       // add userId to local storage for front-end handling
       localStorage.setItem("userId", data.userId);
+      // add user firstName to local storage
+      localStorage.setItem("firstName", data.firstName);
     }
   };
 
