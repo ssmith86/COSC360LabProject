@@ -2,6 +2,7 @@ import { NavigationBar } from "../components/NavigationBar";
 import { SideBar } from "../components/SideBar";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "./EventDetailsPage.css";
 
 export const EventDetailsPage = () => {
   // get eventId from URL param
