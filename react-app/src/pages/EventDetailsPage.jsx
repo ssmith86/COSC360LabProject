@@ -105,7 +105,7 @@ export const EventDetailsPage = () => {
         <main className="event-details-main">
           <button
             className="event-details-back-btn"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/my-events")}
           >
             ← Back
           </button>
