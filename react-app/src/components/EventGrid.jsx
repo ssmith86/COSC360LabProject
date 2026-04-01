@@ -61,10 +61,10 @@ export function EventGrid({
           location={formatLocation(doc.event?.location)}
           isSaved={
             isSavedMode ||
-            currentUserId === doc.owner?.id ||
+            currentUserId === doc.owner?.id?.toString() ||
             savedEventIds.includes(doc._id?.toString())
           }
-          isOwner={currentUserId === doc.owner?.id}
+          isOwner={currentUserId === doc.owner?.id?.toString()}
           isAdmin={isAdmin}
           isLoggedIn={isLoggedIn}
           onSave={() => onSave && onSave(doc._id?.toString())}
