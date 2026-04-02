@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import "./css files/LoginForm.css";
 import { useNavigate } from "react-router-dom";
+import { UserAvatarContext } from "../context/UserAvatarContext";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const navigate = useNavigate();
+  const { refreshAvatar } = useContext(UserAvatarContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,6 +37,7 @@ export default function LoginForm() {
       localStorage.setItem("userId", data.userId);
       // add user firstName to local storage
       localStorage.setItem("firstName", data.firstName);
+      refreshAvatar();
     }
   };
 
