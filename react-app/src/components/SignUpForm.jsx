@@ -21,18 +21,58 @@ export default function SignUpForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(!form.firstName || !form.lastName || !form.password || !form.confirmPassword || !form.userName ||!form.email){
+    if (
+      !form.firstName ||
+      !form.lastName ||
+      !form.password ||
+      !form.confirmPassword ||
+      !form.userName ||
+      !form.email
+    ) {
       setResponseMessage("All fields must be filled");
       return;
     }
 
-    if(form.password !== form.confirmPassword){
+    if (form.password !== form.confirmPassword) {
       setResponseMessage("Passwords must match");
       return;
     }
 
-    if(form.password.length < 8){
+    if (form.password.length < 8) {
       setResponseMessage("Password must contain at least 8 characters");
+      return;
+    }
+
+    // Additional Client-Side Security checking on First Name, Last Name, username and Password
+    const nameRegex = /^[a-zA-Z\s'-]+$/;
+    const userNameRegex = /^[a-zA-Z0-9_]+$/;
+    const passwordRegex = /^[A-Za-z0-9!@#$%^&*()\-_=+\[\]{};:'",.<>/?\\|`~]+$/;
+
+    if (!nameRegex.test(form.firstName)) {
+      setResponseMessage(
+        "First name can only contain letters, space, hyphens, or apostrophes.",
+      );
+      return;
+    }
+
+    if (!nameRegex.test(form.lastName)) {
+      setResponseMessage(
+        "Last name can only contain letters, space, hyphens, or apostrophes.",
+      );
+      return;
+    }
+
+    if (!userNameRegex.test(form.userName)) {
+      setResponseMessage(
+        "Username can only contain letters, numbers, and underscores.",
+      );
+      return;
+    }
+
+    if (!passwordRegex.test(form.password)) {
+      setResponseMessage(
+        "Password contains invalid characters. Spaces or control characters are not allowed.",
+      );
       return;
     }
 
@@ -50,9 +90,9 @@ export default function SignUpForm() {
 
     const data = await response.json();
     setResponseMessage(data.message);
-    
-    if(response.ok){
-      navigate('/login');
+
+    if (response.ok) {
+      navigate("/login");
     }
   };
 
