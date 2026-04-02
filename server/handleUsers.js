@@ -53,9 +53,9 @@ router.get("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
     try {
         const db = getDB();
-        await db.collection("users").deleteOne({ _id: new ObjectId(req.params.id )});
-        res.json({success: true})
-        
+        await db.collection("users").deleteOne({ _id: new ObjectId(req.params.id) });
+        await db.collection("savedEvents").deleteMany({ userId: req.params.id });
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
