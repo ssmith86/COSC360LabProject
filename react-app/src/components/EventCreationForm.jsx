@@ -109,6 +109,35 @@ function EventCreationForm() {
       return;
     }
 
+    // Add additional Client-Side Security Check
+    const locationRegex = /^[a-zA-Z0-9\s.,''-]+$/;
+    const titleRegex = /^[a-zA-Z0-9\s.,'!?-]+$/;
+
+    if (!titleRegex.test(form.name.trim())) {
+      setResponseMessage("Event title contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.address.trim())) {
+      setResponseMessage("Address contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.street.trim())) {
+      setResponseMessage("Street contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.city.trim())) {
+      setResponseMessage("City contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.province.trim())) {
+      setResponseMessage("Province contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.country.trim())) {
+      setResponseMessage("Country contains invalid special characters.");
+      return;
+    }
+
     // Once fields are all field, build the event data, matching the SampleData.json
     // for now we add all created events under a hardcoded owner
     // as we proceed with DB, we'll change this behavior

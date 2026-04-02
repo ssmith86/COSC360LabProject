@@ -92,6 +92,34 @@ export function EditEventForm({
       setResponseMessage("Description must be at least 10 characters.");
       return;
     }
+    // Additional Client-Side Security Check
+    const locationRegex = /^[a-zA-Z0-9\s.,''-]+$/;
+    const titleRegex = /^[a-zA-Z0-9\s.,'!?-]+$/;
+
+    if (!titleRegex.test(form.name.trim())) {
+      setResponseMessage("Event title contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.address.trim())) {
+      setResponseMessage("Address contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.street.trim())) {
+      setResponseMessage("Street contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.city.trim())) {
+      setResponseMessage("City contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.province.trim())) {
+      setResponseMessage("Province contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.country.trim())) {
+      setResponseMessage("Country contains invalid special characters.");
+      return;
+    }
 
     // build updated event object matching the events collection structure
     // const updatedEvent = {
