@@ -116,7 +116,11 @@ const EventCard = ({
             {(isAdmin || isOwner) && (
               <button
                 className="icon-only-btn delete-btn-color"
-                onClick={onDelete}
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to delete this event?")) {
+                    onDelete();
+                  }
+                }}
               >
                 <FaTrashAlt />
               </button>

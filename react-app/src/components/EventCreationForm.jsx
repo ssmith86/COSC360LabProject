@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./css files/EventCreationForm.css";
 
 function EventCreationForm() {
+  const navigate = useNavigate();
   // set up what we need for each data field
   const [form, setForm] = useState({
     name: "",
@@ -38,6 +40,12 @@ function EventCreationForm() {
   // Implement handleSubmit, validate all fields are filled
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // guard: ensure a logged-in user's id is present before submitting
+    if (!localStorage.getItem("userId")) {
+      setResponseMessage("You must be logged in to create an event.");
+      return;
+    }
 
     // for (let field in form) {
     //   if (form[field].trim() == "") {
@@ -194,6 +202,7 @@ function EventCreationForm() {
       })
       .then(function (data) {
         setResponseMessage(data.message);
+        navigate("/my-events");
       })
       .catch(function () {
         setResponseMessage("An error occurred, please try again");
