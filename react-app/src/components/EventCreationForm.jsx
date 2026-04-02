@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./css files/EventCreationForm.css";
 
 function EventCreationForm() {
+  const navigate = useNavigate();
   // set up what we need for each data field
   const [form, setForm] = useState({
     name: "",
@@ -194,6 +196,7 @@ function EventCreationForm() {
       })
       .then(function (data) {
         setResponseMessage(data.message);
+        navigate("/my-events");
       })
       .catch(function () {
         setResponseMessage("An error occurred, please try again");
