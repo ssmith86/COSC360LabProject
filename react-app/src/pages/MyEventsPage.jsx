@@ -182,8 +182,18 @@ export const MyEventsPage = () => {
 
           {/* Display the section - My Events */}
           <section className="events-section">
-            <h2 className="section-title">My Events</h2>
-            <p className="section-subtitle">Events you have created</p>
+            <div className="section-header-row">
+              <div>
+                <h2 className="section-title">My Events</h2>
+                <p className="section-subtitle">Events you have created</p>
+              </div>
+              <button
+                className="create-event-btn"
+                onClick={() => navigate("/new-event")}
+              >
+                + Create Event
+              </button>
+            </div>
             <div className="events-scroll-container">
               {/* Display and render my event via a function renderEventsGrid */}
               <EventGrid
