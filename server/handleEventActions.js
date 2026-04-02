@@ -86,6 +86,7 @@ router.put("/:eventId", upload.single("image"), async function (req, res) {
     "event.location.city": body["event.location.city"],
     "event.location.province": body["event.location.province"],
     "event.location.country": body["event.location.country"],
+    "event.category": body["event.category"],
     description: body.description,
   };
   // we only update image if the user uploads a new image file

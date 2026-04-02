@@ -20,6 +20,7 @@ export function EditEventForm({
     city: initialData?.event?.location?.city || "",
     province: initialData?.event?.location?.province || "",
     country: initialData?.event?.location?.country || "",
+    category: initialData?.event?.category || "",
     description: initialData?.description || "",
   });
 
@@ -159,6 +160,7 @@ export function EditEventForm({
     formData.append("event.location.city", form.city);
     formData.append("event.location.province", form.province);
     formData.append("event.location.country", form.country);
+    formData.append("event.category", form.category);
     formData.append("description", form.description);
     // only append image if user selected a new file
     if (imageFile) {

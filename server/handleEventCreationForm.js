@@ -68,6 +68,7 @@ router.post("/", upload.single("image"), async function (req, res) {
           province: eventData.province,
           country: eventData.country,
         },
+        category: eventData.category,
       },
       description: eventData.description,
     };
