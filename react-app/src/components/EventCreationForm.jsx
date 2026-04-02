@@ -41,6 +41,12 @@ function EventCreationForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // guard: ensure a logged-in user's id is present before submitting
+    if (!localStorage.getItem("userId")) {
+      setResponseMessage("You must be logged in to create an event.");
+      return;
+    }
+
     // for (let field in form) {
     //   if (form[field].trim() == "") {
     //     setResponseMessage(
