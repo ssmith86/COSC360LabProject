@@ -80,8 +80,16 @@ export const MyEventsPage = () => {
     // invalid currentUserId will just return
     if (!currentUserId) return;
 
+    // Add alreadySaved to fix save-btn bug
+    const alreadySaved = savedEventIds.includes(eventId);
+    // If the event is in savedEventIds, then it's already saved
+    // we send delete; otherwise, we send post
+    // this enables us to un-save an event
+    const method = alreadySaved ? "DELETE" : "POST";
+
     fetch("http://localhost:3001/api/savedevents", {
-      method: "POST",
+      // update here to use the above defined method var
+      method: method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: currentUserId, eventId: eventId }),
     })
