@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 
 // creates the context object — components call useContext(UserAvatarContext) to read from it
-export const UserAvatarContext = createContext(null);
+export const UserAvatarContext = createContext({ avatar: '', refreshAvatar: () => {} });
 
 // the provider wraps the app and holds the actual avatar state
 export const UserAvatarProvider = ({ children }) => {

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import './ProfilePage.css';
 import { useContext } from 'react';
 import { UserAvatarContext } from '../context/UserAvatarContext';
+import { useNavigate } from 'react-router-dom';
 
 export const SettingsPage = () => {
     const userId = localStorage.getItem('userId');
@@ -17,6 +18,7 @@ export const SettingsPage = () => {
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
     const { refreshAvatar } = useContext(UserAvatarContext);
+    const navigate = useNavigate();
 
     // on load, fetch the user's existing avatar so we can display it
     useEffect(() => {
@@ -34,6 +36,17 @@ export const SettingsPage = () => {
         if (!file) return;
         setSelectedFile(file);
         setPreview(URL.createObjectURL(file)); // browser creates a temporary URL pointing to the local file
+    };
+
+    const handleDeleteAccount = async () => {
+        if (!window.confirm('Are you sure you want to delete your account? This cannot be undone.')) return;
+        const res = await fetch("http://localhost:3001/api/users/" + userId, { method: "DELETE" });
+        if (res.ok) {
+            localStorage.clear();
+            navigate('/');
+        } else {
+            alert('Failed to delete account. Please try again.');
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -129,6 +142,14 @@ export const SettingsPage = () => {
                             </div>
                             <button type="submit" className="profile-btn">Save Profile Picture</button>
                         </form>
+                    </div>
+
+                    <div className="profile-section">
+                        <h2>Delete Account</h2>
+                        <p>This will permanently delete your account and cannot be undone.</p>
+                        <button onClick={handleDeleteAccount} className="profile-btn" style={{ backgroundColor: '#dc2626' }}>
+                            Delete Account
+                        </button>
                     </div>
                 </div>
             </div>
