@@ -59,7 +59,7 @@
   margin-bottom: 1.5rem;
 }
 
-.summary-card {
+.metric-card {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -71,12 +71,16 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.summary-card:hover {
+.metric-card:hover {
   outline: 2px solid #9b5cf6;
   outline-offset: 0px;
 }
 
-.summary-card.accent {
+.metric-card--highlighted {
+  border-left: 4px solid #9b5cf6;
+}
+
+.fixed-summary .metric-card {
   border-left: 4px solid #9b5cf6;
 }
 
@@ -97,8 +101,17 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-left: auto;
   flex-wrap: wrap;
+}
+
+.filter-panel {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.1rem;
+  border: 1px solid #ddd6fe;
+  border-radius: 16px;
+  background: #fff;
 }
 
 .date-filter-presets {
@@ -233,8 +246,12 @@
     align-items: stretch;
   }
 
-  .date-filter {
+  .filter-panel {
     margin-left: 0;
+  }
+
+  .date-filter {
+    width: 100%;
   }
 
   .date-filter-custom {

@@ -15,6 +15,7 @@ const PRESETS = [
   { label: "1M", days: 30 },
   { label: "6M", days: 180 },
   { label: "1Y", days: 365 },
+  { label: "All", days: null },
 ];
 
 function getPresetRange(days) {
@@ -39,7 +40,7 @@ export const AnalyticsPage = () => {
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   // Time range filter state
-  const [activePreset, setActivePreset] = useState("7D");
+  const [activePreset, setActivePreset] = useState("All");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
@@ -69,7 +70,8 @@ export const AnalyticsPage = () => {
       return { from: dateFrom, to: dateTo };
     }
     const preset = PRESETS.find((p) => p.label === activePreset);
-    return preset ? getPresetRange(preset.days) : { from: "", to: "" };
+    if (!preset || preset.days === null) return { from: "", to: "" };
+    return getPresetRange(preset.days);
   }, [activePreset, dateFrom, dateTo]);
 
   // Fetch fixed data once
@@ -146,49 +148,51 @@ export const AnalyticsPage = () => {
               </div>
             )}
 
-            <div className="date-filter">
-              <div className="date-filter-presets">
-                {PRESETS.map((p) => (
-                  <button
-                    key={p.label}
-                    className={activePreset === p.label ? "preset-btn active" : "preset-btn"}
-                    onClick={() => handlePreset(p.label)}
-                  >
-                    {p.label}
+            <div className="filter-panel">
+              <div className="date-filter">
+                <div className="date-filter-presets">
+                  {PRESETS.map((p) => (
+                    <button
+                      key={p.label}
+                      className={activePreset === p.label ? "preset-btn active" : "preset-btn"}
+                      onClick={() => handlePreset(p.label)}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="date-filter-custom">
+                  <input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                  />
+                  <span className="date-separator">to</span>
+                  <input
+                    type="date"
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                  />
+                  <button className="preset-btn custom-apply" onClick={handleCustomApply}>
+                    Apply
                   </button>
-                ))}
-              </div>
-              <div className="date-filter-custom">
-                <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                />
-                <span className="date-separator">to</span>
-                <input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                />
-                <button className="preset-btn custom-apply" onClick={handleCustomApply}>
-                  Apply
-                </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* ===== Fixed Summary Cards ===== */}
           {tab === "events" && eventSummary && (
-            <div className="summary-row">
-              <div className="summary-card">
+            <div className="summary-row fixed-summary">
+              <div className="metric-card metric-card--highlighted">
                 <span className="summary-number">{eventSummary.totalEvents}</span>
                 <span className="summary-label">Total Events</span>
               </div>
-              <div className="summary-card">
+              <div className="metric-card metric-card--highlighted">
                 <span className="summary-number">{eventSummary.totalSaves}</span>
                 <span className="summary-label">Total Saves</span>
               </div>
-              <div className="summary-card">
+              <div className="metric-card metric-card--highlighted">
                 <span className="summary-number">{totalComments !== null ? totalComments : "N/A"}</span>
                 <span className="summary-label">Total Comments</span>
               </div>
@@ -196,16 +200,16 @@ export const AnalyticsPage = () => {
           )}
 
           {isAdmin && tab === "users" && userSummary && (
-            <div className="summary-row">
-              <div className="summary-card">
+            <div className="summary-row fixed-summary">
+              <div className="metric-card metric-card--highlighted">
                 <span className="summary-number">{userSummary.totalUsers}</span>
                 <span className="summary-label">Total Users</span>
               </div>
-              <div className="summary-card">
+              <div className="metric-card metric-card--highlighted">
                 <span className="summary-number">{userSummary.activeUsers}</span>
                 <span className="summary-label">Total Active</span>
               </div>
-              <div className="summary-card">
+              <div className="metric-card metric-card--highlighted">
                 <span className="summary-number">{userSummary.bannedUsers}</span>
                 <span className="summary-label">Total Banned</span>
               </div>
@@ -215,15 +219,15 @@ export const AnalyticsPage = () => {
           {/* ===== Filtered Period Summary ===== */}
           {tab === "events" && (
             <div className="summary-row period-summary">
-              <div className="summary-card accent">
+              <div className="metric-card">
                 <span className="summary-number">{newInPeriod}</span>
                 <span className="summary-label">New Events in Period</span>
               </div>
-              <div className="summary-card accent">
+              <div className="metric-card">
                 <span className="summary-number">{savesInPeriod}</span>
                 <span className="summary-label">Saves in Period</span>
               </div>
-              <div className="summary-card accent">
+              <div className="metric-card">
                 <span className="summary-number">{commentsInPeriod !== null ? commentsInPeriod : "N/A"}</span>
                 <span className="summary-label">Comments in Period</span>
               </div>
@@ -232,15 +236,15 @@ export const AnalyticsPage = () => {
 
           {isAdmin && tab === "users" && userActivity && (
             <div className="summary-row period-summary">
-              <div className="summary-card accent">
+              <div className="metric-card">
                 <span className="summary-number">{userActivity.activeInRange}</span>
                 <span className="summary-label">Active Users in Period</span>
               </div>
-              <div className="summary-card accent">
+              <div className="metric-card">
                 <span className="summary-number">{userActivity.inactiveInRange}</span>
                 <span className="summary-label">Inactive Users in Period</span>
               </div>
-              <div className="summary-card accent">
+              <div className="metric-card">
                 <span className="summary-number">{userActivity.banned}</span>
                 <span className="summary-label">Banned Users in Period</span>
               </div>
@@ -309,28 +313,6 @@ export const AnalyticsPage = () => {
               </div>
 
               <div className="analytics-card">
-                <h2>Most Active Creators</h2>
-                <p className="analytics-subtitle">Users with most events created</p>
-                {topCreators.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={topCreators} layout="vertical">
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" allowDecimals={false} />
-                      <YAxis dataKey="creator" type="category" width={120} tick={{ fontSize: 12 }} />
-                      <Tooltip />
-                      <Bar dataKey="eventCount" name="Events">
-                        {topCreators.map((_, i) => (
-                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <p className="no-data">No creator data available</p>
-                )}
-              </div>
-
-              <div className="analytics-card">
                 <h2>Events by Location</h2>
                 <p className="analytics-subtitle">Event count per city</p>
                 {locationDist.length > 0 ? (
@@ -372,6 +354,28 @@ export const AnalyticsPage = () => {
                   </ResponsiveContainer>
                 ) : (
                   <p className="no-data">No user data available</p>
+                )}
+              </div>
+
+              <div className="analytics-card">
+                <h2>Most Active Creators</h2>
+                <p className="analytics-subtitle">Users with most events created</p>
+                {topCreators.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={topCreators} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" allowDecimals={false} />
+                      <YAxis dataKey="creator" type="category" width={120} tick={{ fontSize: 12 }} />
+                      <Tooltip />
+                      <Bar dataKey="eventCount" name="Events">
+                        {topCreators.map((_, i) => (
+                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="no-data">No creator data available</p>
                 )}
               </div>
             </div>

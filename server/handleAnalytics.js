@@ -6,6 +6,7 @@ const { getDB } = require("./db");
 function parseDateRange(query) {
   const from = query.from ? new Date(query.from) : null;
   const to = query.to ? new Date(query.to) : null;
+  if (to) to.setHours(23, 59, 59, 999);
   return { from, to };
 }
 
