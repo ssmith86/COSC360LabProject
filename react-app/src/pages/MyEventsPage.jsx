@@ -16,6 +16,11 @@ export const MyEventsPage = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
+  // implement expansion and collapsion
+  const [upcomingExpanded, setUpcomingExpanded] = useState(true);
+  const [myEventsExpanded, setMyEventsExpanded] = useState(true);
+  const [savedExpanded, setSavedExpanded] = useState(true);
+
   // TODO in the future: our sample data are mainly on default user Sam Smith, id 123456
   // we'll have to replace this with actual logged in user information in the future
   // update with logic to fetch current user to replace hard code
@@ -186,62 +191,101 @@ export const MyEventsPage = () => {
 
           {/* Display the section - Upcoming Events */}
           <section className="events-section">
-            <h2 className="section-title">Upcoming Events</h2>
-            <p className="section-subtitle">
-              Events happening in the next 30 days
-            </p>
-            <div className="events-scroll-container">
-              {/* Display and render upcoming event via a function renderEventsGrid */}
-              <EventGrid
-                events={filterByCategory(upcomingEvents)}
-                savedEventIds={savedEventIds}
-                onSave={handleSave}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-              />
+            <div className="section-header-row">
+              <div>
+                <h2 className="section-title">Upcoming Events</h2>
+                <p className="section-subtitle">
+                  Events happening in the next 30 days
+                </p>
+              </div>
+              <button
+                className="collapse-btn"
+                onClick={() => setUpcomingExpanded(!upcomingExpanded)}
+              >
+                {upcomingExpanded ? "▲" : "▼"}
+              </button>
             </div>
+
+            {upcomingExpanded && (
+              <div className="events-scroll-container">
+                {/* Display and render upcoming event via a function renderEventsGrid */}
+                <EventGrid
+                  events={filterByCategory(upcomingEvents)}
+                  savedEventIds={savedEventIds}
+                  onSave={handleSave}
+                  onDelete={handleDelete}
+                  onEdit={handleEdit}
+                />
+              </div>
+            )}
           </section>
 
           {/* Display the section - My Events */}
           <section className="events-section">
             <div className="section-header-row">
-              <div>
+              <div className="section-title-group">
                 <h2 className="section-title">My Events</h2>
                 <p className="section-subtitle">Events you have created</p>
               </div>
-              <button
-                className="create-event-btn"
-                onClick={() => navigate("/new-event")}
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "12px" }}
               >
-                + Create Event
-              </button>
+                <button
+                  className="collapse-btn"
+                  onClick={() => setMyEventsExpanded(!myEventsExpanded)}
+                >
+                  {myEventsExpanded ? "▲" : "▼"}
+                </button>
+                <button
+                  className="create-event-btn"
+                  onClick={() => navigate("/new-event")}
+                >
+                  + Create Event
+                </button>
+              </div>
             </div>
-            <div className="events-scroll-container">
-              {/* Display and render my event via a function renderEventsGrid */}
-              <EventGrid
-                events={filterByCategory(myEvents)}
-                savedEventIds={savedEventIds}
-                onSave={handleSave}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-              />
-            </div>
+
+            {myEventsExpanded && (
+              <div className="events-scroll-container">
+                {/* Display and render my event via a function renderEventsGrid */}
+                <EventGrid
+                  events={filterByCategory(myEvents)}
+                  savedEventIds={savedEventIds}
+                  onSave={handleSave}
+                  onDelete={handleDelete}
+                  onEdit={handleEdit}
+                />
+              </div>
+            )}
           </section>
 
           {/*Display the section - My Saved Events */}
           <section className="events-section">
-            <h2 className="section-title">My Saved Events</h2>
-            <p className="section-subtitle">Events you have saved</p>
-            <div className="events-scroll-container">
-              {/* Display and render my saved event via a function renderEventsGrid */}
-              <EventGrid
-                events={filterByCategory(savedEvents)}
-                isSavedMode={true}
-                onSave={handleSave}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-              />
+            <div className="section-header-row">
+              <div>
+                <h2 className="section-title">My Saved Events</h2>
+                <p className="section-subtitle">Events you have saved</p>
+              </div>
+              <button
+                className="collapse-btn"
+                onClick={() => setSavedExpanded(!savedExpanded)}
+              >
+                {savedExpanded ? "▲" : "▼"}
+              </button>
             </div>
+
+            {savedExpanded && (
+              <div className="events-scroll-container">
+                {/* Display and render my saved event via a function renderEventsGrid */}
+                <EventGrid
+                  events={filterByCategory(savedEvents)}
+                  isSavedMode={true}
+                  onSave={handleSave}
+                  onDelete={handleDelete}
+                  onEdit={handleEdit}
+                />
+              </div>
+            )}
           </section>
         </div>
       </div>
