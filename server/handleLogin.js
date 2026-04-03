@@ -25,6 +25,11 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
+    await db.collection("users").updateOne(
+      { _id: user._id },
+      { $set: { lastLogin: new Date() } }
+    );
+
     res.status(200).json({
       message: `Welcome back, ${user.firstName}!`,
       isAdmin: user.isAdmin,
