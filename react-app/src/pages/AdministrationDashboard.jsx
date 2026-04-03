@@ -230,35 +230,46 @@ export const AdministrationDashboard = () => {
         <div className="edit-overlay">
           <div className="edit-box">
             <h2>Edit User: {userToEdit.userName}</h2>
-            <label>Username:</label>
-            <input
-              type="text"
-              value={editForm.userName}
-              onChange={(e) =>
-                setEditForm({ ...editForm, userName: e.target.value })
-              }
-            />
-            <label>Admin:</label>
-            <input
-              type="checkbox"
-              checked={editForm.isAdmin}
-              onChange={(e) =>
-                setEditForm({ ...editForm, isAdmin: e.target.checked })
-              }
-            />
-            <label>Banned:</label>
-            <input
-              type="checkbox"
-              checked={editForm.isBanned}
-              onChange={(e) =>
-                setEditForm({ ...editForm, isBanned: e.target.checked })
-              }
-            />
-            <button onClick={handlePasswordReset}>
-              Send Password Reset Email
-            </button>
-            <button onClick={handleEdit}>Save</button>
-            <button onClick={() => setUserToEdit(null)}>Cancel</button>
+            <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '0.75rem 1rem', alignItems: 'center' }}>
+              <label style={{ fontWeight: 'bold' }}>Username:</label>
+              <input
+                type="text"
+                value={editForm.userName}
+                onChange={(e) => setEditForm({ ...editForm, userName: e.target.value })}
+              />
+              <label style={{ fontWeight: 'bold' }}>Role:</label>
+              <button
+                onClick={() => {
+                  const msg = editForm.isAdmin
+                    ? `Are you sure you want to demote ${userToEdit.userName} to a regular user?`
+                    : `Are you sure you want to promote ${userToEdit.userName} to admin?`;
+                  if (window.confirm(msg)) setEditForm({ ...editForm, isAdmin: !editForm.isAdmin });
+                }}
+                style={{ backgroundColor: editForm.isAdmin ? '#7c3aed' : '#e5e7eb', color: editForm.isAdmin ? 'white' : '#111', border: 'none', borderRadius: '6px', padding: '0.3rem 0.8rem', cursor: 'pointer', width: 'fit-content' }}
+              >
+                {editForm.isAdmin ? 'Demote to User' : 'Promote to Admin'}
+              </button>
+              <label style={{ fontWeight: 'bold' }}>Status:</label>
+              <button
+                onClick={() => {
+                  const msg = editForm.isBanned
+                    ? `Are you sure you want to unban ${userToEdit.userName}?`
+                    : `Are you sure you want to ban ${userToEdit.userName}?`;
+                  if (window.confirm(msg)) setEditForm({ ...editForm, isBanned: !editForm.isBanned });
+                }}
+                style={{ backgroundColor: editForm.isBanned ? '#dc2626' : '#e5e7eb', color: editForm.isBanned ? 'white' : '#111', border: 'none', borderRadius: '6px', padding: '0.3rem 0.8rem', cursor: 'pointer', width: 'fit-content' }}
+              >
+                {editForm.isBanned ? 'Unban User' : 'Ban User'}
+              </button>
+            </div>
+            {(editForm.userName !== userToEdit.userName || editForm.isAdmin !== userToEdit.isAdmin || editForm.isBanned !== (userToEdit.isBanned || false)) && (
+              <p style={{ color: '#dc2626', fontWeight: 'bold', margin: '0.5rem 0 0' }}>You must save to make these changes permanent.</p>
+            )}
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+              <button onClick={handlePasswordReset}>Send Password Reset Email</button>
+              <button onClick={handleEdit}>Save</button>
+              <button onClick={() => setUserToEdit(null)}>Cancel</button>
+            </div>
           </div>
         </div>
       )}
