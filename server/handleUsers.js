@@ -81,19 +81,31 @@ router.patch("/:id", async (req, res) => {
         const db = getDB();
         const { firstName, lastName, userName, email, isAdmin, isBanned, password, currentPassword } = req.body;
         const updates = {};
+        const userId = new ObjectId(req.params.id);
+        const existingUser = await db.collection("users").findOne({ _id: userId });
+
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
         if (firstName !== undefined) updates.firstName = firstName;
         if (lastName !== undefined) updates.lastName = lastName;
         if (userName !== undefined) updates.userName = userName;
         if (email !== undefined) updates.email = email;
         if (isAdmin !== undefined) updates.isAdmin = isAdmin;
-        if (isBanned !== undefined) updates.isBanned = isBanned;
+        if (isBanned !== undefined) {
+            updates.isBanned = isBanned;
+            if (isBanned && !existingUser.isBanned) {
+                updates.bannedAt = new Date();
+            } else if (!isBanned && existingUser.isBanned) {
+                updates.bannedAt = null;
+            }
+        }
 
         // If changing password, verify current password first
         if (password) {
             if (currentPassword) {
-                const user = await db.collection("users").findOne({ _id: new ObjectId(req.params.id) });
-                const match = await bcrypt.compare(currentPassword, user.password);
+                const match = await bcrypt.compare(currentPassword, existingUser.password);
                 if (!match) {
                     return res.status(401).json({ message: "Current password is incorrect" });
                 }
@@ -102,7 +114,7 @@ router.patch("/:id", async (req, res) => {
         }
 
         await db.collection("users").updateOne(
-            { _id: new ObjectId(req.params.id) },
+            { _id: userId },
             { $set: updates }
         );
         res.json({ success: true });

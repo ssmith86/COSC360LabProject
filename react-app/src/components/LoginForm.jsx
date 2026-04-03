@@ -25,19 +25,18 @@ export default function LoginForm() {
     const data = await response.json();
     setResponseMessage(data.message);
     if (response.ok) {
-      if (data.isAdmin) {
-        navigate("/admin");
-        localStorage.setItem("isAdmin", "true");
-      } else {
-        navigate("/dashboard");
-        localStorage.setItem("isAdmin", "false");
-      }
+      // set localStorage before navigate so userId is always correct when next page loads
       localStorage.setItem("isLoggedIn", "true");
-      // add userId to local storage for front-end handling
       localStorage.setItem("userId", data.userId);
-      // add user firstName to local storage
       localStorage.setItem("firstName", data.firstName);
       refreshAvatar();
+      if (data.isAdmin) {
+        localStorage.setItem("isAdmin", "true");
+        navigate("/admin");
+      } else {
+        localStorage.setItem("isAdmin", "false");
+        navigate("/dashboard");
+      }
     }
   };
 

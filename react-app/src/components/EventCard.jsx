@@ -19,6 +19,7 @@ import "./css files/EventCard.css";
  * @param {string} props.startDateTime - The starting date and time of the event, e.g. Oct 24, 2025 18:00
  * @param {string} props.endDateTIme - The ending date and time of the event, e.g. Oct 25, 2025 19:00
  * @param {string} props.location - The location of the event
+ * @param {string} props.category - The category of the event
  * @param {boolean} props.isSaved - Wheher the current user has saved/favored this event card
  * @param {boolean} props.isOwner - Whether the current user is the owner of the event card
  * @param {boolean} props.isAdmin - Whether the current user is admin user
@@ -35,6 +36,7 @@ const EventCard = ({
   startDateTime,
   endDateTime,
   location,
+  category,
   isSaved,
   isOwner,
   isAdmin,
@@ -72,6 +74,9 @@ const EventCard = ({
       <div className="event-title-banner">
         <h3>{title}</h3>
       </div>
+
+      {/* Display the event category */}
+      {category && <span className="event-category-badge">{category}</span>}
 
       {/* Display event's general information */}
       <div className="event-info-section">
@@ -116,7 +121,15 @@ const EventCard = ({
             {(isAdmin || isOwner) && (
               <button
                 className="icon-only-btn delete-btn-color"
-                onClick={onDelete}
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete this event?",
+                    )
+                  ) {
+                    onDelete();
+                  }
+                }}
               >
                 <FaTrashAlt />
               </button>

@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./css files/EventCreationForm.css";
+import { EVENT_CATEGORIES } from "../constants/eventCategories";
 
 function EventCreationForm() {
+  const navigate = useNavigate();
   // set up what we need for each data field
   const [form, setForm] = useState({
     name: "",
@@ -16,6 +19,8 @@ function EventCreationForm() {
   });
   // replace orignal image, and add a new image useState
   const [imageFile, setImageFile] = useState(null);
+  // add a new category state variable
+  const [category, setCategory] = useState("");
 
   // Add the current time to ensure user cannot choose start_date before current date time
   const now = new Date().toISOString().slice(0, 16);
@@ -38,6 +43,12 @@ function EventCreationForm() {
   // Implement handleSubmit, validate all fields are filled
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // guard: ensure a logged-in user's id is present before submitting
+    if (!localStorage.getItem("userId")) {
+      setResponseMessage("You must be logged in to create an event.");
+      return;
+    }
 
     // for (let field in form) {
     //   if (form[field].trim() == "") {
@@ -104,8 +115,43 @@ function EventCreationForm() {
       return;
     }
 
+    // add validation check for category
+    if (!category) {
+      setResponseMessage("Please select an event category.");
+      return;
+    }
+
     if (form.description.trim().length < 10) {
       setResponseMessage("Description must be at least 10 characters.");
+      return;
+    }
+
+    // Add additional Client-Side Security Check
+    const locationRegex = /^[a-zA-Z0-9\s.,''-]+$/;
+    const titleRegex = /^[a-zA-Z0-9\s.,'!?-]+$/;
+
+    if (!titleRegex.test(form.name.trim())) {
+      setResponseMessage("Event title contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.address.trim())) {
+      setResponseMessage("Address contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.street.trim())) {
+      setResponseMessage("Street contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.city.trim())) {
+      setResponseMessage("City contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.province.trim())) {
+      setResponseMessage("Province contains invalid special characters.");
+      return;
+    }
+    if (!locationRegex.test(form.country.trim())) {
+      setResponseMessage("Country contains invalid special characters.");
       return;
     }
 
@@ -141,6 +187,7 @@ function EventCreationForm() {
     eventData.append("province", form.province);
     eventData.append("country", form.country);
     eventData.append("description", form.description);
+    eventData.append("category", category);
     eventData.append("userId", localStorage.getItem("userId") || "");
     eventData.append(
       "owner_name",
@@ -165,6 +212,7 @@ function EventCreationForm() {
       })
       .then(function (data) {
         setResponseMessage(data.message);
+        navigate("/my-events");
       })
       .catch(function () {
         setResponseMessage("An error occurred, please try again");
@@ -283,6 +331,21 @@ function EventCreationForm() {
             onChange={handleChange}
             placeholder="Canada"
           />
+        </div>
+
+        <div>
+          <label>Category</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value=""> Select a Category </option>
+            {EVENT_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="event-creation-field">
