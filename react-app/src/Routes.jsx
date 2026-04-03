@@ -16,6 +16,8 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SavedEventsPage } from "./pages/SavedEventsPage";
 import { EditEventPage } from "./pages/EditEventPage";
+import { AdminAnalyticsPage } from "./pages/AdminAnalyticsPage";
+import { UserInsightsPage } from "./pages/UserInsightsPage";
 // add import for ProtectedRoute component
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -82,6 +84,22 @@ export const Routes = () => {
           element={
             <ProtectedRoute>
               <SavedEventsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-analytics"
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminAnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user-insights"
+          element={
+            <ProtectedRoute>
+              <UserInsightsPage />
             </ProtectedRoute>
           }
         />

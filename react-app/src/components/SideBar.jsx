@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {MdDashboard, MdEvent, MdFavorite, MdPerson, MdAdminPanelSettings, MdSettings} from "react-icons/md";
+import {MdDashboard, MdEvent, MdFavorite, MdPerson, MdAdminPanelSettings, MdBarChart} from "react-icons/md";
 import {MdArrowForward, MdArrowBack} from "react-icons/md";
 import './css files/SideBar.css';
 import {useNavigate, useLocation} from "react-router-dom";
@@ -10,6 +10,8 @@ export function SideBar() {
   const location = useLocation();
   const[collapsed, setCollapsed] = useState(false);
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  const analyticsPath = isAdmin ? '/admin-analytics' : '/user-insights';
+  const analyticsPaths = ['/admin-analytics', '/user-insights'];
 
   return (
     <nav className={collapsed ? "sidebar collapsed" : "sidebar"}>
@@ -32,6 +34,10 @@ export function SideBar() {
         <li className={location.pathname === '/saved-events' ? 'active' : ''} onClick={() => navigate('/saved-events')}>
             <MdFavorite/>
             {!collapsed && <span>My Favourite Events</span>}
+        </li>
+        <li className={analyticsPaths.includes(location.pathname) ? 'active' : ''} onClick={() => navigate(analyticsPath)}>
+            <MdBarChart/>
+            {!collapsed && <span>Analytics</span>}
         </li>
         <li className={location.pathname === '/profile' ? 'active' : ''} onClick={() => navigate('/profile')}>
             <MdPerson/>

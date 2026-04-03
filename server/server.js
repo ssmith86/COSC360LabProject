@@ -18,6 +18,7 @@ const handleLogin = require("./handleLogin");
 const handleUsers = require("./handleUsers");
 
 const handleEventActions = require("./handleEventActions");
+const handleAnalytics = require("./handleAnalytics");
 
 // cross origin reseources sharing middleware to allow req from react
 app.use(function (req, res, next) {
@@ -46,6 +47,7 @@ app.use("/api/savedevents", handleSavedEvents);
 app.use("/api/login", handleLogin);
 app.use("/api/users", handleUsers);
 app.use("/api/events", handleEventActions);
+app.use("/api/analytics", handleAnalytics);
 
 // Connect to MongoDB and start
 connectDB()
