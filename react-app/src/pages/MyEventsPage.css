@@ -93,3 +93,16 @@
 .create-event-btn:hover {
   background-color: #4338ca;
 }
+
+.collapse-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #555;
+  padding: 4px 8px;
+}
+
+.collapse-btn:hover {
+  color: #000;
+}
