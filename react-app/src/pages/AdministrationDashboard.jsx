@@ -1,11 +1,14 @@
 import { NavigationBar } from "../components/NavigationBar";
 import { SideBar } from "../components/SideBar";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { MdEdit, MdDelete } from "react-icons/md";
 import "./AdministrationDashboard.css";
 
 export const AdministrationDashboard = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [events, setEvents] = useState([]);
   const [userToDelete, setUserToDelete] = useState(null);
   const [userToEdit, setUserToEdit] = useState(null);
   const [editForm, setEditForm] = useState({
@@ -15,11 +18,28 @@ export const AdministrationDashboard = () => {
   });
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    fetch("http://localhost:3001/api/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data));
-  }, []);
+  const handleSearch = async (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    if (!term.trim()) {
+      setUsers([]);
+      setEvents([]);
+      return;
+    }
+    const res = await fetch(`http://localhost:3001/api/users/search?q=${encodeURIComponent(term)}`);
+    const data = await res.json();
+    setUsers(Array.isArray(data.users) ? data.users : []);
+    setEvents(Array.isArray(data.events) ? data.events : []);
+  };
+
+
+  const handleDeleteEvent = async (eventId) => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+    const res = await fetch(`http://localhost:3001/api/events/${eventId}`, { method: "DELETE" });
+    if (res.ok) {
+      setEvents(events.filter((e) => e._id !== eventId));
+    }
+  };
 
   const handleDelete = async () => {
     const res = await fetch(
@@ -87,55 +107,93 @@ export const AdministrationDashboard = () => {
           <h1>Admin Dashboard</h1>
           <input
             type="text"
-            placeholder="Search users..."
+            placeholder="Search users by name, email, or event..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearch}
             className="user-search"
           />
-          <table className="users-table">
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Status</th>
-                <th>Role</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users
-                .filter((u) =>
-                  u.userName.toLowerCase().includes(searchTerm.toLowerCase()),
-                )
-                .map((user) => (
-                  <tr key={user._id}>
-                    <td>{user.userName}</td>
-                    <td>{user.isBanned ? "Banned" : "Active"}</td>
-                    <td>{user.isAdmin ? "Admin" : "User"}</td>
-                    <td>
-                      <button
-                        className="edit-button"
-                        onClick={() => {
-                          setUserToEdit(user);
-                          setEditForm({
-                            userName: user.userName,
-                            isAdmin: user.isAdmin,
-                            isBanned: user.isBanned || false,
-                          });
-                        }}
-                      >
-                        <MdEdit />
-                      </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => setUserToDelete(user)}
-                      >
-                        <MdDelete />
-                      </button>
-                    </td>
+          {searchTerm && (
+            <>
+              <h2>Users ({users.length})</h2>
+              <table className="users-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Role</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user._id}>
+                      <td>{user.userName}</td>
+                      <td>{user.email}</td>
+                      <td>{user.isBanned ? "Banned" : "Active"}</td>
+                      <td>{user.isAdmin ? "Admin" : "User"}</td>
+                      <td>
+                        <button
+                          className="edit-button"
+                          onClick={() => {
+                            setUserToEdit(user);
+                            setEditForm({
+                              userName: user.userName,
+                              isAdmin: user.isAdmin,
+                              isBanned: user.isBanned || false,
+                            });
+                          }}
+                        >
+                          <MdEdit />
+                        </button>
+                        <button
+                          className="delete-button"
+                          onClick={() => setUserToDelete(user)}
+                        >
+                          <MdDelete />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <h2>Events ({events.length})</h2>
+              <table className="users-table">
+                <thead>
+                  <tr>
+                    <th>Event Name</th>
+                    <th>Owner</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {events.map((event) => (
+                    <tr key={event._id}>
+                      <td>{event.event?.name}</td>
+                      <td>{event.owner?.name}</td>
+                      <td>{event.event?.start_date}</td>
+                      <td>
+                        <button
+                          className="edit-button"
+                          onClick={() => navigate(`/edit-event/${event._id}`)}
+                        >
+                          <MdEdit />
+                        </button>
+                        <button
+                          className="delete-button"
+                          onClick={() => handleDeleteEvent(event._id)}
+                        >
+                          <MdDelete />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
         </div>
       </div>
       {userToDelete && (

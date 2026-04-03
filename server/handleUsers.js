@@ -33,6 +33,36 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.get("/search", async (req, res) => {
+    const searchTerm = req.query.q || "";
+    if (!searchTerm.trim()) return res.json({ users: [], events: [] });
+    try {
+        const db = getDB();
+        const regex = { $regex: searchTerm, $options: "i" };
+
+        const users = await db.collection("users").find({
+            $or: [
+                { userName: regex },
+                { email: regex },
+                { firstName: regex },
+                { lastName: regex },
+            ]
+        }, { projection: { password: 0 } }).toArray();
+
+        const events = await db.collection("events").find({
+            $or: [
+                { "event.name": regex },
+                { "owner.name": regex },
+                { "description": regex },
+            ]
+        }).toArray();
+
+        res.json({ users, events });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.get("/:id", async (req, res) => {
     try {
         const db = getDB();
