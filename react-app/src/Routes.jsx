@@ -16,6 +16,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SavedEventsPage } from "./pages/SavedEventsPage";
 import { EditEventPage } from "./pages/EditEventPage";
+import { AnalyticsPage } from "./pages/AnalyticsPage";
 // add import for ProtectedRoute component
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -82,6 +83,14 @@ export const Routes = () => {
           element={
             <ProtectedRoute>
               <SavedEventsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
             </ProtectedRoute>
           }
         />

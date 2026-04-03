@@ -1,0 +1,97 @@
+.analytics-page-body {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.analytics-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0 2rem;
+}
+
+.analytics-content h1 {
+  margin-bottom: 1rem;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.analytics-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.analytics-card h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.25rem 0;
+  color: #1f2937;
+}
+
+.analytics-subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+}
+
+.analytics-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  padding: 0.5rem 1.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  border-color: #9b5cf6;
+  color: #9b5cf6;
+}
+
+.tab-btn.active {
+  background: #9b5cf6;
+  border-color: #9b5cf6;
+  color: #fff;
+}
+
+.analytics-card:hover {
+  outline: 2px solid #9b5cf6;
+  outline-offset: 0px;
+}
+
+.no-data {
+  text-align: center;
+  color: #9ca3af;
+  padding: 3rem 0;
+}
+
+@media (max-width: 900px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .analytics-page-body {
+    flex-direction: column;
+  }
+
+  .analytics-content {
+    padding: 0 1rem;
+  }
+}
