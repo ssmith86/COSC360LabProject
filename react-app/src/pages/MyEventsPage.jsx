@@ -18,8 +18,8 @@ export const MyEventsPage = () => {
 
   // implement expansion and collapsion
   const [upcomingExpanded, setUpcomingExpanded] = useState(true);
-  const [myEventsExpanded, setMyEventsExpanded] = useState(true);
-  const [savedExpanded, setSavedExpanded] = useState(true);
+  const [myEventsExpanded, setMyEventsExpanded] = useState(false);
+  const [savedExpanded, setSavedExpanded] = useState(false);
 
   // TODO in the future: our sample data are mainly on default user Sam Smith, id 123456
   // we'll have to replace this with actual logged in user information in the future
