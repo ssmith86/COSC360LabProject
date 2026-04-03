@@ -17,6 +17,8 @@ export const AdministrationDashboard = () => {
     isBanned: false,
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const [userFilters, setUserFilters] = useState({ active: true, banned: true, admin: true, user: true });
+  const [eventFilters, setEventFilters] = useState({ byName: true, byOwner: true, byDate: true });
 
   const handleSearch = async (e) => {
     const term = e.target.value;
@@ -114,7 +116,15 @@ export const AdministrationDashboard = () => {
           />
           {searchTerm && (
             <>
-              <h2>Users ({users.length})</h2>
+              <h2>Users ({users.filter(u => (userFilters.active && !u.isBanned) || (userFilters.banned && u.isBanned)).filter(u => (userFilters.admin && u.isAdmin) || (userFilters.user && !u.isAdmin)).length})</h2>
+              <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '0.5rem', flexWrap: 'wrap', alignItems: 'center', fontSize: '0.9rem' }}>
+                <span style={{ fontWeight: 'bold' }}>Status:</span>
+                <label><input type="checkbox" checked={userFilters.active} onChange={() => setUserFilters(f => ({ ...f, active: !f.active }))} /> Active</label>
+                <label><input type="checkbox" checked={userFilters.banned} onChange={() => setUserFilters(f => ({ ...f, banned: !f.banned }))} /> Banned</label>
+                <span style={{ fontWeight: 'bold', marginLeft: '0.5rem' }}>Role:</span>
+                <label><input type="checkbox" checked={userFilters.admin} onChange={() => setUserFilters(f => ({ ...f, admin: !f.admin }))} /> Admin</label>
+                <label><input type="checkbox" checked={userFilters.user} onChange={() => setUserFilters(f => ({ ...f, user: !f.user }))} /> User</label>
+              </div>
               <table className="users-table">
                 <thead>
                   <tr>
@@ -126,7 +136,10 @@ export const AdministrationDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user) => (
+                  {users
+                    .filter(u => (userFilters.active && !u.isBanned) || (userFilters.banned && u.isBanned))
+                    .filter(u => (userFilters.admin && u.isAdmin) || (userFilters.user && !u.isAdmin))
+                    .map((user) => (
                     <tr key={user._id}>
                       <td>{user.userName}</td>
                       <td>{user.email}</td>
@@ -159,21 +172,27 @@ export const AdministrationDashboard = () => {
               </table>
 
               <h2>Events ({events.length})</h2>
+              <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '0.5rem', flexWrap: 'wrap', alignItems: 'center', fontSize: '0.9rem' }}>
+                <span style={{ fontWeight: 'bold' }}>Show columns:</span>
+                <label><input type="checkbox" checked={eventFilters.byName} onChange={() => setEventFilters(f => ({ ...f, byName: !f.byName }))} /> Event Name</label>
+                <label><input type="checkbox" checked={eventFilters.byOwner} onChange={() => setEventFilters(f => ({ ...f, byOwner: !f.byOwner }))} /> Owner</label>
+                <label><input type="checkbox" checked={eventFilters.byDate} onChange={() => setEventFilters(f => ({ ...f, byDate: !f.byDate }))} /> Date</label>
+              </div>
               <table className="users-table">
                 <thead>
                   <tr>
-                    <th>Event Name</th>
-                    <th>Owner</th>
-                    <th>Date</th>
+                    {eventFilters.byName && <th>Event Name</th>}
+                    {eventFilters.byOwner && <th>Owner</th>}
+                    {eventFilters.byDate && <th>Date</th>}
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {events.map((event) => (
                     <tr key={event._id}>
-                      <td>{event.event?.name}</td>
-                      <td>{event.owner?.name}</td>
-                      <td>{event.event?.start_date}</td>
+                      {eventFilters.byName && <td>{event.event?.name}</td>}
+                      {eventFilters.byOwner && <td>{event.owner?.name}</td>}
+                      {eventFilters.byDate && <td>{event.event?.start_date}</td>}
                       <td>
                         <button
                           className="edit-button"
