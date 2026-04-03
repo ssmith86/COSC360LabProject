@@ -19,6 +19,16 @@ export const SettingsPage = () => {
     const [messageType, setMessageType] = useState('');
     const { refreshAvatar } = useContext(UserAvatarContext);
     const navigate = useNavigate();
+    const [notifications, setNotifications] = useState({
+        commentOnMyEvent: true,
+        favouritedEventUpdated: true,
+        favouritedEventDeleted: true,
+        newEventInMyArea: true,
+        commentOnCommentedEvent: true,
+        attendingEventCancelled: true,
+        newEventInFollowedCategory: true,
+    })
+
 
     // on load, fetch the user's existing avatar so we can display it
     useEffect(() => {
@@ -29,6 +39,24 @@ export const SettingsPage = () => {
                 setCurrentAvatar(data.avatar || '');
             });
     }, [userId]);
+
+    // on submit for changing notifications, send the updated notification settings to the backend
+    const handleNotifications = async () => {
+        const res = await fetch("http://localhost:3001/api/users/" + userId + "/notifications", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(notifications)
+        });
+        if (res.ok) {
+            setMessage('Notification settings updated successfully');
+            setMessageType('success');
+        } else {
+            setMessage('Failed to update notification settings');
+            setMessageType('error');
+        }
+    };
 
     // when the user picks a file, store it and create a local preview URL
     const handleFileChange = (e) => {
@@ -143,7 +171,43 @@ export const SettingsPage = () => {
                             <button type="submit" className="profile-btn">Save Profile Picture</button>
                         </form>
                     </div>
-
+                    <div className="profile-section">
+                        <h2>Notification Settings</h2>
+                        <p> Select the notifications you want to receive:</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', rowGap: '0.75rem', columnGap: '1rem', marginBottom: '1rem' }}>
+                            <label style={{ display: 'contents' }}>
+                                <span>Someone comments on your event</span>
+                                <input type="checkbox" checked={notifications.commentOnMyEvent} onChange={() => setNotifications(prev => ({ ...prev, commentOnMyEvent: !prev.commentOnMyEvent }))} />
+                            </label>
+                            <label style={{ display: 'contents' }}>
+                                <span>An event you favourited is updated</span>
+                                <input type="checkbox" checked={notifications.favouritedEventUpdated} onChange={() => setNotifications(prev => ({ ...prev, favouritedEventUpdated: !prev.favouritedEventUpdated }))} />
+                            </label>
+                            <label style={{ display: 'contents' }}>
+                                <span>A new event is posted in your area</span>
+                                <input type="checkbox" checked={notifications.newEventInMyArea} onChange={() => setNotifications(prev => ({ ...prev, newEventInMyArea: !prev.newEventInMyArea }))} />
+                            </label>
+                            <label style={{ display: 'contents' }}>
+                                <span>An event you favourited is deleted</span>
+                                <input type="checkbox" checked={notifications.favouritedEventDeleted} onChange={() => setNotifications(prev => ({ ...prev, favouritedEventDeleted: !prev.favouritedEventDeleted }))} />
+                            </label>
+                            <label style={{ display: 'contents' }}>
+                                <span>Someone comments on an event you commented on</span>
+                                <input type="checkbox" checked={notifications.commentOnCommentedEvent} onChange={() => setNotifications(prev => ({ ...prev, commentOnCommentedEvent: !prev.commentOnCommentedEvent }))} />
+                            </label>
+                            <label style={{ display: 'contents' }}>
+                                <span>An event you are attending is cancelled</span>
+                                <input type="checkbox" checked={notifications.attendingEventCancelled} onChange={() => setNotifications(prev => ({ ...prev, attendingEventCancelled: !prev.attendingEventCancelled }))} />
+                            </label>
+                            <label style={{ display: 'contents' }}>
+                                <span>A new event is posted in a category you follow</span>
+                                <input type="checkbox" checked={notifications.newEventInFollowedCategory} onChange={() => setNotifications(prev => ({ ...prev, newEventInFollowedCategory: !prev.newEventInFollowedCategory }))} />
+                            </label>
+                        </div>
+                        <button onClick={handleNotifications} className="profile-btn">
+                            Save Notification Settings
+                        </button>
+                    </div>
                     <div className="profile-section">
                         <h2>Delete Account</h2>
                         <p>This will permanently delete your account and cannot be undone.</p>
