@@ -12,6 +12,8 @@ export default function UserProfileIconButton(){
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('isAdmin');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('firstName');
         navigate('/');
     };
 
