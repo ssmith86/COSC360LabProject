@@ -168,18 +168,35 @@ router.get("/user-growth", async (req, res) => {
   }
 });
 
-// GET /api/analytics/event-summary
-// Returns total events, total saves, and new events in the given period
-router.get("/event-summary", async (req, res) => {
+// GET /api/analytics/event-total-summary
+// Returns fixed event totals for admin summary cards
+router.get("/event-total-summary", async (req, res) => {
+  try {
+    const db = getDB();
+
+    const totalEvents = await db.collection("events").countDocuments();
+    const totalSaves = await db.collection("savedEvents").countDocuments();
+    const hasComments = (await db.listCollections({ name: "comments" }).toArray()).length > 0;
+    let totalComments = null;
+    if (hasComments) {
+      totalComments = await db.collection("comments").countDocuments();
+    }
+
+    res.json({ totalEvents, totalSaves, totalComments });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/analytics/event-period-summary
+// Returns event activity metrics within the requested date range
+router.get("/event-period-summary", async (req, res) => {
   try {
     const db = getDB();
     const { from, to } = parseDateRange(req.query);
 
-    const totalEvents = await db.collection("events").countDocuments();
-    const totalSaves = await db.collection("savedEvents").countDocuments();
-
     const events = await db.collection("events").find({}).toArray();
-    const newInPeriod = events.filter((e) => {
+    const eventsInPeriod = events.filter((e) => {
       const d = e.event?.start_date;
       if (!d) return false;
       const date = new Date(d);
@@ -212,7 +229,7 @@ router.get("/event-summary", async (req, res) => {
       }).length;
     }
 
-    res.json({ totalEvents, totalSaves, newInPeriod, savesInPeriod, commentsInPeriod });
+    res.json({ eventsInPeriod, savesInPeriod, commentsInPeriod });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -283,9 +300,9 @@ router.get("/top-creators", async (req, res) => {
   }
 });
 
-// GET /api/analytics/user-summary (admin)
-// Returns total users, active users, banned users (fixed totals)
-router.get("/user-summary", async (req, res) => {
+// GET /api/analytics/user-total-summary (admin)
+// Returns fixed user totals for admin summary cards
+router.get("/user-total-summary", async (req, res) => {
   try {
     const db = getDB();
     const users = await db.collection("users").find({}).toArray();
@@ -299,32 +316,35 @@ router.get("/user-summary", async (req, res) => {
   }
 });
 
-// GET /api/analytics/user-activity-breakdown (admin)
-// Returns active (logged in within range), inactive (last login outside range), banned users
-router.get("/user-activity-breakdown", async (req, res) => {
+// GET /api/analytics/user-period-summary (admin)
+// Returns user activity metrics within the requested date range
+router.get("/user-period-summary", async (req, res) => {
   try {
     const db = getDB();
     const { from, to } = parseDateRange(req.query);
     const users = await db.collection("users").find({}).toArray();
 
-    let activeInRange = 0;
-    let inactiveInRange = 0;
-    let banned = 0;
+    let activeInPeriod = 0;
+    let inactiveInPeriod = 0;
+    let bannedInPeriod = 0;
 
     users.forEach((u) => {
       if (u.isBanned) {
-        banned++;
+        const bannedAt = u.bannedAt ? new Date(u.bannedAt) : null;
+        if (bannedAt && (!from || bannedAt >= from) && (!to || bannedAt <= to)) {
+          bannedInPeriod++;
+        }
         return;
       }
       const lastLogin = u.lastLogin ? new Date(u.lastLogin) : null;
       if (lastLogin && (!from || lastLogin >= from) && (!to || lastLogin <= to)) {
-        activeInRange++;
+        activeInPeriod++;
       } else {
-        inactiveInRange++;
+        inactiveInPeriod++;
       }
     });
 
-    res.json({ activeInRange, inactiveInRange, banned });
+    res.json({ activeInPeriod, inactiveInPeriod, bannedInPeriod });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
