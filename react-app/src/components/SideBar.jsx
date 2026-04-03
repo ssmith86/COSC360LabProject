@@ -10,7 +10,8 @@ export function SideBar() {
   const location = useLocation();
   const[collapsed, setCollapsed] = useState(false);
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
-  const analyticsPaths = ['/analytics', '/admin-analytics', '/insights'];
+  const analyticsPath = isAdmin ? '/admin-analytics' : '/user-insights';
+  const analyticsPaths = ['/admin-analytics', '/user-insights'];
 
   return (
     <nav className={collapsed ? "sidebar collapsed" : "sidebar"}>
@@ -34,7 +35,7 @@ export function SideBar() {
             <MdFavorite/>
             {!collapsed && <span>My Favourite Events</span>}
         </li>
-        <li className={analyticsPaths.includes(location.pathname) ? 'active' : ''} onClick={() => navigate('/analytics')}>
+        <li className={analyticsPaths.includes(location.pathname) ? 'active' : ''} onClick={() => navigate(analyticsPath)}>
             <MdBarChart/>
             {!collapsed && <span>Analytics</span>}
         </li>
