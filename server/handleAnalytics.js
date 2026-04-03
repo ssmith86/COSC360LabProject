@@ -9,12 +9,29 @@ function parseDateRange(query) {
   return { from, to };
 }
 
+// Helper: determine grouping granularity based on date range
+// <= 30 days → "day", > 30 days → "month"
+function getGranularity(from, to) {
+  if (!from || !to) return "month";
+  const diffMs = to.getTime() - from.getTime();
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+  return diffDays <= 30 ? "day" : "month";
+}
+
+function dateToKey(d, granularity) {
+  if (granularity === "day") {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
 // GET /api/analytics/event-trends
-// Returns event count grouped by month, filtered by date range
+// Returns event count grouped by day or month, filtered by date range
 router.get("/event-trends", async (req, res) => {
   try {
     const db = getDB();
     const { from, to } = parseDateRange(req.query);
+    const granularity = getGranularity(from, to);
     const events = await db.collection("events").find({}).toArray();
 
     const counts = {};
@@ -24,15 +41,15 @@ router.get("/event-trends", async (req, res) => {
       const d = new Date(date);
       if (from && d < from) return;
       if (to && d > to) return;
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const key = dateToKey(d, granularity);
       counts[key] = (counts[key] || 0) + 1;
     });
 
     const result = Object.entries(counts)
-      .map(([month, count]) => ({ month, count }))
-      .sort((a, b) => a.month.localeCompare(b.month));
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
-    res.json(result);
+    res.json({ granularity, data: result });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -121,11 +138,12 @@ router.get("/location-distribution", async (req, res) => {
 });
 
 // GET /api/analytics/user-growth (admin)
-// Returns new user registrations grouped by month, filtered by date range
+// Returns new user registrations grouped by day or month, filtered by date range
 router.get("/user-growth", async (req, res) => {
   try {
     const db = getDB();
     const { from, to } = parseDateRange(req.query);
+    const granularity = getGranularity(from, to);
     const users = await db.collection("users").find({}).toArray();
 
     const counts = {};
@@ -135,15 +153,15 @@ router.get("/user-growth", async (req, res) => {
       const d = new Date(date);
       if (from && d < from) return;
       if (to && d > to) return;
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const key = dateToKey(d, granularity);
       counts[key] = (counts[key] || 0) + 1;
     });
 
     const result = Object.entries(counts)
-      .map(([month, count]) => ({ month, count }))
-      .sort((a, b) => a.month.localeCompare(b.month));
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
-    res.json(result);
+    res.json({ granularity, data: result });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -200,11 +218,12 @@ router.get("/event-summary", async (req, res) => {
 });
 
 // GET /api/analytics/save-trends
-// Returns save count grouped by month, filtered by date range
+// Returns save count grouped by day or month, filtered by date range
 router.get("/save-trends", async (req, res) => {
   try {
     const db = getDB();
     const { from, to } = parseDateRange(req.query);
+    const granularity = getGranularity(from, to);
     const saves = await db.collection("savedEvents").find({}).toArray();
 
     const counts = {};
@@ -214,15 +233,15 @@ router.get("/save-trends", async (req, res) => {
       const d = new Date(date);
       if (from && d < from) return;
       if (to && d > to) return;
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const key = dateToKey(d, granularity);
       counts[key] = (counts[key] || 0) + 1;
     });
 
     const result = Object.entries(counts)
-      .map(([month, count]) => ({ month, count }))
-      .sort((a, b) => a.month.localeCompare(b.month));
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
-    res.json(result);
+    res.json({ granularity, data: result });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -50,11 +50,14 @@ export const AnalyticsPage = () => {
 
   // Filtered data
   const [eventTrends, setEventTrends] = useState([]);
+  const [eventGranularity, setEventGranularity] = useState("month");
   const [saveTrends, setSaveTrends] = useState([]);
+  const [saveGranularity, setSaveGranularity] = useState("month");
   const [popularEvents, setPopularEvents] = useState([]);
   const [topCreators, setTopCreators] = useState([]);
   const [locationDist, setLocationDist] = useState([]);
   const [userGrowth, setUserGrowth] = useState([]);
+  const [userGrowthGranularity, setUserGrowthGranularity] = useState("month");
   const [newInPeriod, setNewInPeriod] = useState(0);
   const [savesInPeriod, setSavesInPeriod] = useState(0);
   const [commentsInPeriod, setCommentsInPeriod] = useState(null);
@@ -83,8 +86,14 @@ export const AnalyticsPage = () => {
     const { from, to } = getRange();
     const qs = buildQuery(from, to);
 
-    fetch(`${API}/event-trends${qs}`).then((r) => r.json()).then(setEventTrends).catch(() => {});
-    fetch(`${API}/save-trends${qs}`).then((r) => r.json()).then(setSaveTrends).catch(() => {});
+    fetch(`${API}/event-trends${qs}`).then((r) => r.json()).then((d) => {
+      setEventTrends(d.data || []);
+      setEventGranularity(d.granularity || "month");
+    }).catch(() => {});
+    fetch(`${API}/save-trends${qs}`).then((r) => r.json()).then((d) => {
+      setSaveTrends(d.data || []);
+      setSaveGranularity(d.granularity || "month");
+    }).catch(() => {});
     fetch(`${API}/popular-events${qs}`).then((r) => r.json()).then(setPopularEvents).catch(() => {});
     fetch(`${API}/top-creators${qs}`).then((r) => r.json()).then(setTopCreators).catch(() => {});
     fetch(`${API}/location-distribution${qs}`).then((r) => r.json()).then(setLocationDist).catch(() => {});
@@ -95,7 +104,10 @@ export const AnalyticsPage = () => {
     }).catch(() => {});
 
     if (isAdmin) {
-      fetch(`${API}/user-growth${qs}`).then((r) => r.json()).then(setUserGrowth).catch(() => {});
+      fetch(`${API}/user-growth${qs}`).then((r) => r.json()).then((d) => {
+        setUserGrowth(d.data || []);
+        setUserGrowthGranularity(d.granularity || "month");
+      }).catch(() => {});
       fetch(`${API}/user-activity-breakdown${qs}`).then((r) => r.json()).then(setUserActivity).catch(() => {});
     }
   }, [getRange, isAdmin]);
@@ -240,12 +252,12 @@ export const AnalyticsPage = () => {
             <div className="analytics-grid">
               <div className="analytics-card">
                 <h2>Event Trends</h2>
-                <p className="analytics-subtitle">Events created per month</p>
+                <p className="analytics-subtitle">Events created per {eventGranularity}</p>
                 {eventTrends.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={eventTrends}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
                       <Line type="monotone" dataKey="count" stroke="#9b5cf6" strokeWidth={2} name="Events" />
@@ -258,12 +270,12 @@ export const AnalyticsPage = () => {
 
               <div className="analytics-card">
                 <h2>Save Activity</h2>
-                <p className="analytics-subtitle">User saves per month</p>
+                <p className="analytics-subtitle">User saves per {saveGranularity}</p>
                 {saveTrends.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={saveTrends}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
                       <Line type="monotone" dataKey="count" stroke="#7c3aed" strokeWidth={2} name="Saves" />
@@ -347,12 +359,12 @@ export const AnalyticsPage = () => {
             <div className="analytics-grid">
               <div className="analytics-card">
                 <h2>User Growth</h2>
-                <p className="analytics-subtitle">New registrations per month</p>
+                <p className="analytics-subtitle">New registrations per {userGrowthGranularity}</p>
                 {userGrowth.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={userGrowth}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
                       <Line type="monotone" dataKey="count" stroke="#7c3aed" strokeWidth={2} name="New Users" />
