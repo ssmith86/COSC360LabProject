@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css files/EventCreationForm.css";
+import { EVENT_CATEGORIES } from "../constants/eventCategories";
 
 function EventCreationForm() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ function EventCreationForm() {
   });
   // replace orignal image, and add a new image useState
   const [imageFile, setImageFile] = useState(null);
+  // add a new category state variable
+  const [category, setCategory] = useState("");
 
   // Add the current time to ensure user cannot choose start_date before current date time
   const now = new Date().toISOString().slice(0, 16);
@@ -112,6 +115,12 @@ function EventCreationForm() {
       return;
     }
 
+    // add validation check for category
+    if (!category) {
+      setResponseMessage("Please select an event category.");
+      return;
+    }
+
     if (form.description.trim().length < 10) {
       setResponseMessage("Description must be at least 10 characters.");
       return;
@@ -178,6 +187,7 @@ function EventCreationForm() {
     eventData.append("province", form.province);
     eventData.append("country", form.country);
     eventData.append("description", form.description);
+    eventData.append("category", category);
     eventData.append("userId", localStorage.getItem("userId") || "");
     eventData.append(
       "owner_name",
@@ -321,6 +331,21 @@ function EventCreationForm() {
             onChange={handleChange}
             placeholder="Canada"
           />
+        </div>
+
+        <div>
+          <label>Category</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value=""> Select a Category </option>
+            {EVENT_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="event-creation-field">

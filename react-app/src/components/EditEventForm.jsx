@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // We re-use the EventCreationForm.css to align and simplify design
 import "./css files/EventCreationForm.css";
+// import category constants
+import { EVENT_CATEGORIES } from "../constants/eventCategories";
 
 export function EditEventForm({
   eventId,
@@ -20,6 +22,7 @@ export function EditEventForm({
     city: initialData?.event?.location?.city || "",
     province: initialData?.event?.location?.province || "",
     country: initialData?.event?.location?.country || "",
+    category: initialData?.event?.category || "",
     description: initialData?.description || "",
   });
 
@@ -85,6 +88,12 @@ export function EditEventForm({
 
     if (form.country.trim().length < 2) {
       setResponseMessage("Country must be at least 2 characters.");
+      return;
+    }
+
+    // add validation check for category
+    if (!form.category) {
+      setResponseMessage("Please select an event category.");
       return;
     }
 
@@ -159,6 +168,7 @@ export function EditEventForm({
     formData.append("event.location.city", form.city);
     formData.append("event.location.province", form.province);
     formData.append("event.location.country", form.country);
+    formData.append("event.category", form.category);
     formData.append("description", form.description);
     // only append image if user selected a new file
     if (imageFile) {
@@ -291,6 +301,22 @@ export function EditEventForm({
               onChange={handleChange}
               placeholder="Canada"
             />
+          </div>
+
+          <div>
+            <label>Category</label>
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+            >
+              <option value=""> Select a Category </option>
+              {EVENT_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="event-creation-field">

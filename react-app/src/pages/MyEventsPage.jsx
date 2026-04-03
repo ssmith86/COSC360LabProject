@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { EventGrid } from "../components/EventGrid";
 import { useNavigate } from "react-router-dom";
 import "./MyEventsPage.css";
+import { CategoryFilter } from "../components/CategoryFilter";
 
 export const MyEventsPage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export const MyEventsPage = () => {
   const [savedEvents, setSavedEvents] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   // TODO in the future: our sample data are mainly on default user Sam Smith, id 123456
   // we'll have to replace this with actual logged in user information in the future
@@ -136,6 +138,12 @@ export const MyEventsPage = () => {
     navigate(`/edit-event/${eventId}`);
   };
 
+  // add filter helper function for category filter
+  const filterByCategory = (events) => {
+    if (selectedCategories.length === 0) return events;
+    return events.filter((e) => selectedCategories.includes(e.event?.category));
+  };
+
   return (
     <div className="page-wrapper">
       <NavigationBar />
@@ -153,6 +161,12 @@ export const MyEventsPage = () => {
               setHasSearched={setHasSearched}
             />
           </div>
+
+          {/* Category filter bar */}
+          <CategoryFilter
+            selectedCategories={selectedCategories}
+            onCategoryChange={setSelectedCategories}
+          />
 
           {/* Display search result if the user has searched events */}
           {hasSearched && (
@@ -179,7 +193,7 @@ export const MyEventsPage = () => {
             <div className="events-scroll-container">
               {/* Display and render upcoming event via a function renderEventsGrid */}
               <EventGrid
-                events={upcomingEvents}
+                events={filterByCategory(upcomingEvents)}
                 savedEventIds={savedEventIds}
                 onSave={handleSave}
                 onDelete={handleDelete}
@@ -205,7 +219,7 @@ export const MyEventsPage = () => {
             <div className="events-scroll-container">
               {/* Display and render my event via a function renderEventsGrid */}
               <EventGrid
-                events={myEvents}
+                events={filterByCategory(myEvents)}
                 savedEventIds={savedEventIds}
                 onSave={handleSave}
                 onDelete={handleDelete}
@@ -221,7 +235,7 @@ export const MyEventsPage = () => {
             <div className="events-scroll-container">
               {/* Display and render my saved event via a function renderEventsGrid */}
               <EventGrid
-                events={savedEvents}
+                events={filterByCategory(savedEvents)}
                 isSavedMode={true}
                 onSave={handleSave}
                 onDelete={handleDelete}
