@@ -31,6 +31,7 @@ export const HomePage = () => {
               startDateTime={item.event.start_date}
               endDateTime={item.event.end_date}
               location={`${item.event.location.street}, ${item.event.location.city}`}
+              status={item.status}
               isSaved={false}
               isOwner={false}
               isAdmin={isAdmin}

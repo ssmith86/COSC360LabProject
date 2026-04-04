@@ -111,6 +111,32 @@ router.put("/:eventId", upload.single("image"), async function (req, res) {
   }
 });
 
+// handle status update (cancel/uncancel) on events
+router.patch("/:eventId", async function (req, res) {
+  const eventId = req.params.eventId;
+  const { status } = req.body;
+
+  try {
+    const db = getDB();
+    const update = status === null
+      ? { $unset: { status: "" } }
+      : { $set: { status } };
+
+    const result = await db.collection("events").updateOne(
+      { _id: new ObjectId(eventId) },
+      update
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Event not found." });
+    }
+
+    res.status(200).json({ message: "Event status updated successfully." });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // handle delete on events
 router.delete("/:eventId", async function (req, res) {
   const eventId = req.params.eventId;

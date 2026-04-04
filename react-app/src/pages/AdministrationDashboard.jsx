@@ -2,7 +2,7 @@ import { NavigationBar } from "../components/NavigationBar";
 import { SideBar } from "../components/SideBar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdEdit, MdDelete } from "react-icons/md";
+import { MdEdit, MdDelete, MdCancel, MdReplay } from "react-icons/md";
 import "./AdministrationDashboard.css";
 
 export const AdministrationDashboard = () => {
@@ -40,6 +40,21 @@ export const AdministrationDashboard = () => {
     const res = await fetch(`http://localhost:3001/api/events/${eventId}`, { method: "DELETE" });
     if (res.ok) {
       setEvents(events.filter((e) => e._id !== eventId));
+    }
+  };
+
+  const handleToggleCancelEvent = async (event) => {
+    const isCancelled = event.status === "cancelled";
+    const action = isCancelled ? "uncancel" : "cancel";
+    if (!window.confirm(`Are you sure you want to ${action} this event?`)) return;
+    const newStatus = isCancelled ? null : "cancelled";
+    const res = await fetch(`http://localhost:3001/api/events/${event._id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (res.ok) {
+      setEvents(events.map((e) => e._id === event._id ? { ...e, status: newStatus } : e));
     }
   };
 
@@ -83,6 +98,12 @@ export const AdministrationDashboard = () => {
       setUsers(
         users.map((u) => (u._id === userToEdit._id ? { ...u, ...body } : u)),
       );
+      // if ban status changed, re-fetch events so cancelled status updates immediately
+      if (body.isBanned !== (userToEdit.isBanned || false) && searchTerm.trim()) {
+        fetch(`http://localhost:3001/api/users/search?q=${encodeURIComponent(searchTerm)}`)
+          .then(r => r.json())
+          .then(data => setEvents(Array.isArray(data.events) ? data.events : []));
+      }
       setUserToEdit(null);
     }
   };
@@ -192,7 +213,15 @@ export const AdministrationDashboard = () => {
                     <tr key={event._id}>
                       {eventFilters.byName && <td>{event.event?.name}</td>}
                       {eventFilters.byOwner && <td>{event.owner?.name}</td>}
-                      {eventFilters.byDate && <td>{event.event?.start_date}</td>}
+                      {eventFilters.byDate && (
+                        <td>
+                          {event.status === "cancelled" ? (
+                            <span style={{ background: "#dc2626", color: "white", borderRadius: "4px", padding: "2px 8px", fontSize: "0.75rem", fontWeight: 600 }}>Cancelled</span>
+                          ) : (
+                            event.event?.start_date
+                          )}
+                        </td>
+                      )}
                       <td>
                         <button
                           className="edit-button"
@@ -201,8 +230,16 @@ export const AdministrationDashboard = () => {
                           <MdEdit />
                         </button>
                         <button
+                          className={event.status === "cancelled" ? "uncancel-button" : "cancel-button"}
+                          onClick={() => handleToggleCancelEvent(event)}
+                          title={event.status === "cancelled" ? "Uncancel event" : "Cancel event"}
+                        >
+                          {event.status === "cancelled" ? <MdReplay /> : <MdCancel />}
+                        </button>
+                        <button
                           className="delete-button"
                           onClick={() => handleDeleteEvent(event._id)}
+                          title="Delete event"
                         >
                           <MdDelete />
                         </button>

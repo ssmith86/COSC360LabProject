@@ -37,6 +37,7 @@ const EventCard = ({
   endDateTime,
   location,
   category,
+  status,
   isSaved,
   isOwner,
   isAdmin,
@@ -77,6 +78,11 @@ const EventCard = ({
 
       {/* Display the event category */}
       {category && <span className="event-category-badge">{category}</span>}
+
+      {/* Display cancelled badge if event is cancelled */}
+      {status === "cancelled" && (
+        <span className="event-cancelled-badge">Cancelled</span>
+      )}
 
       {/* Display event's general information */}
       <div className="event-info-section">

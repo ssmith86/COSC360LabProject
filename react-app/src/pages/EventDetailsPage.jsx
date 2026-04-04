@@ -18,6 +18,7 @@ export const EventDetailsPage = () => {
   // visibility
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   const currentUserId = localStorage.getItem("userId");
+  const isBanned = localStorage.getItem("isBanned") === "true";
 
   // fetch event data from backend when the page is loaded
   useEffect(() => {
@@ -78,7 +79,7 @@ export const EventDetailsPage = () => {
   // get event and owner info from fetched data
   const event = eventData?.event;
   const owner = eventData?.owner;
-  const isOwner = currentUserId === owner?.id?.toString();
+  const isOwner = !isBanned && currentUserId === owner?.id?.toString();
 
   // format date string to display to user
   const formatDate = (dateStr) => {
@@ -109,12 +110,22 @@ export const EventDetailsPage = () => {
           >
             ← Back
           </button>
+          {isBanned && (
+            <div className="banned-banner">
+              Your account has been banned. You can browse events but cannot perform any actions.
+            </div>
+          )}
           <div className="event-details-card">
             <img
               src={imageUrl}
               alt={`An image of the event: ${event?.name}`}
               className="event-details-image"
             />
+            {eventData?.status === "cancelled" && (
+              <div className="event-cancelled-banner">
+                Sorry, this event was cancelled.
+              </div>
+            )}
             <div className="event-details-body">
               <h1 className="event-details-title">{event?.name}</h1>
 

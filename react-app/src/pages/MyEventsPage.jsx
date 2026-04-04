@@ -26,6 +26,7 @@ export const MyEventsPage = () => {
   // update with logic to fetch current user to replace hard code
   // const currentUser = { name: "Sam Smith", id: 123456 };
   const currentUserId = localStorage.getItem("userId");
+  const isBanned = localStorage.getItem("isBanned") === "true";
   // keep using name "Sam Smith"
   // TODO: need to implement query by user Id to replace this hard code
   // const currentUser = { name: "Sam Smith", id: currentUserId };
@@ -238,7 +239,8 @@ export const MyEventsPage = () => {
                 </button>
                 <button
                   className="create-event-btn"
-                  onClick={() => navigate("/new-event")}
+                  onClick={() => !isBanned && navigate("/new-event")}
+                  disabled={isBanned}
                 >
                   + Create Event
                 </button>
