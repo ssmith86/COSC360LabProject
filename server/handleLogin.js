@@ -33,6 +33,7 @@ router.post("/", async (req, res) => {
     res.status(200).json({
       message: `Welcome back, ${user.firstName}!`,
       isAdmin: user.isAdmin,
+      isBanned: user.isBanned || false,
       // return user._id (mongodb object id) for front-end handling
       userId: user._id.toString(),
       // add return of user first name in response

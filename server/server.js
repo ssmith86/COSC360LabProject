@@ -5,6 +5,7 @@ const path = require("path");
 // connect to MongoDB using functionality in db.js file
 const { connectDB } = require("./db");
 require("dotenv").config();
+const checkBanned = require("./checkBanned");
 
 const app = express();
 const port = 3001;
@@ -48,6 +49,11 @@ app.use("/api/login", handleLogin);
 app.use("/api/users", handleUsers);
 app.use("/api/events", handleEventActions);
 app.use("/api/analytics", handleAnalytics);
+
+// routes that are blocked if user is banned
+app.use("/api/savedevents", checkBanned);
+app.use("/api/events", checkBanned);
+app.use("/api/createEventsForm", checkBanned);
 
 // Connect to MongoDB and start
 connectDB()
