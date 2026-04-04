@@ -25,3 +25,88 @@
   gap: 0.75rem;
 }
 
+.navbar-bell {
+  position: relative;
+}
+
+.bell-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #4f46e5;
+  position: relative;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.bell-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: #dc2626;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 999px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  min-width: 280px;
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.notifications-title {
+  font-weight: 600;
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+.notifications-empty {
+  padding: 1rem;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.notification-item {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.notification-item.unread {
+  background: #eff6ff;
+  font-weight: 500;
+}
+
+.banned-banner {
+  background: #dc2626;
+  color: white;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-weight: 500;
+  width: 100%;
+}
+

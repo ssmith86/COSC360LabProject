@@ -1,11 +1,12 @@
 import { NavigationBar } from "../components/NavigationBar";
 import { SearchBar } from "../components/SearchBar";
 import { SideBar } from "../components/SideBar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { EventGrid } from "../components/EventGrid";
 import { useNavigate } from "react-router-dom";
 import "./MyEventsPage.css";
 import { CategoryFilter } from "../components/CategoryFilter";
+import { UserAvatarContext } from "../context/UserAvatarContext";
 
 export const MyEventsPage = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export const MyEventsPage = () => {
   // update with logic to fetch current user to replace hard code
   // const currentUser = { name: "Sam Smith", id: 123456 };
   const currentUserId = localStorage.getItem("userId");
+  const { isBanned } = useContext(UserAvatarContext);
   // keep using name "Sam Smith"
   // TODO: need to implement query by user Id to replace this hard code
   // const currentUser = { name: "Sam Smith", id: currentUserId };
@@ -238,7 +240,8 @@ export const MyEventsPage = () => {
                 </button>
                 <button
                   className="create-event-btn"
-                  onClick={() => navigate("/new-event")}
+                  onClick={() => !isBanned && navigate("/new-event")}
+                  disabled={isBanned}
                 >
                   + Create Event
                 </button>

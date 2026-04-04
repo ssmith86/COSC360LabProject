@@ -1,10 +1,11 @@
 import { NavigationBar } from "../components/NavigationBar";
 import { SideBar } from "../components/SideBar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { EventGrid } from "../components/EventGrid";
 import { useNavigate } from "react-router-dom";
 import "./MyEventsPage.css";
 import { CategoryFilter } from "../components/CategoryFilter";
+import { UserAvatarContext } from "../context/UserAvatarContext";
 
 // This is a downsized version of "MyEventsPage"
 // We keep some of the functionalities so user can
@@ -17,6 +18,7 @@ export const SavedEventsPage = () => {
   const [savedExpanded, setSavedExpanded] = useState(true);
 
   const currentUserId = localStorage.getItem("userId");
+  const { isBanned } = useContext(UserAvatarContext);
   const savedEventIds = savedEvents.map((event) => event._id?.toString());
 
   const fetchSaved = () => {
@@ -108,7 +110,8 @@ export const SavedEventsPage = () => {
                 </button>
                 <button
                   className="create-event-btn"
-                  onClick={() => navigate("/new-event")}
+                  onClick={() => !isBanned && navigate("/new-event")}
+                  disabled={isBanned}
                 >
                   + Create Event
                 </button>

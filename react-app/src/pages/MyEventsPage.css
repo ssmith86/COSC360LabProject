@@ -94,6 +94,11 @@
   background-color: #4338ca;
 }
 
+.create-event-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
 .collapse-btn {
   background: none;
   border: none;

@@ -26,6 +26,7 @@ export default function LoginForm() {
     setResponseMessage(data.message);
     if (response.ok) {
       // set localStorage before navigate so userId is always correct when next page loads
+      localStorage.setItem("isBanned", data.isBanned ? "true" : "false");
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userId", data.userId);
       localStorage.setItem("firstName", data.firstName);

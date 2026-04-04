@@ -127,8 +127,47 @@ router.patch("/:id", async (req, res) => {
             updates.isBanned = isBanned;
             if (isBanned && !existingUser.isBanned) {
                 updates.bannedAt = new Date();
+
+                // Cancel all events owned by this user
+                const userEvents = await db.collection("events")
+                    .find({ "owner.id": userId.toString() })
+                    .toArray();
+
+                if (userEvents.length > 0) {
+                    const eventIds = userEvents.map(e => e._id.toString());
+
+                    await db.collection("events").updateMany(
+                        { "owner.id": userId.toString() },
+                        { $set: { status: "cancelled" } }
+                    );
+
+                    // Find all users who saved these events (excluding the banned user)
+                    const savedRecords = await db.collection("savedEvents").find({
+                        eventId: { $in: eventIds },
+                        userId: { $ne: userId.toString() }
+                    }).toArray();
+
+                    if (savedRecords.length > 0) {
+                        const notifications = savedRecords.map(record => {
+                            const event = userEvents.find(e => e._id.toString() === record.eventId);
+                            return {
+                                userId: record.userId,
+                                message: `The event "${event?.event?.name || "An event"}" has been cancelled.`,
+                                read: false,
+                                createdAt: new Date()
+                            };
+                        });
+                        await db.collection("notifications").insertMany(notifications);
+                    }
+                }
             } else if (!isBanned && existingUser.isBanned) {
                 updates.bannedAt = null;
+
+                // Uncancel all events that were cancelled due to this user being banned
+                await db.collection("events").updateMany(
+                    { "owner.id": userId.toString(), status: "cancelled" },
+                    { $unset: { status: "" } }
+                );
             }
         }
 

@@ -14,6 +14,7 @@ export default function UserProfileIconButton(){
         localStorage.removeItem('isAdmin');
         localStorage.removeItem('userId');
         localStorage.removeItem('firstName');
+        localStorage.removeItem('isBanned');
         navigate('/');
     };
 
