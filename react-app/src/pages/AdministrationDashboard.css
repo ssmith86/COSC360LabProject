@@ -33,6 +33,21 @@
     color: #9B5CF6;
 }
 
+.edit-button, .delete-button, .cancel-button, .uncancel-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.edit-button { color: #9B5CF6; }
+.delete-button { color: #9B5CF6; }
+.cancel-button { color: #f97316; }
+.uncancel-button { color: #16a34a; }
+
 .admin-page-body {
     display: flex;
     flex-direction: row;

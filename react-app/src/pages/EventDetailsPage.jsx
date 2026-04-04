@@ -111,8 +111,8 @@ export const EventDetailsPage = () => {
             ← Back
           </button>
           {isBanned && (
-            <div className="event-details-main">
-              Your Account has been banned
+            <div className="banned-banner">
+              Your account has been banned. You can browse events but cannot perform any actions.
             </div>
           )}
           <div className="event-details-card">
@@ -121,6 +121,11 @@ export const EventDetailsPage = () => {
               alt={`An image of the event: ${event?.name}`}
               className="event-details-image"
             />
+            {eventData?.status === "cancelled" && (
+              <div className="event-cancelled-banner">
+                Sorry, this event was cancelled.
+              </div>
+            )}
             <div className="event-details-body">
               <h1 className="event-details-title">{event?.name}</h1>
 

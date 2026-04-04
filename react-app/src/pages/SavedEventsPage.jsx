@@ -17,6 +17,7 @@ export const SavedEventsPage = () => {
   const [savedExpanded, setSavedExpanded] = useState(true);
 
   const currentUserId = localStorage.getItem("userId");
+  const isBanned = localStorage.getItem("isBanned") === "true";
   const savedEventIds = savedEvents.map((event) => event._id?.toString());
 
   const fetchSaved = () => {
@@ -108,7 +109,8 @@ export const SavedEventsPage = () => {
                 </button>
                 <button
                   className="create-event-btn"
-                  onClick={() => navigate("/new-event")}
+                  onClick={() => !isBanned && navigate("/new-event")}
+                  disabled={isBanned}
                 >
                   + Create Event
                 </button>
