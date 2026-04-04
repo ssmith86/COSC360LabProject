@@ -1,8 +1,9 @@
 import { NavigationBar } from "../components/NavigationBar";
 import { SideBar } from "../components/SideBar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./EventDetailsPage.css";
+import { UserAvatarContext } from "../context/UserAvatarContext";
 
 export const EventDetailsPage = () => {
   // get eventId from URL param
@@ -18,7 +19,7 @@ export const EventDetailsPage = () => {
   // visibility
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   const currentUserId = localStorage.getItem("userId");
-  const isBanned = localStorage.getItem("isBanned") === "true";
+  const { isBanned } = useContext(UserAvatarContext);
 
   // fetch event data from backend when the page is loaded
   useEffect(() => {
