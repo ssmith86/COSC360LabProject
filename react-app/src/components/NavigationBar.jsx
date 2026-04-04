@@ -4,13 +4,14 @@ import RegisterButton from './RegisterButton';
 import LoginButton from './LoginButton';
 import UserProfileIconButton from './UserProfileIconButton';
 import { useLocation } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { FaBell } from "react-icons/fa";
+import { UserAvatarContext } from "../context/UserAvatarContext";
 
 export function NavigationBar() {
     const location = useLocation();
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const isBanned = localStorage.getItem('isBanned') === 'true';
+    const { isBanned } = useContext(UserAvatarContext);
     const userId = localStorage.getItem('userId');
 
     const [notifications, setNotifications] = useState([]);
