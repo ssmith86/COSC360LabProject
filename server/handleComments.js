@@ -42,4 +42,33 @@ router.post("/", async (req, res) => {
   }
 });
 
+// DELETE /api/comments/:commentId
+router.delete("/:commentId", async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    if (!comment.parentCommentId) {
+      // root comment: hard delete with everything under it
+      await Comment.deleteMany({
+        $or: [
+          { _id: comment._id },
+          { parentCommentId: comment._id },
+        ],
+      });
+      res.json({ message: "Comment and replies deleted" });
+    } else {
+      // child comment: soft delete
+      comment.isDeleted = true;
+      comment.content = "";
+      await comment.save();
+      res.json({ message: "Comment marked as deleted" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
