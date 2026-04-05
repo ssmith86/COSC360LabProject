@@ -14,12 +14,12 @@ function parseDateRange(query) {
 }
 
 // Helper: determine grouping granularity based on date range
-// <= 30 days → "day", > 30 days → "month"
+// <= 31 days → "day", > 31 days → "month" (using 31 because 1M preset spans 30 days + end-of-day padding which is 23:59:59.999)
 function getGranularity(from, to) {
   if (!from || !to) return "month";
   const diffMs = to.getTime() - from.getTime();
   const diffDays = diffMs / (1000 * 60 * 60 * 24);
-  return diffDays <= 30 ? "day" : "month";
+  return diffDays <= 31 ? "day" : "month";
 }
 
 // Helper: convert a Date to a string key based on granularity
