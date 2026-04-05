@@ -45,10 +45,12 @@ router.post("/", upload.single("image"), async function (req, res) {
     const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
 
     // create event using mongoose Event model
+    const status = eventData.status || "published";
     const newEvent = await Event.create({
       title: eventData.event_name,
       description: eventData.description,
       category: eventData.category,
+      status: status,
       ownerId: eventData.userId,
       imageUrl: imagePath,
       startDate: eventData.start_date,
@@ -60,6 +62,8 @@ router.post("/", upload.single("image"), async function (req, res) {
         province: eventData.province,
         country: eventData.country,
       },
+      // set publishedAt when status is published
+      publishedAt: status === "published" ? new Date() : null,
     });
 
     console.log("New data event received: ", newEvent);

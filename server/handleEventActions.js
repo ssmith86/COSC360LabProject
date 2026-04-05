@@ -107,11 +107,18 @@ router.put("/:eventId", upload.single("image"), async function (req, res) {
 // handle status update (cancel/uncancel) on events
 router.patch("/:eventId", async function (req, res) {
   const { status } = req.body;
+  const newStatus = status || "published";
 
   try {
+    const updates = { status: newStatus };
+    // set publishedAt when status changes to published
+    if (newStatus === "published") {
+      updates.publishedAt = new Date();
+    }
+
     const event = await Event.findByIdAndUpdate(
       req.params.eventId,
-      { $set: { status: status || "published" } },
+      { $set: updates },
       { new: true }
     );
 
