@@ -8,6 +8,8 @@
   flex: 1;
   padding: 2rem;
   color: #333333;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .event-details-status {
