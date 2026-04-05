@@ -63,7 +63,12 @@ const CommentItem = ({ comment, replies, allComments }) => {
 
 export const CommentSection = ({ eventId }) => {
   const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  const currentUserId = localStorage.getItem("userId");
+  const isLoggedIn = !!currentUserId;
 
   // fetch comments for this event
   useEffect(() => {
@@ -75,6 +80,31 @@ export const CommentSection = ({ eventId }) => {
       })
       .catch(() => setLoading(false));
   }, [eventId]);
+
+  // submit a new root comment
+  const handleSubmit = async () => {
+    if (!newComment.trim() || submitting) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventId,
+          userId: currentUserId,
+          content: newComment.trim(),
+        }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        setComments((prev) => [...prev, created]);
+        setNewComment("");
+      }
+    } catch (err) {
+      console.error("Failed to post comment:", err);
+    }
+    setSubmitting(false);
+  };
 
   // separate root comments from replies
   const rootComments = comments.filter((c) => !c.parentCommentId);
@@ -89,6 +119,25 @@ export const CommentSection = ({ eventId }) => {
   return (
     <div className="comment-section">
       <h2 className="comment-section-title">Comments ({comments.filter((c) => !c.isDeleted).length})</h2>
+
+      {isLoggedIn && (
+        <div className="comment-input-box">
+          <textarea
+            className="comment-textarea"
+            placeholder="Write a comment..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            rows={3}
+          />
+          <button
+            className="comment-submit-btn"
+            onClick={handleSubmit}
+            disabled={submitting || !newComment.trim()}
+          >
+            {submitting ? "Posting..." : "Post"}
+          </button>
+        </div>
+      )}
 
       {rootComments.length === 0 ? (
         <p className="no-comments">No comments yet</p>
