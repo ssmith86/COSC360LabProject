@@ -11,9 +11,21 @@ const bcrypt = require("bcrypt");
 
 const User = require("./models/User");
 const Event = require("./models/Event");
+const SavedEvent = require("./models/SavedEvent");
 
 // get sample data
 const sampleData = require("./SampleData.json");
+
+// upsert helper: returns { doc, action } where action is "Created" or "Updated"
+async function upsert(Model, filter, update, setOnInsert = {}) {
+  const existing = await Model.findOne(filter);
+  const doc = await Model.findOneAndUpdate(
+    filter,
+    { $set: update, ...(Object.keys(setOnInsert).length ? { $setOnInsert: setOnInsert } : {}) },
+    { upsert: true, returnDocument: "after" }
+  );
+  return { doc, action: existing ? "Updated" : "Created" };
+}
 
 async function seed() {
   // connect to cosc360db using mongoose
@@ -21,10 +33,6 @@ async function seed() {
     dbName: "cosc360db",
   });
   console.log(">> Connected to MongoDB");
-
-  // clear existing seed events only
-  await Event.deleteMany({});
-  console.log(">> Cleared existing events");
 
   // seed users, skip if already exists (by email)
   const createdUsers = [];
@@ -47,22 +55,42 @@ async function seed() {
     createdUsers.push(user);
   }
 
-  // seed events with real user ObjectId references
+  // seed events: upsert by title + ownerId
+  const createdEvents = [];
   for (const eventData of sampleData.events) {
     const owner = createdUsers[eventData.ownerIndex];
-    const event = await Event.create({
-      title: eventData.title,
+    const filter = { title: eventData.title, ownerId: owner._id };
+    const update = {
       description: eventData.description,
       category: eventData.category,
       status: eventData.status,
-      ownerId: owner._id,
       imageUrl: eventData.imageUrl,
       startDate: new Date(eventData.startDate),
       endDate: new Date(eventData.endDate),
       location: eventData.location,
-      createdAt: new Date(),
+    };
+    if (eventData.publishedAt) {
+      update.publishedAt = new Date(eventData.publishedAt);
+    } else if (eventData.status === "published") {
+      update.publishedAt = new Date();
+    }
+
+    const { doc: event, action } = await upsert(Event, filter, update, {
+      createdAt: eventData.publishedAt ? new Date(eventData.publishedAt) : new Date(),
     });
-    console.log(`  Created event: "${event.title}" owned by ${owner.firstName} (${event._id})`);
+    createdEvents.push(event);
+    console.log(`  ${action} event: 「${event.title}」 owned by ${owner.userName} (${event._id})`);
+  }
+
+  // seed saved events: upsert by userId + eventId
+  for (const saveData of (sampleData.savedEvents || [])) {
+    const user = createdUsers[saveData.userIndex];
+    const event = createdEvents[saveData.eventIndex];
+    const filter = { userId: user._id, eventId: event._id };
+    const update = { savedAt: new Date(saveData.savedAt) };
+
+    const { action } = await upsert(SavedEvent, filter, update);
+    console.log(`  ${action} saved event: ${user.userName} saved 「${event.title}」`);
   }
 
   console.log(">>> Sample data seeded successfully!");
