@@ -5,8 +5,8 @@ const express = require("express");
 const router = express.Router();
 // use bcrypt to handle password hashing
 const bcrypt = require("bcrypt");
-// use getDB method from the db.js
-const { getDB } = require("./db");
+// use User model from mongoose
+const User = require("./models/User");
 
 router.post("/", async (req, res) => {
   const { firstName, lastName, userName, email, password } = req.body;
@@ -16,30 +16,26 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const db = getDB();
-    const existingUser = await db.collection("users").findOne({ email });
     // if email already registered, return 409 and the following message
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "Email already registered." });
     }
 
-
     // if username already registered, return 409, and message
-    const existingUsername = await db.collection("users").findOne({ userName });
-    if(existingUsername){
-      return res.status(409).json({ message: "Username already exists"});
+    const existingUsername = await User.findOne({ userName });
+    if (existingUsername) {
+      return res.status(409).json({ message: "Username already exists" });
     }
-
 
     // Use the bcrypt to hash password for security
     const hashedPassword = await bcrypt.hash(password, 10);
-    await db.collection("users").insertOne({
+    await User.create({
       firstName,
       lastName,
       userName,
       email,
       password: hashedPassword,
-      createdAt: new Date(),
     });
 
     // use 201 for created (200 is for ok)
