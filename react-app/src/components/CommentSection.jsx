@@ -40,76 +40,88 @@ const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLogge
     setReplySubmitting(false);
   };
 
+  const avatarUrl = comment.userId?.avatar
+    ? (comment.userId.avatar.startsWith("/uploads/")
+      ? `http://localhost:3001${comment.userId.avatar}`
+      : comment.userId.avatar)
+    : null;
+
   return (
     <div className="comment-item">
-      <div className="comment-header">
-        <span className="comment-author">{isDeleted ? "" : userName}</span>
-        <span className="comment-date">{formatDate(comment.createdAt)}</span>
-      </div>
-      <div className="comment-content">
-        {isDeleted ? (
-          <span className="comment-deleted">This comment has been deleted</span>
-        ) : (
-          <>
-            {replyToComment && (
-              <span className="comment-reply-tag">
-                @{replyToComment.isDeleted ? "deleted" : (replyToComment.userId?.userName || "Unknown")}
+        <div className="comment-header">
+          {!isDeleted && avatarUrl ? (
+            <img src={avatarUrl} alt={userName} className="comment-avatar-img" />
+          ) : (
+            <div className="comment-avatar-placeholder" />
+          )}
+          <span className="comment-author">{isDeleted ? "" : userName}</span>
+          {replyToComment && !isDeleted && (
+            <>
+              <span className="comment-reply-arrow">›</span>
+              <span className="comment-reply-target">
+                {replyToComment.isDeleted ? "deleted" : (replyToComment.userId?.userName || "Unknown")}
               </span>
-            )}
-            {comment.content}
-          </>
-        )}
-      </div>
-
-      {isLoggedIn && !isDeleted && (
-        <div className="comment-actions">
-          <button className="comment-reply-btn" onClick={() => setShowReplyBox(!showReplyBox)}>
-            {showReplyBox ? "Cancel" : "Reply"}
-          </button>
-          {(currentUserId === comment.userId?._id || isAdmin) && (
-            <button className="comment-delete-btn" onClick={() => onDelete(comment._id)}>
-              Delete
-            </button>
+            </>
+          )}
+          <span className="comment-date">{formatDate(comment.createdAt)}</span>
+        </div>
+        <div className="comment-content">
+          {isDeleted ? (
+            <span className="comment-deleted">This comment has been deleted</span>
+          ) : (
+            comment.content
           )}
         </div>
-      )}
 
-      {showReplyBox && (
-        <div className="comment-reply-input">
-          <textarea
-            className="comment-textarea"
-            placeholder={`Reply to ${userName}...`}
-            value={replyContent}
-            onChange={(e) => setReplyContent(e.target.value)}
-            rows={2}
-          />
-          <button
-            className="comment-submit-btn"
-            onClick={handleReplySubmit}
-            disabled={replySubmitting || !replyContent.trim()}
-          >
-            {replySubmitting ? "Posting..." : "Reply"}
-          </button>
-        </div>
-      )}
+        {isLoggedIn && !isDeleted && (
+          <div className="comment-actions">
+            <button className="comment-reply-btn" onClick={() => setShowReplyBox(!showReplyBox)}>
+              {showReplyBox ? "Cancel" : "Reply"}
+            </button>
+            {(currentUserId === comment.userId?._id || isAdmin) && (
+              <button className="comment-delete-btn" onClick={() => onDelete(comment._id)}>
+                Delete
+              </button>
+            )}
+          </div>
+        )}
 
-      {replies.length > 0 && (
-        <div className="comment-replies">
-          {replies.map((reply) => (
-            <CommentItem
-              key={reply._id}
-              comment={reply}
-              replies={allComments.filter((c) => c.replyToCommentId === reply._id && c._id !== reply._id)}
-              allComments={allComments}
-              onReply={onReply}
-              onDelete={onDelete}
-              isLoggedIn={isLoggedIn}
-              currentUserId={currentUserId}
-              isAdmin={isAdmin}
+        {showReplyBox && (
+          <div className="comment-reply-input">
+            <textarea
+              className="comment-textarea"
+              placeholder={`Reply to ${userName}...`}
+              value={replyContent}
+              onChange={(e) => setReplyContent(e.target.value)}
+              rows={2}
             />
-          ))}
-        </div>
-      )}
+            <button
+              className="comment-submit-btn"
+              onClick={handleReplySubmit}
+              disabled={replySubmitting || !replyContent.trim()}
+            >
+              {replySubmitting ? "Posting..." : "Reply"}
+            </button>
+          </div>
+        )}
+
+        {replies.length > 0 && (
+          <div className="comment-replies">
+            {replies.map((reply) => (
+              <CommentItem
+                key={reply._id}
+                comment={reply}
+                replies={allComments.filter((c) => c.replyToCommentId === reply._id && c._id !== reply._id)}
+                allComments={allComments}
+                onReply={onReply}
+                onDelete={onDelete}
+                isLoggedIn={isLoggedIn}
+                currentUserId={currentUserId}
+                isAdmin={isAdmin}
+              />
+            ))}
+          </div>
+        )}
     </div>
   );
 };

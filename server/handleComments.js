@@ -8,7 +8,7 @@ const Comment = require("./models/Comment");
 router.get("/:eventId", async (req, res) => {
   try {
     const comments = await Comment.find({ eventId: req.params.eventId })
-      .populate("userId", "userName firstName lastName")
+      .populate("userId", "userName firstName lastName avatar")
       .sort({ createdAt: 1 });
 
     res.json(comments);
@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
       replyToCommentId: replyToCommentId || null,
     });
 
-    const populated = await comment.populate("userId", "userName firstName lastName");
+    const populated = await comment.populate("userId", "userName firstName lastName avatar");
     res.status(201).json(populated);
   } catch (err) {
     res.status(500).json({ error: err.message });

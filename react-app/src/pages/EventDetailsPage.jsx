@@ -4,6 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./EventDetailsPage.css";
 import { UserAvatarContext } from "../context/UserAvatarContext";
+import { CommentSection } from "../components/CommentSection";
 
 export const EventDetailsPage = () => {
   // get eventId from URL param
@@ -170,6 +171,7 @@ export const EventDetailsPage = () => {
               )}
             </div>
           </div>
+          <CommentSection eventId={eventId} />
         </main>
       </div>
     </>
