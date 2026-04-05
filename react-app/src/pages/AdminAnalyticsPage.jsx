@@ -44,8 +44,10 @@ export const AdminAnalyticsPage = () => {
   const [eventTotalSummary, setEventTotalSummary] = useState(null);
   const [userTotalSummary, setUserTotalSummary] = useState(null);
 
-  const [eventTrends, setEventTrends] = useState([]);
-  const [eventGranularity, setEventGranularity] = useState("month");
+  const [publishTrends, setPublishTrends] = useState([]);
+  const [publishGranularity, setPublishGranularity] = useState("month");
+  const [startTrends, setStartTrends] = useState([]);
+  const [startGranularity, setStartGranularity] = useState("month");
   const [saveTrends, setSaveTrends] = useState([]);
   const [saveGranularity, setSaveGranularity] = useState("month");
   const [popularEvents, setPopularEvents] = useState([]);
@@ -53,9 +55,9 @@ export const AdminAnalyticsPage = () => {
   const [locationDist, setLocationDist] = useState([]);
   const [userGrowth, setUserGrowth] = useState([]);
   const [userGrowthGranularity, setUserGrowthGranularity] = useState("month");
-  const [eventsInPeriod, setEventsInPeriod] = useState(null);
-  const [savesInPeriod, setSavesInPeriod] = useState(null);
-  const [commentsInPeriod, setCommentsInPeriod] = useState(undefined);
+  const [publishedInPeriod, setPublishedInPeriod] = useState(null);
+  const [savedInPeriod, setSavedInPeriod] = useState(null);
+  const [commentedInPeriod, setCommentedInPeriod] = useState(undefined);
   const [userPeriodSummary, setUserPeriodSummary] = useState(null);
 
   const getRange = useCallback(() => {
@@ -77,8 +79,12 @@ export const AdminAnalyticsPage = () => {
     const qs = buildQuery(from, to);
 
     fetch(`${API}/event-trends${qs}`).then((r) => r.json()).then((d) => {
-      setEventTrends(d.data || []);
-      setEventGranularity(d.granularity || "month");
+      setPublishTrends(d.data || []);
+      setPublishGranularity(d.granularity || "month");
+    }).catch(() => {});
+    fetch(`${API}/event-start-trends${qs}`).then((r) => r.json()).then((d) => {
+      setStartTrends(d.data || []);
+      setStartGranularity(d.granularity || "month");
     }).catch(() => {});
     fetch(`${API}/save-trends${qs}`).then((r) => r.json()).then((d) => {
       setSaveTrends(d.data || []);
@@ -88,9 +94,9 @@ export const AdminAnalyticsPage = () => {
     fetch(`${API}/top-creators${qs}`).then((r) => r.json()).then(setTopCreators).catch(() => {});
     fetch(`${API}/location-distribution${qs}`).then((r) => r.json()).then(setLocationDist).catch(() => {});
     fetch(`${API}/event-period-summary${qs}`).then((r) => r.json()).then((d) => {
-      setEventsInPeriod(d.eventsInPeriod || 0);
-      setSavesInPeriod(d.savesInPeriod || 0);
-      setCommentsInPeriod(d.commentsInPeriod);
+      setPublishedInPeriod(d.publishedInPeriod || 0);
+      setSavedInPeriod(d.savedInPeriod || 0);
+      setCommentedInPeriod(d.commentedInPeriod);
     }).catch(() => {});
     fetch(`${API}/user-growth${qs}`).then((r) => r.json()).then((d) => {
       setUserGrowth(d.data || []);
@@ -201,16 +207,16 @@ export const AdminAnalyticsPage = () => {
           {tab === "events" && (
             <div className="summary-row period-summary">
               <div className="metric-card">
-                <span className="summary-number">{eventsInPeriod ?? "..."}</span>
-                <span className="summary-label">Events Start in Period</span>
+                <span className="summary-number">{publishedInPeriod ?? "..."}</span>
+                <span className="summary-label">Events Published in Period</span>
               </div>
               <div className="metric-card">
-                <span className="summary-number">{savesInPeriod ?? "..."}</span>
+                <span className="summary-number">{savedInPeriod ?? "..."}</span>
                 <span className="summary-label">Saves in Period</span>
               </div>
               <div className="metric-card">
                 <span className="summary-number">
-                  {commentsInPeriod === undefined ? "..." : (commentsInPeriod ?? "N/A")}
+                  {commentedInPeriod === undefined ? "..." : (commentedInPeriod ?? "N/A")}
                 </span>
                 <span className="summary-label">Comments in Period</span>
               </div>
@@ -238,10 +244,10 @@ export const AdminAnalyticsPage = () => {
             <div className="analytics-grid">
               <div className="analytics-card">
                 <h2>Event Trends</h2>
-                <p className="analytics-subtitle">Events created per {eventGranularity}</p>
-                {eventTrends.length > 0 ? (
+                <p className="analytics-subtitle">Events published per {publishGranularity}</p>
+                {publishTrends.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={eventTrends}>
+                    <LineChart data={publishTrends}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
@@ -251,6 +257,24 @@ export const AdminAnalyticsPage = () => {
                   </ResponsiveContainer>
                 ) : (
                   <p className="no-data">No event data available</p>
+                )}
+              </div>
+
+              <div className="analytics-card">
+                <h2>Event Schedule</h2>
+                <p className="analytics-subtitle">Events starting per {startGranularity}</p>
+                {startTrends.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={startTrends}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+                      <YAxis allowDecimals={false} />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="count" stroke="#6d28d9" strokeWidth={2} name="Events" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="no-data">No event schedule data available</p>
                 )}
               </div>
 

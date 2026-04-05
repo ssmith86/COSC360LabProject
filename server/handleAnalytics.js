@@ -200,14 +200,14 @@ router.get("/event-period-summary", async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
 
-    // count events in period by startDate
+    // count events in period by publishedAt
     const eventFilter = {};
     if (from || to) {
-      eventFilter.startDate = {};
-      if (from) eventFilter.startDate.$gte = from;
-      if (to) eventFilter.startDate.$lte = to;
+      eventFilter.publishedAt = {};
+      if (from) eventFilter.publishedAt.$gte = from;
+      if (to) eventFilter.publishedAt.$lte = to;
     }
-    const eventsInPeriod = await Event.countDocuments(eventFilter);
+    const publishedInPeriod = await Event.countDocuments(eventFilter);
 
     // count saves in period by savedAt
     const saveFilter = {};
@@ -216,7 +216,7 @@ router.get("/event-period-summary", async (req, res) => {
       if (from) saveFilter.savedAt.$gte = from;
       if (to) saveFilter.savedAt.$lte = to;
     }
-    const savesInPeriod = await SavedEvent.countDocuments(saveFilter);
+    const savedInPeriod = await SavedEvent.countDocuments(saveFilter);
 
     // count comments in period by createdAt
     const commentFilter = {};
@@ -225,9 +225,44 @@ router.get("/event-period-summary", async (req, res) => {
       if (from) commentFilter.createdAt.$gte = from;
       if (to) commentFilter.createdAt.$lte = to;
     }
-    const commentsInPeriod = await Comment.countDocuments(commentFilter);
+    const commentedInPeriod = await Comment.countDocuments(commentFilter);
 
-    res.json({ eventsInPeriod, savesInPeriod, commentsInPeriod });
+    res.json({ publishedInPeriod, savedInPeriod, commentedInPeriod });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/analytics/event-start-trends
+// Returns event count grouped by startDate, filtered by date range
+router.get("/event-start-trends", async (req, res) => {
+  try {
+    const { from, to } = parseDateRange(req.query);
+    const granularity = getGranularity(from, to);
+
+    const filter = {};
+    if (from || to) {
+      filter.startDate = {};
+      if (from) filter.startDate.$gte = from;
+      if (to) filter.startDate.$lte = to;
+    }
+
+    const events = await Event.find(filter);
+
+    const counts = {};
+    events.forEach((e) => {
+      const date = e.startDate;
+      if (!date) return;
+      const d = new Date(date);
+      const key = dateToKey(d, granularity);
+      counts[key] = (counts[key] || 0) + 1;
+    });
+
+    const result = Object.entries(counts)
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    res.json({ granularity, data: result });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
