@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getDB } = require("./db");
+const SavedEvent = require("./models/SavedEvent");
 
-// Created savedEvents collection (table) on cosc360db on MongoDB Atlas
-// GET /api/savedevents?userId=123456 (hard coded for now)
-// TODO: need to update this later
-// get all saved events for a given user (joins with events collection)
+// GET /api/savedevents?userId=xxx (this has been updated instead of hard coded)
+// get all saved events for a given user (using populate to join with events)
 router.get("/", async (req, res) => {
-  // const userId = parseInt(req.query.userId);
   const userId = req.query.userId;
 
   if (!userId || userId.trim() === "") {
@@ -17,26 +14,14 @@ router.get("/", async (req, res) => {
   }
 
   try {
-    const db = getDB();
+    // find all saved events for this user and populate the event data
+    const savedRecords = await SavedEvent.find({ userId: userId })
+      .populate("eventId");
 
-    // find all saved events for this user
-    const savedRecords = await db
-      .collection("savedEvents")
-      .find({
-        userId: userId,
-      })
-      .toArray();
-
-    // for each saved record, fetch the full event document
-    const eventIds = savedRecords.map((record) => record.eventId);
-
-    const { ObjectId } = require("mongodb");
-    const savedEventDocs = await db
-      .collection("events")
-      .find({
-        _id: { $in: eventIds.map((id) => new ObjectId(id)) },
-      })
-      .toArray();
+    // for each saved record, fetch the full event document from populated records
+    const savedEventDocs = savedRecords
+      .map((record) => record.eventId)
+      .filter(Boolean);
 
     res.json(savedEventDocs);
   } catch (err) {
@@ -55,10 +40,8 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const db = getDB();
-
     // check if event is already saved to prevent issue
-    const existing = await db.collection("savedEvents").findOne({
+    const existing = await SavedEvent.findOne({
       userId: userId,
       eventId: eventId,
     });
@@ -67,10 +50,9 @@ router.post("/", async (req, res) => {
       return res.status(409).json({ message: "Event already saved" });
     }
 
-    await db.collection("savedEvents").insertOne({
+    await SavedEvent.create({
       userId: userId,
       eventId: eventId,
-      savedAt: new Date(),
     });
 
     res.status(201).json({ message: "Event saved successfully" });
@@ -90,9 +72,7 @@ router.delete("/", async (req, res) => {
   }
 
   try {
-    const db = getDB();
-
-    await db.collection("savedEvents").deleteOne({
+    await SavedEvent.deleteOne({
       userId: userId,
       eventId: eventId,
     });

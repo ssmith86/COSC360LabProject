@@ -44,7 +44,7 @@ router.post("/", upload.single("image"), async function (req, res) {
     // add imagePath
     const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
 
-    // create event using mongoose Event model (flat structure)
+    // create event using mongoose Event model
     const newEvent = await Event.create({
       title: eventData.event_name,
       description: eventData.description,
