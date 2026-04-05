@@ -2,12 +2,16 @@
 // Test CategoryFilter functionality
 // Make sure all buttons are visible
 
-import { describe, test, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { describe, test, expect, afterEach } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
+import "@testing-library/jest-dom/vitest";
 import { CategoryFilter } from "../src/components/CategoryFilter";
 
 describe("CategoryFilter Component", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   test("renders the All button", () => {
     render(
       <CategoryFilter selectedCategories={[]} onCategoryChange={() => {}} />,
