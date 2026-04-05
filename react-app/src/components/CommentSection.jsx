@@ -4,7 +4,11 @@ import "./css files/CommentSection.css";
 const API = "http://localhost:3001/api/comments";
 
 // single comment display component
-const CommentItem = ({ comment, replies, allComments }) => {
+const CommentItem = ({ comment, replies, allComments, onReply, isLoggedIn }) => {
+  const [showReplyBox, setShowReplyBox] = useState(false);
+  const [replyContent, setReplyContent] = useState("");
+  const [replySubmitting, setReplySubmitting] = useState(false);
+
   const isDeleted = comment.isDeleted;
   const userName = comment.userId?.userName || "Unknown";
 
@@ -23,6 +27,18 @@ const CommentItem = ({ comment, replies, allComments }) => {
   const replyToComment = comment.replyToCommentId
     ? allComments.find((c) => c._id === comment.replyToCommentId)
     : null;
+
+  // find root comment id
+  const rootId = comment.parentCommentId || comment._id;
+
+  const handleReplySubmit = async () => {
+    if (!replyContent.trim() || replySubmitting) return;
+    setReplySubmitting(true);
+    await onReply(rootId, comment._id, replyContent.trim());
+    setReplyContent("");
+    setShowReplyBox(false);
+    setReplySubmitting(false);
+  };
 
   return (
     <div className="comment-item">
@@ -45,6 +61,31 @@ const CommentItem = ({ comment, replies, allComments }) => {
         )}
       </div>
 
+      {isLoggedIn && !isDeleted && (
+        <button className="comment-reply-btn" onClick={() => setShowReplyBox(!showReplyBox)}>
+          {showReplyBox ? "Cancel" : "Reply"}
+        </button>
+      )}
+
+      {showReplyBox && (
+        <div className="comment-reply-input">
+          <textarea
+            className="comment-textarea"
+            placeholder={`Reply to ${userName}...`}
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            rows={2}
+          />
+          <button
+            className="comment-submit-btn"
+            onClick={handleReplySubmit}
+            disabled={replySubmitting || !replyContent.trim()}
+          >
+            {replySubmitting ? "Posting..." : "Reply"}
+          </button>
+        </div>
+      )}
+
       {replies.length > 0 && (
         <div className="comment-replies">
           {replies.map((reply) => (
@@ -53,6 +94,8 @@ const CommentItem = ({ comment, replies, allComments }) => {
               comment={reply}
               replies={allComments.filter((c) => c.replyToCommentId === reply._id && c._id !== reply._id)}
               allComments={allComments}
+              onReply={onReply}
+              isLoggedIn={isLoggedIn}
             />
           ))}
         </div>
@@ -106,6 +149,29 @@ export const CommentSection = ({ eventId }) => {
     setSubmitting(false);
   };
 
+  // submit reply to a comment
+  const handleReply = async (parentCommentId, replyToCommentId, content) => {
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventId,
+          userId: currentUserId,
+          content,
+          parentCommentId,
+          replyToCommentId,
+        }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        setComments((prev) => [...prev, created]);
+      }
+    } catch (err) {
+      console.error("Failed to post reply:", err);
+    }
+  };
+
   // separate root comments from replies
   const rootComments = comments.filter((c) => !c.parentCommentId);
 
@@ -149,6 +215,8 @@ export const CommentSection = ({ eventId }) => {
               comment={comment}
               replies={getReplies(comment._id)}
               allComments={comments}
+              onReply={handleReply}
+              isLoggedIn={isLoggedIn}
             />
           ))}
         </div>
