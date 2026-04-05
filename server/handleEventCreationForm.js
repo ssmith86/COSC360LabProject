@@ -76,9 +76,16 @@ router.post("/", upload.single("image"), async function (req, res) {
     // add to db collection events in cosc360db in Cluster 0
     // await db.collection("events").insertOne(newEvent);
     // console.log("New data event received: ", newEvent);
-    await db.collection("events").insertOne(newEvent);
+    const result = await db.collection("events").insertOne(newEvent);
 
     console.log("New data event received: ", newEvent);
+
+    // auto-save the newly created event for the owner in savedEvents collection
+    await db.collection("savedEvents").insertOne({
+      userId: eventData.userId,
+      eventId: result.insertedId.toString(),
+      savedAt: new Date(),
+    });
 
     res.status(200).json({ message: "Event creation successful." });
   } catch (err) {
