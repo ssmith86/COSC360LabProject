@@ -118,7 +118,7 @@ const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLogge
               <CommentItem
                 key={reply._id}
                 comment={reply}
-                replies={allComments.filter((c) => c.replyToCommentId === reply._id && c._id !== reply._id)}
+                replies={[]}
                 allComments={allComments}
                 onReply={onReply}
                 onDelete={onDelete}
