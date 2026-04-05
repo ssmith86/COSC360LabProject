@@ -21,6 +21,7 @@ const handleUsers = require("./handleUsers");
 const handleEventActions = require("./handleEventActions");
 const handleAnalytics = require("./handleAnalytics");
 const handleNotifications = require("./handleNotifications");
+const handleComments = require("./handleComments");
 
 // cross origin reseources sharing middleware to allow req from react
 app.use(function (req, res, next) {
@@ -61,6 +62,14 @@ app.use("/api/users", handleUsers);
 app.use("/api/events", checkBanned, handleEventActions);
 app.use("/api/analytics", handleAnalytics);
 app.use("/api/notifications", handleNotifications);
+app.use(
+  "/api/comments",
+  (req, res, next) => {
+    if (req.method === "GET") return next();
+    return checkBanned(req, res, next);
+  },
+  handleComments,
+);
 
 // Connect to MongoDB and start
 // connectDB()
