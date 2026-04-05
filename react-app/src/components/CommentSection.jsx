@@ -56,17 +56,17 @@ const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLogge
   return (
     <div className="comment-item">
         <div className="comment-header">
-          {!isDeleted && avatarUrl ? (
+          {avatarUrl ? (
             <img src={avatarUrl} alt={userName} className="comment-avatar-img" />
           ) : (
             <div className="comment-avatar-placeholder" />
           )}
-          <span className="comment-author">{isDeleted ? "" : userName}</span>
+          <span className="comment-author">{userName}</span>
           {showReplyTarget && (
             <>
               <span className="comment-reply-arrow">›</span>
               <span className="comment-reply-target">
-                {replyToComment.isDeleted ? "deleted" : (replyToComment.userId?.userName || "Unknown")}
+                {replyToComment.userId?.userName || "Unknown"}
               </span>
             </>
           )}
