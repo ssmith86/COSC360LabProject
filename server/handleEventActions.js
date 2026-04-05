@@ -110,21 +110,14 @@ router.patch("/:eventId", async function (req, res) {
   const newStatus = status || "published";
 
   try {
-    const updates = { status: newStatus };
-    // set publishedAt when status changes to published
-    if (newStatus === "published") {
-      updates.publishedAt = new Date();
-    }
-
-    const event = await Event.findByIdAndUpdate(
-      req.params.eventId,
-      { $set: updates },
-      { new: true }
-    );
-
+    const event = await Event.findById(req.params.eventId);
     if (!event) {
       return res.status(404).json({ message: "Event not found." });
     }
+
+    // update status and save (pre('save') in model handles publishedAt)
+    event.status = newStatus;
+    await event.save();
 
     res.status(200).json({ message: "Event status updated successfully." });
   } catch (err) {

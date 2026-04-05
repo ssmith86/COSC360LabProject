@@ -1,4 +1,5 @@
-// one-time migration script to convert old mongoDB data and structure to match the new mongoose schema
+// one-time migration script(which is already done) to convert old mongoDB data 
+// and structure to match the new mongoose schema
 
 // changes as below:
 // old event structure - 

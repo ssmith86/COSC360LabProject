@@ -21,4 +21,11 @@ const eventSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: null },
 });
 
+// auto set publishedAt when status is "published"
+eventSchema.pre("save", function () {
+  if (this.status === "published" && !this.publishedAt) {
+    this.publishedAt = new Date();
+  }
+});
+
 module.exports = mongoose.model("Event", eventSchema);
