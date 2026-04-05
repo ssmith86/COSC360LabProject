@@ -1,25 +1,31 @@
 // extract the logic of handleSearch out of server.js
 const express = require("express");
 const router = express.Router();
-const { getDB } = require("./db");
+const Event = require("./models/Event");
+const User = require("./models/User");
 
 router.get("/", async (req, res) => {
   const searchTerm = req.query.q || "";
 
   try {
-    const db = getDB();
-    const results = await db.collection("events").find({
+    const regex = { $regex: searchTerm, $options: "i" };
+
+    // find users whose userName matches, to search events by owner
+    const matchingUsers = await User.find({ userName: regex }).select("_id");
+    const matchingUserIds = matchingUsers.map(u => u._id);
+
+    const results = await Event.find({
       $or: [
-        { "event.name": { $regex: searchTerm, $options: "i" } },
-        { "owner.name": { $regex: searchTerm, $options: "i" } },
-        { "description": { $regex: searchTerm, $options: "i" } },
-        { "event.location.country": { $regex: searchTerm, $options: "i" } },
-        { "event.location.province": { $regex: searchTerm, $options: "i" } },
-        { "event.location.city": { $regex: searchTerm, $options: "i" } },
-        { "event.location.street": { $regex: searchTerm, $options: "i" } },
-        { "event.start_date": { $regex: searchTerm, $options: "i" } },
+        { title: regex },
+        { description: regex },
+        { category: regex },
+        { "location.country": regex },
+        { "location.province": regex },
+        { "location.city": regex },
+        { "location.street": regex },
+        { ownerId: { $in: matchingUserIds } },
       ]
-    }).toArray();
+    }).populate("ownerId", "userName firstName lastName");
 
     res.json(results);
   } catch (err) {
