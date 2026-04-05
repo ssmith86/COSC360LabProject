@@ -27,10 +27,10 @@ export const HomePage = () => {
             <EventCard
               key={index}
               image={sportImg}
-              title={item.event.name}
-              startDateTime={item.event.start_date}
-              endDateTime={item.event.end_date}
-              location={`${item.event.location.street}, ${item.event.location.city}`}
+              title={item.title}
+              startDateTime={item.startDate}
+              endDateTime={item.endDate}
+              location={`${item.location?.street}, ${item.location?.city}`}
               status={item.status}
               isSaved={false}
               isOwner={false}
