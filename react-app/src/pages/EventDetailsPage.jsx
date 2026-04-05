@@ -77,10 +77,8 @@ export const EventDetailsPage = () => {
     );
   }
 
-  // get event and owner info from fetched data
-  const event = eventData?.event;
-  const owner = eventData?.owner;
-  const isOwner = !isBanned && currentUserId === owner?.id?.toString();
+  // get owner info from fetched data
+  const isOwner = !isBanned && currentUserId === eventData?.ownerId?.toString();
 
   // format date string to display to user
   const formatDate = (dateStr) => {
@@ -95,9 +93,9 @@ export const EventDetailsPage = () => {
   };
 
   // connect backend URL for upload image file, otherwise use default
-  const imageUrl = event?.image?.startsWith("/uploads/")
-    ? `http://localhost:3001${event.image}`
-    : event?.image || "/sportImage.webp";
+  const imageUrl = eventData?.imageUrl?.startsWith("/uploads/")
+    ? `http://localhost:3001${eventData.imageUrl}`
+    : eventData?.imageUrl || "/sportImage.webp";
 
   return (
     <>
@@ -119,7 +117,7 @@ export const EventDetailsPage = () => {
           <div className="event-details-card">
             <img
               src={imageUrl}
-              alt={`An image of the event: ${event?.name}`}
+              alt={`An image of the event: ${eventData?.title}`}
               className="event-details-image"
             />
             {eventData?.status === "cancelled" && (
@@ -128,26 +126,26 @@ export const EventDetailsPage = () => {
               </div>
             )}
             <div className="event-details-body">
-              <h1 className="event-details-title">{event?.name}</h1>
+              <h1 className="event-details-title">{eventData?.title}</h1>
 
               <div className="event-details-info">
                 <p>
                   <span className="event-details-label">Start:</span>{" "}
-                  {formatDate(event?.start_date)}
+                  {formatDate(eventData?.startDate)}
                 </p>
                 <p>
                   <span className="event-details-label">End:</span>{" "}
-                  {formatDate(event?.end_date)}
+                  {formatDate(eventData?.endDate)}
                 </p>
                 <p>
                   <span className="event-details-label">Location:</span>{" "}
-                  {event?.location
-                    ? `${event.location.address} ${event.location.street}, ${event.location.city}, ${event.location.province}, ${event.location.country}`
+                  {eventData?.location
+                    ? `${eventData.location.address} ${eventData.location.street}, ${eventData.location.city}, ${eventData.location.province}, ${eventData.location.country}`
                     : "TBD"}
                 </p>
                 <p>
                   <span className="event-details-label">Hosted by:</span>{" "}
-                  {owner?.name || "Unknown"}
+                  {eventData?.ownerId?.userName || "Unknown"}
                 </p>
               </div>
               <p className="event-details-description">

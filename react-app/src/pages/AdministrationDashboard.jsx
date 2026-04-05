@@ -211,14 +211,14 @@ export const AdministrationDashboard = () => {
                 <tbody>
                   {events.map((event) => (
                     <tr key={event._id}>
-                      {eventFilters.byName && <td>{event.event?.name}</td>}
-                      {eventFilters.byOwner && <td>{event.owner?.name}</td>}
+                      {eventFilters.byName && <td>{event.title}</td>}
+                      {eventFilters.byOwner && <td>{event.ownerId?.userName || event.ownerId}</td>}
                       {eventFilters.byDate && (
                         <td>
                           {event.status === "cancelled" ? (
                             <span style={{ background: "#dc2626", color: "white", borderRadius: "4px", padding: "2px 8px", fontSize: "0.75rem", fontWeight: 600 }}>Cancelled</span>
                           ) : (
-                            event.event?.start_date
+                            event.startDate
                           )}
                         </td>
                       )}

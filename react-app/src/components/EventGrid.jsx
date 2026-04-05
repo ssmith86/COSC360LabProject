@@ -53,22 +53,21 @@ export function EventGrid({
           // image={doc.event?.image || "/sportImage.webp"}
           // default back to sportImage.webp (TODO later we need to add a default image for events not showing correct image)
           image={
-            doc.event?.image?.startsWith("/uploads/")
-              ? `http://localhost:3001${doc.event.image}`
-              : doc.event?.image || "/sportImage.webp"
+            doc.imageUrl?.startsWith("/uploads/")
+              ? `http://localhost:3001${doc.imageUrl}`
+              : doc.imageUrl || "/sportImage.webp"
           }
-          title={doc.event?.name || "Untitled Event"}
-          startDateTime={formatDate(doc.event?.start_date)}
-          endDateTime={formatDate(doc.event?.end_date)}
-          location={formatLocation(doc.event?.location)}
-          category={doc.event?.category}
+          title={doc.title || "Untitled Event"}
+          startDateTime={formatDate(doc.startDate)}
+          endDateTime={formatDate(doc.endDate)}
+          location={formatLocation(doc.location)}
+          category={doc.category}
           status={doc.status}
           isSaved={
             isSavedMode ||
-            currentUserId === doc.owner?.id?.toString() ||
             savedEventIds.includes(doc._id?.toString())
           }
-          isOwner={currentUserId === doc.owner?.id?.toString()}
+          isOwner={currentUserId === doc.ownerId?.toString()}
           isAdmin={isAdmin}
           isLoggedIn={isLoggedIn}
           onSave={() => onSave && onSave(doc._id?.toString())}

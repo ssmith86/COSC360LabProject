@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const { getDB } = require("./db");
+const User = require("./models/User");
 
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
@@ -13,8 +13,7 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const db = getDB();
-    const user = await db.collection("users").findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password." });
@@ -25,10 +24,8 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    await db.collection("users").updateOne(
-      { _id: user._id },
-      { $set: { lastLogin: new Date() } }
-    );
+    user.lastLogin = new Date();
+    await user.save();
 
     res.status(200).json({
       message: `Welcome back, ${user.firstName}!`,

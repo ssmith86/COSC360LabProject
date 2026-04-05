@@ -14,15 +14,15 @@ export function EditEventForm({
 
   // pre-fill the entire edit event form with data
   const [form, setForm] = useState({
-    name: initialData?.event?.name || "",
-    start_date: initialData?.event?.start_date?.slice(0, 16) || "",
-    end_date: initialData?.event?.end_date?.slice(0, 16) || "",
-    address: initialData?.event?.location?.address?.toString() || "",
-    street: initialData?.event?.location?.street || "",
-    city: initialData?.event?.location?.city || "",
-    province: initialData?.event?.location?.province || "",
-    country: initialData?.event?.location?.country || "",
-    category: initialData?.event?.category || "",
+    name: initialData?.title || "",
+    start_date: initialData?.startDate?.slice(0, 16) || "",
+    end_date: initialData?.endDate?.slice(0, 16) || "",
+    address: initialData?.location?.address?.toString() || "",
+    street: initialData?.location?.street || "",
+    city: initialData?.location?.city || "",
+    province: initialData?.location?.province || "",
+    country: initialData?.location?.country || "",
+    category: initialData?.category || "",
     description: initialData?.description || "",
   });
 
@@ -160,15 +160,15 @@ export function EditEventForm({
 
     // Update to build FormData in order to support image upload
     const formData = new FormData();
-    formData.append("event.name", form.name);
-    formData.append("event.start_date", form.start_date);
-    formData.append("event.end_date", form.end_date);
-    formData.append("event.location.address", form.address);
-    formData.append("event.location.street", form.street);
-    formData.append("event.location.city", form.city);
-    formData.append("event.location.province", form.province);
-    formData.append("event.location.country", form.country);
-    formData.append("event.category", form.category);
+    formData.append("title", form.name);
+    formData.append("startDate", form.start_date);
+    formData.append("endDate", form.end_date);
+    formData.append("location.address", form.address);
+    formData.append("location.street", form.street);
+    formData.append("location.city", form.city);
+    formData.append("location.province", form.province);
+    formData.append("location.country", form.country);
+    formData.append("category", form.category);
     formData.append("description", form.description);
     // only append image if user selected a new file
     if (imageFile) {

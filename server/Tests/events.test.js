@@ -19,11 +19,11 @@ describe("Event API", () => {
     expect(res.statusCode).toBe(400);
   });
 
-  test("returns 400 if no ownerId or ownerName is provided", async () => {
+  test("returns 400 if no ownerId is provided", async () => {
     const res = await request(app).get("/api/events/myevents");
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toBe(
-      "ownerId or ownerName query parameter is required",
+      "ownerId query parameter is required",
     );
   });
 });

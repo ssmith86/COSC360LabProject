@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const { getDB } = require("./db");
-const { ObjectId } = require("mongodb");
+const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
+
+const User = require("./models/User");
+const Event = require("./models/Event");
+const SavedEvent = require("./models/SavedEvent");
+const Notification = require("./models/Notification");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -25,8 +29,7 @@ const upload = multer({ storage, fileFilter });
 
 router.get("/", async (req, res) => {
     try {
-        const db = getDB();
-        const users = await db.collection("users").find({}, { projection: { password: 0 } }).toArray();
+        const users = await User.find({}).select("-password");
         res.json(users);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -37,25 +40,23 @@ router.get("/search", async (req, res) => {
     const searchTerm = req.query.q || "";
     if (!searchTerm.trim()) return res.json({ users: [], events: [] });
     try {
-        const db = getDB();
         const regex = { $regex: searchTerm, $options: "i" };
 
-        const users = await db.collection("users").find({
+        const users = await User.find({
             $or: [
                 { userName: regex },
                 { email: regex },
                 { firstName: regex },
                 { lastName: regex },
             ]
-        }, { projection: { password: 0 } }).toArray();
+        }).select("-password");
 
-        const events = await db.collection("events").find({
+        const events = await Event.find({
             $or: [
-                { "event.name": regex },
-                { "owner.name": regex },
-                { "description": regex },
+                { title: regex },
+                { description: regex },
             ]
-        }).toArray();
+        });
 
         res.json({ users, events });
     } catch (err) {
@@ -65,11 +66,7 @@ router.get("/search", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     try {
-        const db = getDB();
-        const user = await db.collection("users").findOne(
-            { _id: new ObjectId(req.params.id) },
-            { projection: { password: 0 } }
-        );
+        const user = await User.findById(req.params.id).select("-password");
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -82,9 +79,8 @@ router.get("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     try {
-        const db = getDB();
-        await db.collection("users").deleteOne({ _id: new ObjectId(req.params.id) });
-        await db.collection("savedEvents").deleteMany({ userId: req.params.id });
+        await User.findByIdAndDelete(req.params.id);
+        await SavedEvent.deleteMany({ userId: req.params.id });
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -94,12 +90,8 @@ router.delete("/:id", async (req, res) => {
 router.patch("/:id/avatar", upload.single("avatar"), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-        const db = getDB();
         const avatarPath = "/uploads/" + req.file.filename;
-        await db.collection("users").updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $set: { avatar: avatarPath } }
-        );
+        await User.findByIdAndUpdate(req.params.id, { avatar: avatarPath });
         res.json({ avatar: avatarPath });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -108,11 +100,10 @@ router.patch("/:id/avatar", upload.single("avatar"), async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
     try {
-        const db = getDB();
         const { firstName, lastName, userName, email, isAdmin, isBanned, password, currentPassword } = req.body;
         const updates = {};
-        const userId = new ObjectId(req.params.id);
-        const existingUser = await db.collection("users").findOne({ _id: userId });
+        const userId = req.params.id;
+        const existingUser = await User.findById(userId);
 
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
@@ -129,44 +120,43 @@ router.patch("/:id", async (req, res) => {
                 updates.bannedAt = new Date();
 
                 // Cancel all events owned by this user
-                const userEvents = await db.collection("events")
-                    .find({ "owner.id": userId.toString() })
-                    .toArray();
+                const userEvents = await Event.find({ ownerId: userId });
 
                 if (userEvents.length > 0) {
-                    const eventIds = userEvents.map(e => e._id.toString());
+                    const eventIds = userEvents.map(e => e._id);
 
-                    await db.collection("events").updateMany(
-                        { "owner.id": userId.toString() },
+                    await Event.updateMany(
+                        { ownerId: userId },
                         { $set: { status: "cancelled" } }
                     );
 
                     // Find all users who saved these events (excluding the banned user)
-                    const savedRecords = await db.collection("savedEvents").find({
+                    const savedRecords = await SavedEvent.find({
                         eventId: { $in: eventIds },
-                        userId: { $ne: userId.toString() }
-                    }).toArray();
+                        userId: { $ne: new mongoose.Types.ObjectId(userId) }
+                    });
 
                     if (savedRecords.length > 0) {
                         const notifications = savedRecords.map(record => {
-                            const event = userEvents.find(e => e._id.toString() === record.eventId);
+                            const event = userEvents.find(e => e._id.equals(record.eventId));
                             return {
                                 userId: record.userId,
-                                message: `The event "${event?.event?.name || "An event"}" has been cancelled.`,
-                                read: false,
-                                createdAt: new Date()
+                                type: "event_cancelled",
+                                message: `The event "${event?.title || "An event"}" has been cancelled.`,
+                                relatedEventId: record.eventId,
+                                isRead: false,
                             };
                         });
-                        await db.collection("notifications").insertMany(notifications);
+                        await Notification.insertMany(notifications);
                     }
                 }
             } else if (!isBanned && existingUser.isBanned) {
                 updates.bannedAt = null;
 
                 // Uncancel all events that were cancelled due to this user being banned
-                await db.collection("events").updateMany(
-                    { "owner.id": userId.toString(), status: "cancelled" },
-                    { $unset: { status: "" } }
+                await Event.updateMany(
+                    { ownerId: userId, status: "cancelled" },
+                    { $set: { status: "published" } }
                 );
             }
         }
@@ -182,10 +172,7 @@ router.patch("/:id", async (req, res) => {
             updates.password = await bcrypt.hash(password, 10);
         }
 
-        await db.collection("users").updateOne(
-            { _id: userId },
-            { $set: updates }
-        );
+        await User.findByIdAndUpdate(userId, updates);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

@@ -1,12 +1,13 @@
-const { MongoClient } = require("mongodb");
+const mongoose = require("mongoose");
 require("dotenv").config();
+const User = require("./models/User");
 
 async function seedAdmin() {
-  const client = new MongoClient(process.env.MONGO_URI);
-  await client.connect();
-  const db = client.db("cosc360db");
+  await mongoose.connect(process.env.MONGO_URI, {
+    dbName: "cosc360db",
+  });
 
-  const result = await db.collection("users").updateOne(
+  const result = await User.updateOne(
     { email: "email@email.com" },
     { $set: { isAdmin: true } }
   );
@@ -17,7 +18,7 @@ async function seedAdmin() {
     console.log("Admin set successfully!");
   }
 
-  await client.close();
+  await mongoose.connection.close();
 }
 
 seedAdmin().catch(console.error);
