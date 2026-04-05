@@ -4,7 +4,7 @@ import "./css files/CommentSection.css";
 const API = "http://localhost:3001/api/comments";
 
 // single comment display component
-const CommentItem = ({ comment, replies, allComments, onReply, isLoggedIn }) => {
+const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLoggedIn, currentUserId, isAdmin }) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [replySubmitting, setReplySubmitting] = useState(false);
@@ -52,7 +52,7 @@ const CommentItem = ({ comment, replies, allComments, onReply, isLoggedIn }) => 
         ) : (
           <>
             {replyToComment && (
-              <span className="comment-reply-to">
+              <span className="comment-reply-tag">
                 @{replyToComment.isDeleted ? "deleted" : (replyToComment.userId?.userName || "Unknown")}
               </span>
             )}
@@ -62,9 +62,16 @@ const CommentItem = ({ comment, replies, allComments, onReply, isLoggedIn }) => 
       </div>
 
       {isLoggedIn && !isDeleted && (
-        <button className="comment-reply-btn" onClick={() => setShowReplyBox(!showReplyBox)}>
-          {showReplyBox ? "Cancel" : "Reply"}
-        </button>
+        <div className="comment-actions">
+          <button className="comment-reply-btn" onClick={() => setShowReplyBox(!showReplyBox)}>
+            {showReplyBox ? "Cancel" : "Reply"}
+          </button>
+          {(currentUserId === comment.userId?._id || isAdmin) && (
+            <button className="comment-delete-btn" onClick={() => onDelete(comment._id)}>
+              Delete
+            </button>
+          )}
+        </div>
       )}
 
       {showReplyBox && (
@@ -95,7 +102,10 @@ const CommentItem = ({ comment, replies, allComments, onReply, isLoggedIn }) => 
               replies={allComments.filter((c) => c.replyToCommentId === reply._id && c._id !== reply._id)}
               allComments={allComments}
               onReply={onReply}
+              onDelete={onDelete}
               isLoggedIn={isLoggedIn}
+              currentUserId={currentUserId}
+              isAdmin={isAdmin}
             />
           ))}
         </div>
@@ -112,6 +122,7 @@ export const CommentSection = ({ eventId }) => {
 
   const currentUserId = localStorage.getItem("userId");
   const isLoggedIn = !!currentUserId;
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   // fetch comments for this event
   useEffect(() => {
@@ -147,6 +158,23 @@ export const CommentSection = ({ eventId }) => {
       console.error("Failed to post comment:", err);
     }
     setSubmitting(false);
+  };
+
+  // delete a comment
+  const handleDelete = async (commentId) => {
+    const confirmed = window.confirm("Are you sure to delete this comment?");
+    if (!confirmed) return;
+    try {
+      const res = await fetch(`${API}/${commentId}`, { method: "DELETE" });
+      if (res.ok) {
+        // re-fetch comment
+        const updated = await fetch(`${API}/${eventId}`);
+        const data = await updated.json();
+        setComments(data);
+      }
+    } catch (err) {
+      console.error("Failed to delete comment:", err);
+    }
   };
 
   // submit reply to a comment
@@ -216,7 +244,10 @@ export const CommentSection = ({ eventId }) => {
               replies={getReplies(comment._id)}
               allComments={comments}
               onReply={handleReply}
+              onDelete={handleDelete}
               isLoggedIn={isLoggedIn}
+              currentUserId={currentUserId}
+              isAdmin={isAdmin}
             />
           ))}
         </div>
