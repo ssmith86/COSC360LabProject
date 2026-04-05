@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getDB } = require("./db");
-const { ObjectId } = require("mongodb");
+const Event = require("./models/Event");
 
 // add a multer to handle new image upload when edit events
 const multer = require("multer");
@@ -29,13 +28,8 @@ const upload = multer({ storage, fileFilter });
 
 // Add a get method to fetch event by its id
 router.get("/:eventId", async function (req, res) {
-  const eventId = req.params.eventId;
-
   try {
-    const db = getDB();
-    const event = await db
-      .collection("events")
-      .findOne({ _id: new ObjectId(eventId) });
+    const event = await Event.findById(req.params.eventId);
 
     if (!event) {
       return res.status(404).json({ message: "Event not found in database." });
@@ -49,8 +43,6 @@ router.get("/:eventId", async function (req, res) {
 
 // handles update on events (update with multer)
 router.put("/:eventId", upload.single("image"), async function (req, res) {
-  const eventId = req.params.eventId;
-  // const updatedData = req.body;
   const body = req.body;
 
   // if (!updatedData || Object.keys(updatedData).length === 0) {
@@ -78,30 +70,31 @@ router.put("/:eventId", upload.single("image"), async function (req, res) {
 
   // build the updateData
   const updatedData = {
-    "event.name": body["event.name"],
-    "event.start_date": body["event.start_date"],
-    "event.end_date": body["event.end_date"],
-    "event.location.address": body["event.location.address"],
-    "event.location.street": body["event.location.street"],
-    "event.location.city": body["event.location.city"],
-    "event.location.province": body["event.location.province"],
-    "event.location.country": body["event.location.country"],
-    "event.category": body["event.category"],
+    title: body.title,
+    startDate: body.startDate,
+    endDate: body.endDate,
+    "location.address": body["location.address"],
+    "location.street": body["location.street"],
+    "location.city": body["location.city"],
+    "location.province": body["location.province"],
+    "location.country": body["location.country"],
+    category: body.category,
     description: body.description,
+    updatedAt: new Date(),
   };
   // we only update image if the user uploads a new image file
   if (req.file) {
-    updatedData["event.image"] = `/uploads/${req.file.filename}`;
+    updatedData.imageUrl = `/uploads/${req.file.filename}`;
   }
 
-  // run the database update
   try {
-    const db = getDB();
-    const result = await db
-      .collection("events")
-      .updateOne({ _id: new ObjectId(eventId) }, { $set: updatedData });
+    const event = await Event.findByIdAndUpdate(
+      req.params.eventId,
+      { $set: updatedData },
+      { new: true }
+    );
 
-    if (result.matchedCount === 0) {
+    if (!event) {
       return res.status(404).json({ message: "Event not found." });
     }
 
@@ -113,21 +106,16 @@ router.put("/:eventId", upload.single("image"), async function (req, res) {
 
 // handle status update (cancel/uncancel) on events
 router.patch("/:eventId", async function (req, res) {
-  const eventId = req.params.eventId;
   const { status } = req.body;
 
   try {
-    const db = getDB();
-    const update = status === null
-      ? { $unset: { status: "" } }
-      : { $set: { status } };
-
-    const result = await db.collection("events").updateOne(
-      { _id: new ObjectId(eventId) },
-      update
+    const event = await Event.findByIdAndUpdate(
+      req.params.eventId,
+      { $set: { status: status || "published" } },
+      { new: true }
     );
 
-    if (result.matchedCount === 0) {
+    if (!event) {
       return res.status(404).json({ message: "Event not found." });
     }
 
@@ -139,15 +127,10 @@ router.patch("/:eventId", async function (req, res) {
 
 // handle delete on events
 router.delete("/:eventId", async function (req, res) {
-  const eventId = req.params.eventId;
-
   try {
-    const db = getDB();
-    const result = await db
-      .collection("events")
-      .deleteOne({ _id: new ObjectId(eventId) });
+    const event = await Event.findByIdAndDelete(req.params.eventId);
 
-    if (result.deletedCount === 0) {
+    if (!event) {
       return res.status(404).json({ message: "Event not found." });
     }
 

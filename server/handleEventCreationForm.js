@@ -1,8 +1,8 @@
 const express = require("express");
 // create the post route handler to handle incoming data creation from the event creation form
 const router = express.Router();
-// get MongoDb
-const { getDB } = require("./db");
+// use Event model from mongoose
+const Event = require("./models/Event");
 
 // add multer to handle event image upload
 const multer = require("multer");
@@ -41,42 +41,26 @@ router.post("/", upload.single("image"), async function (req, res) {
   }
 
   try {
-    // updated with multer image upload
-    const db = getDB();
     // add imagePath
     const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
 
-    const newEvent = {
-      // owner: {
-      //   name: "Sam Smith",
-      //   id: "123456",
-      // },
-      owner: {
-        name: eventData.owner_name || "Unknown",
-        id: eventData.userId || "",
-      },
-      // update event with imagePath
-      event: {
-        name: eventData.event_name,
-        start_date: eventData.start_date,
-        end_date: eventData.end_date,
-        image: imagePath,
-        location: {
-          address: eventData.address,
-          street: eventData.street,
-          city: eventData.city,
-          province: eventData.province,
-          country: eventData.country,
-        },
-        category: eventData.category,
-      },
+    // create event using mongoose Event model (flat structure)
+    const newEvent = await Event.create({
+      title: eventData.event_name,
       description: eventData.description,
-    };
-
-    // add to db collection events in cosc360db in Cluster 0
-    // await db.collection("events").insertOne(newEvent);
-    // console.log("New data event received: ", newEvent);
-    await db.collection("events").insertOne(newEvent);
+      category: eventData.category,
+      ownerId: eventData.userId,
+      imageUrl: imagePath,
+      startDate: eventData.start_date,
+      endDate: eventData.end_date,
+      location: {
+        address: eventData.address,
+        street: eventData.street,
+        city: eventData.city,
+        province: eventData.province,
+        country: eventData.country,
+      },
+    });
 
     console.log("New data event received: ", newEvent);
 
