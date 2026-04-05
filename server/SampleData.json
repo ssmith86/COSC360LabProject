@@ -5,56 +5,56 @@
       "email": "sam@example.com",
       "firstName": "Sam",
       "lastName": "Smith",
-      "password": "Password123!"
+      "password": "password"
     },
     {
       "userName": "jasonborn",
       "email": "jason@example.com",
       "firstName": "Jason",
       "lastName": "Born",
-      "password": "Password123!"
+      "password": "password"
     },
     {
       "userName": "clarkkent",
       "email": "clark@example.com",
       "firstName": "Clark",
       "lastName": "Kent",
-      "password": "Password123!"
+      "password": "password"
     },
     {
       "userName": "brucewayne",
       "email": "bruce@example.com",
       "firstName": "Bruce",
       "lastName": "Wayne",
-      "password": "Password123!"
+      "password": "password"
     },
     {
       "userName": "goofy",
       "email": "goofy@example.com",
       "firstName": "Goofy",
       "lastName": "Dog",
-      "password": "Password123!"
+      "password": "password"
     },
     {
       "userName": "donaldduck",
       "email": "donald@example.com",
       "firstName": "Donald",
       "lastName": "Duck",
-      "password": "Password123!"
+      "password": "password"
     },
     {
       "userName": "henricksadine",
       "email": "henrick@example.com",
       "firstName": "Henrick",
       "lastName": "Sadine",
-      "password": "Password123!"
+      "password": "password"
     },
     {
       "userName": "charlesxavier",
       "email": "charles@example.com",
       "firstName": "Charles",
       "lastName": "Xavier",
-      "password": "Password123!"
+      "password": "password"
     }
   ],
   "events": [
