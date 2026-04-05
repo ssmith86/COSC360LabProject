@@ -22,10 +22,6 @@ async function seed() {
   });
   console.log(">> Connected to MongoDB");
 
-  // clear existing seed events only
-  await Event.deleteMany({});
-  console.log(">> Cleared existing events");
-
   // seed users, skip if already exists (by email)
   const createdUsers = [];
   for (const userData of sampleData.users) {
@@ -47,22 +43,32 @@ async function seed() {
     createdUsers.push(user);
   }
 
-  // seed events with real user ObjectId references
+  // seed events: upsert by title + ownerId
   for (const eventData of sampleData.events) {
     const owner = createdUsers[eventData.ownerIndex];
-    const event = await Event.create({
-      title: eventData.title,
+    const filter = { title: eventData.title, ownerId: owner._id };
+    const update = {
       description: eventData.description,
       category: eventData.category,
       status: eventData.status,
-      ownerId: owner._id,
       imageUrl: eventData.imageUrl,
       startDate: new Date(eventData.startDate),
       endDate: new Date(eventData.endDate),
       location: eventData.location,
-      createdAt: new Date(),
-    });
-    console.log(`  Created event: "${event.title}" owned by ${owner.firstName} (${event._id})`);
+    };
+    if (eventData.publishedAt) {
+      update.publishedAt = new Date(eventData.publishedAt);
+    } else if (eventData.status === "published") {
+      update.publishedAt = new Date();
+    }
+
+    const existing = await Event.findOne(filter);
+    const event = await Event.findOneAndUpdate(
+      filter,
+      { $set: update, $setOnInsert: { createdAt: eventData.publishedAt ? new Date(eventData.publishedAt) : new Date() } },
+      { upsert: true, returnDocument: "after" }
+    );
+    console.log(`  ${existing ? "Updated" : "Created"} event: "${event.title}" owned by ${owner.userName} (${event._id})`);
   }
 
   console.log(">>> Sample data seeded successfully!");
