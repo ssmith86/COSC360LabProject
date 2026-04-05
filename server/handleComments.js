@@ -17,4 +17,29 @@ router.get("/:eventId", async (req, res) => {
   }
 });
 
+// POST /api/comments
+// new comment or reply
+router.post("/", async (req, res) => {
+  try {
+    const { eventId, userId, content, parentCommentId, replyToCommentId } = req.body;
+
+    if (!eventId || !userId || !content?.trim()) {
+      return res.status(400).json({ error: "eventId, userId, and content are required" });
+    }
+
+    const comment = await Comment.create({
+      eventId,
+      userId,
+      content: content.trim(),
+      parentCommentId: parentCommentId || null,
+      replyToCommentId: replyToCommentId || null,
+    });
+
+    const populated = await comment.populate("userId", "userName firstName lastName");
+    res.status(201).json(populated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
