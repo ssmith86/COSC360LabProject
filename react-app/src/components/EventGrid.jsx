@@ -65,7 +65,6 @@ export function EventGrid({
           status={doc.status}
           isSaved={
             isSavedMode ||
-            currentUserId === doc.ownerId?.toString() ||
             savedEventIds.includes(doc._id?.toString())
           }
           isOwner={currentUserId === doc.ownerId?.toString()}

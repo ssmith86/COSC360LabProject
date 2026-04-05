@@ -1,8 +1,8 @@
 const express = require("express");
 // create the post route handler to handle incoming data creation from the event creation form
 const router = express.Router();
-// use Event model from mongoose
 const Event = require("./models/Event");
+const SavedEvent = require("./models/SavedEvent");
 
 // add multer to handle event image upload
 const multer = require("multer");
@@ -64,6 +64,12 @@ router.post("/", upload.single("image"), async function (req, res) {
       },
       // set publishedAt when status is published
       publishedAt: status === "published" ? new Date() : null,
+    });
+
+    // auto save event for owner so it shows as saved by default
+    await SavedEvent.create({
+      userId: eventData.userId,
+      eventId: newEvent._id,
     });
 
     console.log("New data event received: ", newEvent);
