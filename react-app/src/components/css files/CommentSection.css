@@ -135,6 +135,13 @@
   font-size: 0.9rem;
 }
 
+.comment-reply-target-deleted {
+  margin-left: 0.25rem;
+  font-style: italic;
+  font-weight: 400;
+  color: #777;
+}
+
 /* comment actions */
 .comment-actions {
   display: flex;

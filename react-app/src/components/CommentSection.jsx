@@ -27,12 +27,13 @@ const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLogge
   const replyToComment = comment.replyToCommentId
     ? allComments.find((c) => c._id === comment.replyToCommentId)
     : null;
+  const replyTargetDeleted = comment.replyToCommentId != null && replyToComment == null;
 
   // dont show "reply to xxx" for comments reply to root comment
   const showReplyTarget =
     !isDeleted &&
     comment.parentCommentId != null &&
-    replyToComment != null &&
+    comment.replyToCommentId != null &&
     comment.replyToCommentId !== comment.parentCommentId;
 
   // find root comment id
@@ -66,7 +67,11 @@ const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLogge
             <>
               <span className="comment-reply-arrow">›</span>
               <span className="comment-reply-target">
-                {replyToComment.userId?.userName || "Unknown"}
+                {replyTargetDeleted ? (
+                  <em className="comment-reply-target-deleted">deleted comment</em>
+                ) : (
+                  replyToComment.userId?.userName || "Unknown"
+                )}
               </span>
             </>
           )}

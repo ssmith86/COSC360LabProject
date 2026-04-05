@@ -60,18 +60,8 @@ router.delete("/:commentId", async (req, res) => {
       });
       res.json({ message: "Comment and replies deleted" });
     } else {
-      // child comment with no replies: hard delete directly
-      const hasReplies = await Comment.exists({ replyToCommentId: comment._id });
-      if (!hasReplies) {
-        await Comment.findByIdAndDelete(comment._id);
-        return res.json({ message: "Reply deleted" });
-      }
-
-      // child comment with replies: soft delete and keep a placeholder
-      comment.isDeleted = true;
-      comment.content = "This comment has been deleted";
-      await comment.save();
-      res.json({ message: "Reply marked as deleted" });
+      await Comment.findByIdAndDelete(comment._id);
+      res.json({ message: "Reply deleted" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
