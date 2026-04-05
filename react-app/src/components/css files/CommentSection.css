@@ -96,7 +96,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0rem;
 }
 
 .comment-author {
@@ -115,6 +115,7 @@
   font-size: 0.95rem;
   color: #444;
   line-height: 1.5;
+  padding-left: calc(32px + 0.4rem);
 }
 
 .comment-deleted {
@@ -139,6 +140,7 @@
   display: flex;
   gap: 0.75rem;
   margin-top: 0.5rem;
+  padding-left: calc(32px + 0.4rem);
 }
 
 .comment-reply-btn {
