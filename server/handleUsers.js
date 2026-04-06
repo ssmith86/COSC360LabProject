@@ -151,6 +151,7 @@ router.patch("/:id", async (req, res) => {
                             return {
                                 userId: record.userId,
                                 type: "event_cancelled",
+                                category: "system",
                                 message: `The event "${event?.title || "An event"}" has been cancelled.`,
                                 relatedEventId: record.eventId,
                                 isRead: false,
