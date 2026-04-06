@@ -16,6 +16,7 @@ export function NavigationBar() {
 
     const [notifications, setNotifications] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("all");
     const dropdownRef = useRef(null);
 
     useEffect(() => {
@@ -37,7 +38,11 @@ export function NavigationBar() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+
+    const filteredNotifications = activeTab === "all"
+        ? notifications
+        : notifications.filter(n => n.category === activeTab);
 
     const markAllRead = () => {
         if (unreadCount === 0) return;
@@ -46,7 +51,7 @@ export function NavigationBar() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId }),
         }).then(() => {
-            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
         });
     };
 
@@ -74,11 +79,22 @@ export function NavigationBar() {
                                 {dropdownOpen && (
                                     <div className="notifications-dropdown">
                                         <p className="notifications-title">Notifications</p>
-                                        {notifications.length === 0 ? (
+                                        <div className="notifications-tabs">
+                                            {["all", "system", "interaction"].map(tab => (
+                                                <button
+                                                    key={tab}
+                                                    className={`notifications-tab${activeTab === tab ? " active" : ""}`}
+                                                    onClick={() => setActiveTab(tab)}
+                                                >
+                                                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        {filteredNotifications.length === 0 ? (
                                             <p className="notifications-empty">No notifications</p>
                                         ) : (
-                                            notifications.map(n => (
-                                                <div key={n._id} className={`notification-item${n.read ? "" : " unread"}`}>
+                                            filteredNotifications.map(n => (
+                                                <div key={n._id} className={`notification-item${n.isRead ? "" : " unread"}`}>
                                                     {n.message}
                                                 </div>
                                             ))
