@@ -119,6 +119,15 @@ router.patch("/:id", async (req, res) => {
             if (isBanned && !existingUser.isBanned) {
                 updates.bannedAt = new Date();
 
+                // notify the banned user
+                await Notification.create({
+                    userId,
+                    type: "account_banned",
+                    category: "system",
+                    message: "Your account has been banned. All your events have been cancelled.",
+                    isRead: false,
+                });
+
                 // Cancel all events owned by this user
                 const userEvents = await Event.find({ ownerId: userId });
 
