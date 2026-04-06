@@ -57,6 +57,23 @@ router.post("/", async (req, res) => {
       }
     }
 
+    // notify the original comment author when someone replies
+    if (replyToCommentId) {
+      const repliedComment = await Comment.findById(replyToCommentId);
+      if (repliedComment && repliedComment.userId.toString() !== userId) {
+        const replier = await User.findById(userId).select("userName");
+        await Notification.create({
+          userId: repliedComment.userId,
+          type: "comment_reply",
+          category: "interaction",
+          message: `${replier?.userName || "Someone"} replied to your comment.`,
+          relatedEventId: eventId,
+          relatedCommentId: comment._id,
+          isRead: false,
+        });
+      }
+    }
+
     res.status(201).json(populated);
   } catch (err) {
     res.status(500).json({ error: err.message });
