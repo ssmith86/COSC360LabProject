@@ -21,11 +21,16 @@ export function NavigationBar() {
 
     useEffect(() => {
         if (!isLoggedIn || !userId) return;
-        fetch(`http://localhost:3001/api/notifications?userId=${userId}`)
-            .then(res => res.json())
-            .then(data => setNotifications(Array.isArray(data) ? data : []))
-            .catch(() => {});
-    }, [location.pathname, isLoggedIn, userId]);
+        const fetchNotifications = () => {
+            fetch(`http://localhost:3001/api/notifications?userId=${userId}`)
+                .then(res => res.json())
+                .then(data => setNotifications(Array.isArray(data) ? data : []))
+                .catch(() => {});
+        };
+        fetchNotifications();
+        const interval = setInterval(fetchNotifications, 5000);
+        return () => clearInterval(interval);
+    }, [isLoggedIn, userId]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
