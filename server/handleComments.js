@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Comment = require("./models/Comment");
+const Event = require("./models/Event");
+const User = require("./models/User");
+const Notification = require("./models/Notification");
 
 // GET /api/comments/:eventId
 // returns all comments for an event, with user info populated
@@ -36,6 +39,24 @@ router.post("/", async (req, res) => {
     });
 
     const populated = await comment.populate("userId", "userName firstName lastName avatar");
+
+    // notify event owner when someone comments on their event
+    if (!parentCommentId) {
+      const event = await Event.findById(eventId);
+      if (event && event.ownerId && event.ownerId.toString() !== userId) {
+        const commenter = await User.findById(userId).select("userName");
+        await Notification.create({
+          userId: event.ownerId,
+          type: "new_comment",
+          category: "interaction",
+          message: `${commenter?.userName || "Someone"} commented on your event "${event?.title || "An event"}".`,
+          relatedEventId: eventId,
+          relatedCommentId: comment._id,
+          isRead: false,
+        });
+      }
+    }
+
     res.status(201).json(populated);
   } catch (err) {
     res.status(500).json({ error: err.message });
