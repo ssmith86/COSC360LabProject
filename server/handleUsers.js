@@ -162,6 +162,15 @@ router.patch("/:id", async (req, res) => {
             } else if (!isBanned && existingUser.isBanned) {
                 updates.bannedAt = null;
 
+                // notify the unbanned user
+                await Notification.create({
+                    userId,
+                    type: "account_unbanned",
+                    category: "system",
+                    message: "Your account has been unbanned. Your events have been restored.",
+                    isRead: false,
+                });
+
                 // Uncancel all events that were cancelled due to this user being banned
                 await Event.updateMany(
                     { ownerId: userId, status: "cancelled" },
