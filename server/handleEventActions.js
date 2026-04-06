@@ -121,18 +121,20 @@ router.patch("/:eventId", async function (req, res) {
     event.status = newStatus;
     await event.save();
 
-    // notify users who saved this event when status changes to paused
-    if (newStatus === "paused" && oldStatus !== "paused") {
+    // notify users who saved this event when status changes
+    if (newStatus !== oldStatus && (newStatus === "paused" || newStatus === "published")) {
       const savedRecords = await SavedEvent.find({
         eventId: event._id,
         userId: { $ne: event.ownerId },
       });
       if (savedRecords.length > 0) {
+        const type = newStatus === "paused" ? "event_paused" : "event_restored";
+        const label = newStatus === "paused" ? "paused" : "restored";
         const notifications = savedRecords.map(record => ({
           userId: record.userId,
-          type: "event_paused",
+          type,
           category: "system",
-          message: `The event "${event?.title || "An event"}" has been paused.`,
+          message: `The event "${event?.title || "An event"}" has been ${label}.`,
           relatedEventId: event._id,
           isRead: false,
         }));
