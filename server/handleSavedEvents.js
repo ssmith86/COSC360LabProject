@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const SavedEvent = require("./models/SavedEvent");
+const Event = require("./models/Event");
+const User = require("./models/User");
+const Notification = require("./models/Notification");
 
 // GET /api/savedevents?userId=xxx (this has been updated instead of hard coded)
 // get all saved events for a given user (using populate to join with events)
@@ -54,6 +57,20 @@ router.post("/", async (req, res) => {
       userId: userId,
       eventId: eventId,
     });
+
+    // notify the event owner when someone saved their event
+    const event = await Event.findById(eventId);
+    if (event && event.ownerId && event.ownerId.toString() !== userId) {
+      const saver = await User.findById(userId).select("userName");
+      await Notification.create({
+        userId: event.ownerId,
+        type: "event_saved",
+        category: "interaction",
+        message: `${saver?.userName || "Someone"} saved your event "${event?.title || "An event"}".`,
+        relatedEventId: eventId,
+        isRead: false,
+      });
+    }
 
     res.status(201).json({ message: "Event saved successfully" });
   } catch (err) {

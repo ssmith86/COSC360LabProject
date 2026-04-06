@@ -81,6 +81,32 @@
   color: #111827;
 }
 
+.notifications-tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.notifications-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 0.5rem 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.notifications-tab.active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+  font-weight: 600;
+}
+
+.notifications-tab:hover {
+  color: #4f46e5;
+}
+
 .notifications-empty {
   padding: 1rem;
   text-align: center;
