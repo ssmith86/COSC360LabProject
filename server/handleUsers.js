@@ -172,11 +172,37 @@ router.patch("/:id", async (req, res) => {
                     isRead: false,
                 });
 
-                // Uncancel all events that were cancelled due to this user being banned
-                await Event.updateMany(
-                    { ownerId: userId, status: "cancelled" },
-                    { $set: { status: "published" } }
-                );
+                // restore all events that were cancelled due to this user being banned
+                const cancelledEvents = await Event.find({ ownerId: userId, status: "cancelled" });
+                if (cancelledEvents.length > 0) {
+                    const eventIds = cancelledEvents.map(e => e._id);
+
+                    await Event.updateMany(
+                        { _id: { $in: eventIds } },
+                        { $set: { status: "published" } }
+                    );
+
+                    // notify users who saved these events
+                    const savedRecords = await SavedEvent.find({
+                        eventId: { $in: eventIds },
+                        userId: { $ne: new mongoose.Types.ObjectId(userId) }
+                    });
+
+                    if (savedRecords.length > 0) {
+                        const notifications = savedRecords.map(record => {
+                            const event = cancelledEvents.find(e => e._id.equals(record.eventId));
+                            return {
+                                userId: record.userId,
+                                type: "event_restored",
+                                category: "system",
+                                message: `The event "${event?.title || "An event"}" has been restored.`,
+                                relatedEventId: record.eventId,
+                                isRead: false,
+                            };
+                        });
+                        await Notification.insertMany(notifications);
+                    }
+                }
             }
         }
 
