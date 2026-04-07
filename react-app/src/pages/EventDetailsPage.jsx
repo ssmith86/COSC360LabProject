@@ -79,7 +79,7 @@ export const EventDetailsPage = () => {
   }
 
   // get owner info from fetched data
-  const isOwner = !isBanned && currentUserId === eventData?.ownerId?.toString();
+  const isOwner = !isBanned && currentUserId === eventData?.owner?.id;
 
   // format date string to display to user
   const formatDate = (dateStr) => {
@@ -146,7 +146,7 @@ export const EventDetailsPage = () => {
                 </p>
                 <p>
                   <span className="event-details-label">Hosted by:</span>{" "}
-                  {eventData?.ownerId?.userName || "Unknown"}
+                  {eventData?.owner?.userName || "Unknown"}
                 </p>
               </div>
               <p className="event-details-description">
