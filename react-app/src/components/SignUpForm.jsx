@@ -11,6 +11,9 @@ export default function SignUpForm() {
     password: "",
     confirmPassword: "",
   });
+  // add new state for user profile img avarta
+  const [avatarFile, setAvatarFile] = useState(null);
+
   const [responseMessage, setResponseMessage] = useState("");
   const navigate = useNavigate();
 
@@ -76,16 +79,19 @@ export default function SignUpForm() {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("firstName", form.firstName);
+    formData.append("lastName", form.lastName);
+    formData.append("userName", form.userName);
+    formData.append("email", form.email);
+    formData.append("password", form.password);
+    if (avatarFile) {
+      formData.append("avatar", avatarFile);
+    }
+
     const response = await fetch("http://localhost:3001/api/register", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstName: form.firstName,
-        lastName: form.lastName,
-        userName: form.userName,
-        email: form.email,
-        password: form.password,
-      }),
+      body: formData,
     });
 
     const data = await response.json();
@@ -184,6 +190,20 @@ export default function SignUpForm() {
             placeholder="Please enter your password again"
             value={form.confirmPassword}
             onChange={handleChange}
+          />
+        </div>
+
+        <div className="signup-field">
+          <label className="signup-label" htmlFor="signup-avatar">
+            Profile Picture (optional)
+          </label>
+          <input
+            className="signup-input"
+            id="signup-avatar"
+            name="avatar"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setAvatarFile(e.target.files[0] || null)}
           />
         </div>
 
