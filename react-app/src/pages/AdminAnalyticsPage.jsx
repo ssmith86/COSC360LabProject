@@ -27,6 +27,8 @@ function getPresetRange(days) {
 
 function buildQuery(from, to) {
   const params = new URLSearchParams();
+  const userId = localStorage.getItem("userId");
+  if (userId) params.set("userId", userId);
   if (from) params.set("from", from);
   if (to) params.set("to", to);
   const qs = params.toString();
@@ -70,8 +72,9 @@ export const AdminAnalyticsPage = () => {
   }, [activePreset, startDate, endDate]);
 
   useEffect(() => {
-    fetch(`${API}/event-total-summary`).then((r) => r.json()).then(setEventTotalSummary).catch(() => {});
-    fetch(`${API}/user-total-summary`).then((r) => r.json()).then(setUserTotalSummary).catch(() => {});
+    const qs = buildQuery("", "");
+    fetch(`${API}/event-total-summary${qs}`).then((r) => r.json()).then(setEventTotalSummary).catch(() => {});
+    fetch(`${API}/user-total-summary${qs}`).then((r) => r.json()).then(setUserTotalSummary).catch(() => {});
   }, []);
 
   useEffect(() => {

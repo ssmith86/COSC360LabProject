@@ -4,6 +4,7 @@ const Event = require("./models/Event");
 const SavedEvent = require("./models/SavedEvent");
 const Comment = require("./models/Comment");
 const User = require("./models/User");
+const checkAdmin = require("./checkAdmin");
 
 // Helper: parse from/to query params into Date objects
 function parseDateRange(query) {
@@ -34,7 +35,7 @@ function dateToKey(d, granularity) {
 // GET /api/analytics/event-trends
 // Returns event count grouped by day or month, filtered by date range
 // uses publishedAt (when the event was published) for grouping
-router.get("/event-trends", async (req, res) => {
+router.get("/event-trends", checkAdmin, async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
     const granularity = getGranularity(from, to);
@@ -146,7 +147,7 @@ router.get("/location-distribution", async (req, res) => {
 
 // GET /api/analytics/user-growth (admin)
 // Returns new user registrations grouped by day or month, filtered by date range
-router.get("/user-growth", async (req, res) => {
+router.get("/user-growth", checkAdmin, async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
     const granularity = getGranularity(from, to);
@@ -182,7 +183,7 @@ router.get("/user-growth", async (req, res) => {
 
 // GET /api/analytics/event-total-summary
 // Returns total counts of events, saves, and comments for admin summary cards
-router.get("/event-total-summary", async (req, res) => {
+router.get("/event-total-summary", checkAdmin, async (req, res) => {
   try {
     const totalEvents = await Event.countDocuments();
     const totalSaves = await SavedEvent.countDocuments();
@@ -196,7 +197,7 @@ router.get("/event-total-summary", async (req, res) => {
 
 // GET /api/analytics/event-period-summary
 // Returns event activity metrics within the requested date range
-router.get("/event-period-summary", async (req, res) => {
+router.get("/event-period-summary", checkAdmin, async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
 
@@ -235,7 +236,7 @@ router.get("/event-period-summary", async (req, res) => {
 
 // GET /api/analytics/event-start-trends
 // Returns event count grouped by startDate, filtered by date range
-router.get("/event-start-trends", async (req, res) => {
+router.get("/event-start-trends", checkAdmin, async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
     const granularity = getGranularity(from, to);
@@ -270,7 +271,7 @@ router.get("/event-start-trends", async (req, res) => {
 
 // GET /api/analytics/save-trends
 // Returns save count grouped by day or month, filtered by date range
-router.get("/save-trends", async (req, res) => {
+router.get("/save-trends", checkAdmin, async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
     const granularity = getGranularity(from, to);
@@ -340,7 +341,7 @@ router.get("/top-creators", async (req, res) => {
 
 // GET /api/analytics/user-total-summary (admin)
 // Returns total user counts: total, active (not banned), and banned
-router.get("/user-total-summary", async (req, res) => {
+router.get("/user-total-summary", checkAdmin, async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
     const bannedUsers = await User.countDocuments({ isBanned: true });
@@ -355,7 +356,7 @@ router.get("/user-total-summary", async (req, res) => {
 // GET /api/analytics/user-period-summary (admin)
 // Returns user activity metrics within the requested date range
 // active = logged in during period, banned = banned during period
-router.get("/user-period-summary", async (req, res) => {
+router.get("/user-period-summary", checkAdmin, async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
     const users = await User.find({});
@@ -388,7 +389,7 @@ router.get("/user-period-summary", async (req, res) => {
 
 // GET /api/analytics/total-comments
 // Returns total number of comments
-router.get("/total-comments", async (req, res) => {
+router.get("/total-comments", checkAdmin, async (req, res) => {
   try {
     const total = await Comment.countDocuments();
     res.json({ totalComments: total });

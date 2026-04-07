@@ -46,7 +46,7 @@ export default function SignUpForm() {
     // Additional Client-Side Security checking on First Name, Last Name, username and Password
     const nameRegex = /^[a-zA-Z\s'-]+$/;
     const userNameRegex = /^[a-zA-Z0-9_]+$/;
-    const passwordRegex = /^[A-Za-z0-9!@#$%^&*()\-_=+\[\]{};:'",.<>/?\\|`~]+$/;
+    const passwordRegex = /^[A-Za-z0-9!@#$%^&*()\-_=+[\]{};:'",.<>/?\\|`~]+$/;
 
     if (!nameRegex.test(form.firstName)) {
       setResponseMessage(
