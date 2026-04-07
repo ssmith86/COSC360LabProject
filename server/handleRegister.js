@@ -7,8 +7,30 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 // use User model from mongoose
 const User = require("./models/User");
+// add multer to handleRegister
+const multer = require("multer");
+const path = require("path");
 
-router.post("/", async (req, res) => {
+// add the multer steup for user registration
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "uploads"));
+  },
+  filename: function (req, file, cb) {
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, unique + path.extname(file.originalname));
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  file.mimetype.startsWith("image/")
+    ? cb(null, true)
+    : cb(new Error("Only image files are allowed"), false);
+};
+
+const upload = multer({ storage, fileFilter });
+
+router.post("/", upload.single("avatar"), async (req, res) => {
   const { firstName, lastName, userName, email, password } = req.body;
 
   if (!firstName || !lastName || !email || !password) {
@@ -36,6 +58,7 @@ router.post("/", async (req, res) => {
       userName,
       email,
       password: hashedPassword,
+      avatar: req.file ? `/uploads/${req.file.filename}` : "", // add user profile img
     });
 
     // use 201 for created (200 is for ok)
