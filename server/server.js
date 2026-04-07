@@ -8,7 +8,8 @@ require("dotenv").config();
 const checkBanned = require("./checkBanned");
 
 const app = express();
-const port = 3001;
+// const port = 3001;
+const port = process.env.PORT || 3001;
 
 const handleEventCreationForm = require("./handleEventCreationForm");
 const handleRegister = require("./handleRegister");
