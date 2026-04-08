@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const Comment = require("./models/Comment");
-const Event = require("./models/Event");
-const User = require("./models/User");
-const Notification = require("./models/Notification");
+const Comment = require("../models/Comment");
+const Event = require("../models/Event");
+const User = require("../models/User");
+const Notification = require("../models/Notification");
 
 // GET /api/comments/:eventId
 // returns all comments for an event, with user info populated
@@ -24,10 +24,13 @@ router.get("/:eventId", async (req, res) => {
 // new comment or reply
 router.post("/", async (req, res) => {
   try {
-    const { eventId, userId, content, parentCommentId, replyToCommentId } = req.body;
+    const { eventId, userId, content, parentCommentId, replyToCommentId } =
+      req.body;
 
     if (!eventId || !userId || !content?.trim()) {
-      return res.status(400).json({ error: "eventId, userId, and content are required" });
+      return res
+        .status(400)
+        .json({ error: "eventId, userId, and content are required" });
     }
 
     const comment = await Comment.create({
@@ -38,7 +41,10 @@ router.post("/", async (req, res) => {
       replyToCommentId: replyToCommentId || null,
     });
 
-    const populated = await comment.populate("userId", "userName firstName lastName avatar");
+    const populated = await comment.populate(
+      "userId",
+      "userName firstName lastName avatar",
+    );
 
     // notify event owner when someone comments on their event
     if (!parentCommentId) {
@@ -91,10 +97,7 @@ router.delete("/:commentId", async (req, res) => {
     if (!comment.parentCommentId) {
       // root comment: hard delete with everything under it
       await Comment.deleteMany({
-        $or: [
-          { _id: comment._id },
-          { parentCommentId: comment._id },
-        ],
+        $or: [{ _id: comment._id }, { parentCommentId: comment._id }],
       });
       res.json({ message: "Comment and replies deleted" });
     } else {

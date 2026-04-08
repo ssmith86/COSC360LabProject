@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const Event = require("./models/Event");
-const SavedEvent = require("./models/SavedEvent");
-const Comment = require("./models/Comment");
-const User = require("./models/User");
+const Event = require("../models/Event");
+const SavedEvent = require("../models/SavedEvent");
+const Comment = require("../models/Comment");
+const User = require("../models/User");
 const checkAdmin = require("./checkAdmin");
 
 // Helper: parse from/to query params into Date objects
@@ -97,7 +97,9 @@ router.get("/popular-events", async (req, res) => {
     const events = await Event.find({ _id: { $in: eventIds } });
 
     const eventMap = {};
-    events.forEach((e) => { eventMap[e._id.toString()] = e; });
+    events.forEach((e) => {
+      eventMap[e._id.toString()] = e;
+    });
 
     const result = topSaved
       .filter((s) => eventMap[s._id.toString()])
@@ -319,7 +321,10 @@ router.get("/top-creators", async (req, res) => {
       if (to) filter.startDate.$lte = to;
     }
 
-    const events = await Event.find(filter).populate("ownerId", "userName firstName lastName");
+    const events = await Event.find(filter).populate(
+      "ownerId",
+      "userName firstName lastName",
+    );
 
     // count events per creator
     const counts = {};
@@ -368,13 +373,21 @@ router.get("/user-period-summary", checkAdmin, async (req, res) => {
     users.forEach((u) => {
       if (u.isBanned) {
         const bannedAt = u.lastBannedAt ? new Date(u.lastBannedAt) : null;
-        if (bannedAt && (!from || bannedAt >= from) && (!to || bannedAt <= to)) {
+        if (
+          bannedAt &&
+          (!from || bannedAt >= from) &&
+          (!to || bannedAt <= to)
+        ) {
           bannedInPeriod++;
         }
         return;
       }
       const lastLogin = u.lastLogin ? new Date(u.lastLogin) : null;
-      if (lastLogin && (!from || lastLogin >= from) && (!to || lastLogin <= to)) {
+      if (
+        lastLogin &&
+        (!from || lastLogin >= from) &&
+        (!to || lastLogin <= to)
+      ) {
         activeInPeriod++;
       } else {
         inactiveInPeriod++;

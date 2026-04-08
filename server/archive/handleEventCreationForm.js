@@ -1,8 +1,8 @@
 const express = require("express");
 // create the post route handler to handle incoming data creation from the event creation form
 const router = express.Router();
-const Event = require("./models/Event");
-const SavedEvent = require("./models/SavedEvent");
+const Event = require("../models/Event");
+const SavedEvent = require("../models/SavedEvent");
 
 // add multer to handle event image upload
 const multer = require("multer");

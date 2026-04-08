@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Event = require("./models/Event");
-const SavedEvent = require("./models/SavedEvent");
-const Notification = require("./models/Notification");
+const Event = require("../models/Event");
+const SavedEvent = require("../models/SavedEvent");
+const Notification = require("../models/Notification");
 
 // add a multer to handle new image upload when edit events
 const multer = require("multer");
@@ -53,7 +53,6 @@ router.get("/:eventId", async function (req, res) {
       ...eventObject,
       owner,
     });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -109,7 +108,7 @@ router.put("/:eventId", upload.single("image"), async function (req, res) {
     const event = await Event.findByIdAndUpdate(
       req.params.eventId,
       { $set: updatedData },
-      { new: true }
+      { new: true },
     );
 
     if (!event) {
@@ -149,7 +148,7 @@ router.patch("/:eventId", async function (req, res) {
         userId: { $ne: event.ownerId },
       });
       if (savedRecords.length > 0) {
-        const notifications = savedRecords.map(record => ({
+        const notifications = savedRecords.map((record) => ({
           userId: record.userId,
           type: statusNotifyMap[newStatus],
           category: "system",

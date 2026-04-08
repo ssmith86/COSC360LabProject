@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const SavedEvent = require("./models/SavedEvent");
-const Event = require("./models/Event");
-const User = require("./models/User");
-const Notification = require("./models/Notification");
+const SavedEvent = require("../models/SavedEvent");
+const Event = require("../models/Event");
+const User = require("../models/User");
+const Notification = require("../models/Notification");
 
 // GET /api/savedevents?userId=xxx (this has been updated instead of hard coded)
 // get all saved events for a given user (using populate to join with events)
@@ -18,8 +18,9 @@ router.get("/", async (req, res) => {
 
   try {
     // find all saved events for this user and populate the event data
-    const savedRecords = await SavedEvent.find({ userId: userId })
-      .populate("eventId");
+    const savedRecords = await SavedEvent.find({ userId: userId }).populate(
+      "eventId",
+    );
 
     // for each saved record, fetch the full event document from populated records
     const savedEventDocs = savedRecords
