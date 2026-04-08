@@ -1,5 +1,6 @@
 // Test server/controllers/comments backend functionality
 // deleteComment.js, getComments.js and postComment.js
+// to run test: `cd server`, `npm test`
 const request = require("supertest");
 const app = require("../server");
 
