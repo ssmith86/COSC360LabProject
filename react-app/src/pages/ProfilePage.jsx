@@ -18,6 +18,11 @@ export const ProfilePage = () => {
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordMessageType, setPasswordMessageType] = useState("");
 
+  // add states for handling user img re-upload
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarMessage, setAvatarMessage] = useState("");
+  const [avatarMessageType, setAvatarMessageType] = useState("");
+
   useEffect(() => {
     if (!userId) return;
     fetch("http://localhost:3001/api/users/" + userId)
@@ -30,6 +35,38 @@ export const ProfilePage = () => {
         setEmail(data.email || "");
       });
   }, [userId]);
+
+  // add new handleUpdateAvatar function
+  const handleUpdateAvatar = async (e) => {
+    e.preventDefault();
+    if (!avatarFile) {
+      setAvatarMessage("Please select an image first");
+      setAvatarMessageType("error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("avatar", avatarFile);
+
+    const res = await fetch(
+      `http://localhost:3001/api/users/${userId}/avatar`,
+      {
+        method: "PATCH",
+        body: formData,
+      },
+    );
+
+    if (res.ok) {
+      const data = await res.json();
+      setUser((prev) => ({ ...prev, avatar: data.avatar }));
+      setAvatarMessage("User profile image updated");
+      setAvatarMessageType("success");
+      setAvatarFile(null);
+    } else {
+      setAvatarMessage("Failed to update user profile image");
+      setAvatarMessageType("error");
+    }
+  };
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
@@ -153,6 +190,41 @@ export const ProfilePage = () => {
         <SideBar />
         <div className="profile-content">
           <h1>My Profile</h1>
+
+          <div className="profile-section">
+            <h2>Profile Picture</h2>
+            {user?.avatar && (
+              <img
+                src={`http://localhost:3001${user.avatar}`}
+                alt="Current avatar"
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  marginBottom: 8,
+                }}
+              />
+            )}
+            {avatarMessage && (
+              <div className={`profile-message ${avatarMessageType}`}>
+                {avatarMessage}
+              </div>
+            )}
+            <form onSubmit={handleUpdateAvatar}>
+              <div className="profile-field">
+                <label>Upload New Picture</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setAvatarFile(e.target.files[0] || null)}
+                />
+              </div>
+              <button type="submit" className="profile-btn">
+                Update Picture
+              </button>
+            </form>
+          </div>
 
           <div className="profile-section">
             <h2>Personal Information</h2>
