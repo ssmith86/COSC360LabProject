@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Event = require("./models/Event");
+const Event = require("../models/Event");
 
 // GET /api/events/upcoming
 // this is used for the MyEventsPage.jsx to get the Upcoming Events in next 7 days

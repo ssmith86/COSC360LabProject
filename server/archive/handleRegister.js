@@ -6,7 +6,7 @@ const router = express.Router();
 // use bcrypt to handle password hashing
 const bcrypt = require("bcrypt");
 // use User model from mongoose
-const User = require("./models/User");
+const User = require("../models/User");
 // add multer to handleRegister
 const multer = require("multer");
 const path = require("path");
