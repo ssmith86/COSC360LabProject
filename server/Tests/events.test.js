@@ -8,22 +8,20 @@ const app = require("../server");
 describe("Event API", () => {
   test("returns 400 if event_name is missing", async () => {
     const res = await request(app)
-      .post("/api/createEventsForm")
+      .post("/api/events/")
       .send({ description: "a test event" });
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toBe("Invalid event data received.");
   });
 
   test("returns 400 if no data is sent", async () => {
-    const res = await request(app).post("/api/createEventsForm").send({});
+    const res = await request(app).post("/api/events/").send({});
     expect(res.statusCode).toBe(400);
   });
 
   test("returns 400 if no ownerId is provided", async () => {
     const res = await request(app).get("/api/events/myevents");
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toBe(
-      "ownerId query parameter is required",
-    );
+    expect(res.body.message).toBe("ownerId query parameter is required");
   });
 });
