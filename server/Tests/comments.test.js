@@ -48,7 +48,6 @@ describe("Comment Routes", () => {
   });
 
   // POST /api/comments/
-  // checkBanned middleware passes because "u1" is not a valid Monggose ObjectId
   describe("POST /api/comments/", () => {
     test("returns 400 if eventId is missing", async () => {
       const res = await request(app)
@@ -74,7 +73,7 @@ describe("Comment Routes", () => {
         populate: jest.fn().mockResolvedValue(mockPopulated),
       };
       Comment.create.mockResolvedValue(mockComment);
-      Event.findById.mockResolvedValue(null); // no owner → no notification
+      Event.findById.mockResolvedValue(null);
 
       const res = await request(app)
         .post("/api/comments/")
@@ -90,10 +89,7 @@ describe("Comment Routes", () => {
         populate: jest.fn().mockResolvedValue(mockPopulated),
       };
       Comment.create.mockResolvedValue(mockComment);
-      Event.findById.mockResolvedValue({
-        ownerId: "owner1",
-        title: "Test Event",
-      });
+      Event.findById.mockResolvedValue({ ownerId: "owner1", title: "Test Event" });
       User.findById.mockReturnValue({
         select: jest.fn().mockResolvedValue({ userName: "john" }),
       });
