@@ -45,7 +45,7 @@ app.use("/search", searchRoutes);
 app.use(express.static(path.join(__dirname, "../react-app/dist")));
 
 // send React's index.html for any non-API route
-app.get("*", (req, res, next) => {
+app.get("/{*path}", (req, res, next) => {
   if (req.path.startsWith("/api") || req.path.startsWith("/search")) {
     return next();
   }
