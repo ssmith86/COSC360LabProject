@@ -358,4 +358,44 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/top-creators
+  describe("GET /api/analytics/top-creators", () => {
+    test("returns top event creators", async () => {
+      Event.find.mockReturnValue({
+        populate: jest.fn().mockResolvedValue([
+          { ownerId: { userName: "alice" } },
+          { ownerId: { userName: "alice" } },
+          { ownerId: { userName: "bob" } },
+        ]),
+      });
+
+      const res = await request(app).get("/api/analytics/top-creators");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body[0]).toEqual({ creator: "alice", eventCount: 2 });
+      expect(res.body[1]).toEqual({ creator: "bob", eventCount: 1 });
+    });
+
+    test("uses 'Unknown' when ownerId is null", async () => {
+      Event.find.mockReturnValue({
+        populate: jest.fn().mockResolvedValue([{ ownerId: null }]),
+      });
+
+      const res = await request(app).get("/api/analytics/top-creators");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([{ creator: "Unknown", eventCount: 1 }]);
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      Event.find.mockReturnValue({
+        populate: jest.fn().mockRejectedValue(new Error("DB error")),
+      });
+
+      const res = await request(app).get("/api/analytics/top-creators");
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
