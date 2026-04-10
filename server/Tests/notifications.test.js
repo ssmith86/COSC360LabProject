@@ -3,7 +3,7 @@ const app = require("../server");
 
 // Use jest mock to skip Mongo DB Conn
 // Provides testing for server/controllers/notifications/ files
-// getNotifications.js, markAllRead.js, markOneRead.js, and deleteOneNotification.js
+// getNotifications.js, markAllRead.js, markOneRead.js, deleteAllNotifications.js, and deleteOneNotification.js
 // to run test: `cd server`, `npm test`
 jest.mock("../models/Notification");
 
@@ -115,6 +115,21 @@ describe("Notification Routes", () => {
       );
 
       expect(res.statusCode).toBe(500);
+    });
+  });
+
+  // DELETE /api/notifications/clear-all
+  describe("DELETE /api/notifications/clear-all", () => {
+    test("deletes all notifications for a user and returns success", async () => {
+      Notification.deleteMany.mockResolvedValue({});
+
+      const res = await request(app)
+        .delete("/api/notifications/clear-all")
+        .send({ userId: "u1" });
+
+      expect(Notification.deleteMany).toHaveBeenCalledWith({ userId: "u1" });
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
     });
   });
 
