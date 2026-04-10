@@ -76,5 +76,15 @@ describe("Search Routes", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual([]);
     });
+
+    test("returns 500 if the database throws an error", async () => {
+      User.find.mockReturnValue({
+        select: jest.fn().mockRejectedValue(new Error("DB error")),
+      });
+
+      const res = await request(app).get("/search/?q=test");
+
+      expect(res.statusCode).toBe(500);
+    });
   });
 });
