@@ -109,4 +109,44 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/popular-events
+  describe("GET /api/analytics/popular-events", () => {
+    test("returns top saved events", async () => {
+      SavedEvent.aggregate.mockResolvedValue([
+        { _id: "e1", saveCount: 5 },
+        { _id: "e2", saveCount: 3 },
+      ]);
+      Event.find.mockResolvedValue([
+        { _id: { toString: () => "e1" }, title: "Concert" },
+        { _id: { toString: () => "e2" }, title: "Workshop" },
+      ]);
+
+      const res = await request(app).get("/api/analytics/popular-events");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([
+        { eventId: "e1", eventName: "Concert", saveCount: 5 },
+        { eventId: "e2", eventName: "Workshop", saveCount: 3 },
+      ]);
+    });
+
+    test("returns empty array when no saved events exist", async () => {
+      SavedEvent.aggregate.mockResolvedValue([]);
+      Event.find.mockResolvedValue([]);
+
+      const res = await request(app).get("/api/analytics/popular-events");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([]);
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      SavedEvent.aggregate.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get("/api/analytics/popular-events");
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
