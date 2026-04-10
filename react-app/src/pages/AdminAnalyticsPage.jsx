@@ -2,12 +2,31 @@ import { useState, useEffect, useCallback } from "react";
 import { NavigationBar } from "../components/NavigationBar";
 import { SideBar } from "../components/SideBar";
 import {
-  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Cell,
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
 } from "recharts";
 import "./AnalyticsPage.css";
 
-const COLORS = ["#9b5cf6", "#7c3aed", "#6d28d9", "#5b21b6", "#4c1d95", "#a78bfa", "#c4b5fd", "#ddd6fe", "#ede9fe", "#f5f3ff"];
+const COLORS = [
+  "#9b5cf6",
+  "#7c3aed",
+  "#6d28d9",
+  "#5b21b6",
+  "#4c1d95",
+  "#a78bfa",
+  "#c4b5fd",
+  "#ddd6fe",
+  "#ede9fe",
+  "#f5f3ff",
+];
 
 const PRESETS = [
   { label: "3D", days: 3 },
@@ -22,7 +41,10 @@ function getPresetRange(days) {
   const to = new Date();
   const from = new Date();
   from.setDate(from.getDate() - days);
-  return { from: from.toISOString().split("T")[0], to: to.toISOString().split("T")[0] };
+  return {
+    from: from.toISOString().split("T")[0],
+    to: to.toISOString().split("T")[0],
+  };
 }
 
 function buildQuery(from, to) {
@@ -35,7 +57,7 @@ function buildQuery(from, to) {
   return qs ? `?${qs}` : "";
 }
 
-const API = "http://localhost:3001/api/analytics";
+const API = "/api/analytics";
 
 export const AdminAnalyticsPage = () => {
   const [tab, setTab] = useState("events");
@@ -73,39 +95,72 @@ export const AdminAnalyticsPage = () => {
 
   useEffect(() => {
     const qs = buildQuery("", "");
-    fetch(`${API}/event-total-summary${qs}`).then((r) => r.json()).then(setEventTotalSummary).catch(() => {});
-    fetch(`${API}/user-total-summary${qs}`).then((r) => r.json()).then(setUserTotalSummary).catch(() => {});
+    fetch(`${API}/event-total-summary${qs}`)
+      .then((r) => r.json())
+      .then(setEventTotalSummary)
+      .catch(() => {});
+    fetch(`${API}/user-total-summary${qs}`)
+      .then((r) => r.json())
+      .then(setUserTotalSummary)
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     const { from, to } = getRange();
     const qs = buildQuery(from, to);
 
-    fetch(`${API}/event-trends${qs}`).then((r) => r.json()).then((d) => {
-      setPublishTrends(d.data || []);
-      setPublishGranularity(d.granularity || "month");
-    }).catch(() => {});
-    fetch(`${API}/event-start-trends${qs}`).then((r) => r.json()).then((d) => {
-      setStartTrends(d.data || []);
-      setStartGranularity(d.granularity || "month");
-    }).catch(() => {});
-    fetch(`${API}/save-trends${qs}`).then((r) => r.json()).then((d) => {
-      setSaveTrends(d.data || []);
-      setSaveGranularity(d.granularity || "month");
-    }).catch(() => {});
-    fetch(`${API}/popular-events${qs}`).then((r) => r.json()).then(setPopularEvents).catch(() => {});
-    fetch(`${API}/top-creators${qs}`).then((r) => r.json()).then(setTopCreators).catch(() => {});
-    fetch(`${API}/location-distribution${qs}`).then((r) => r.json()).then(setLocationDist).catch(() => {});
-    fetch(`${API}/event-period-summary${qs}`).then((r) => r.json()).then((d) => {
-      setPublishedInPeriod(d.publishedInPeriod || 0);
-      setSavedInPeriod(d.savedInPeriod || 0);
-      setCommentedInPeriod(d.commentedInPeriod);
-    }).catch(() => {});
-    fetch(`${API}/user-growth${qs}`).then((r) => r.json()).then((d) => {
-      setUserGrowth(d.data || []);
-      setUserGrowthGranularity(d.granularity || "month");
-    }).catch(() => {});
-    fetch(`${API}/user-period-summary${qs}`).then((r) => r.json()).then(setUserPeriodSummary).catch(() => {});
+    fetch(`${API}/event-trends${qs}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setPublishTrends(d.data || []);
+        setPublishGranularity(d.granularity || "month");
+      })
+      .catch(() => {});
+    fetch(`${API}/event-start-trends${qs}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setStartTrends(d.data || []);
+        setStartGranularity(d.granularity || "month");
+      })
+      .catch(() => {});
+    fetch(`${API}/save-trends${qs}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setSaveTrends(d.data || []);
+        setSaveGranularity(d.granularity || "month");
+      })
+      .catch(() => {});
+    fetch(`${API}/popular-events${qs}`)
+      .then((r) => r.json())
+      .then(setPopularEvents)
+      .catch(() => {});
+    fetch(`${API}/top-creators${qs}`)
+      .then((r) => r.json())
+      .then(setTopCreators)
+      .catch(() => {});
+    fetch(`${API}/location-distribution${qs}`)
+      .then((r) => r.json())
+      .then(setLocationDist)
+      .catch(() => {});
+    fetch(`${API}/event-period-summary${qs}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setPublishedInPeriod(d.publishedInPeriod || 0);
+        setSavedInPeriod(d.savedInPeriod || 0);
+        setCommentedInPeriod(d.commentedInPeriod);
+      })
+      .catch(() => {});
+    fetch(`${API}/user-growth${qs}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setUserGrowth(d.data || []);
+        setUserGrowthGranularity(d.granularity || "month");
+      })
+      .catch(() => {});
+    fetch(`${API}/user-period-summary${qs}`)
+      .then((r) => r.json())
+      .then(setUserPeriodSummary)
+      .catch(() => {});
   }, [getRange]);
 
   const handlePreset = (label) => {
@@ -146,7 +201,11 @@ export const AdminAnalyticsPage = () => {
                   {PRESETS.map((p) => (
                     <button
                       key={p.label}
-                      className={activePreset === p.label ? "preset-btn active" : "preset-btn"}
+                      className={
+                        activePreset === p.label
+                          ? "preset-btn active"
+                          : "preset-btn"
+                      }
                       onClick={() => handlePreset(p.label)}
                     >
                       {p.label}
@@ -165,7 +224,10 @@ export const AdminAnalyticsPage = () => {
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
-                  <button className="preset-btn custom-apply" onClick={handleCustomApply}>
+                  <button
+                    className="preset-btn custom-apply"
+                    onClick={handleCustomApply}
+                  >
                     Apply
                   </button>
                 </div>
@@ -176,15 +238,23 @@ export const AdminAnalyticsPage = () => {
           {tab === "events" && (
             <div className="summary-row fixed-summary">
               <div className="metric-card metric-card--highlighted">
-                <span className="summary-number">{eventTotalSummary?.totalEvents ?? "..."}</span>
+                <span className="summary-number">
+                  {eventTotalSummary?.totalEvents ?? "..."}
+                </span>
                 <span className="summary-label">Total Events</span>
               </div>
               <div className="metric-card metric-card--highlighted">
-                <span className="summary-number">{eventTotalSummary?.totalSaves ?? "..."}</span>
+                <span className="summary-number">
+                  {eventTotalSummary?.totalSaves ?? "..."}
+                </span>
                 <span className="summary-label">Total Saves</span>
               </div>
               <div className="metric-card metric-card--highlighted">
-                <span className="summary-number">{eventTotalSummary ? (eventTotalSummary.totalComments ?? "N/A") : "..."}</span>
+                <span className="summary-number">
+                  {eventTotalSummary
+                    ? (eventTotalSummary.totalComments ?? "N/A")
+                    : "..."}
+                </span>
                 <span className="summary-label">Total Comments</span>
               </div>
             </div>
@@ -193,15 +263,21 @@ export const AdminAnalyticsPage = () => {
           {tab === "users" && (
             <div className="summary-row fixed-summary">
               <div className="metric-card metric-card--highlighted">
-                <span className="summary-number">{userTotalSummary?.totalUsers ?? "..."}</span>
+                <span className="summary-number">
+                  {userTotalSummary?.totalUsers ?? "..."}
+                </span>
                 <span className="summary-label">Total Users</span>
               </div>
               <div className="metric-card metric-card--highlighted">
-                <span className="summary-number">{userTotalSummary?.activeUsers ?? "..."}</span>
+                <span className="summary-number">
+                  {userTotalSummary?.activeUsers ?? "..."}
+                </span>
                 <span className="summary-label">Total Active</span>
               </div>
               <div className="metric-card metric-card--highlighted">
-                <span className="summary-number">{userTotalSummary?.bannedUsers ?? "..."}</span>
+                <span className="summary-number">
+                  {userTotalSummary?.bannedUsers ?? "..."}
+                </span>
                 <span className="summary-label">Total Banned</span>
               </div>
             </div>
@@ -210,8 +286,12 @@ export const AdminAnalyticsPage = () => {
           {tab === "events" && (
             <div className="summary-row period-summary">
               <div className="metric-card">
-                <span className="summary-number">{publishedInPeriod ?? "..."}</span>
-                <span className="summary-label">Events Published in Period</span>
+                <span className="summary-number">
+                  {publishedInPeriod ?? "..."}
+                </span>
+                <span className="summary-label">
+                  Events Published in Period
+                </span>
               </div>
               <div className="metric-card">
                 <span className="summary-number">{savedInPeriod ?? "..."}</span>
@@ -219,7 +299,9 @@ export const AdminAnalyticsPage = () => {
               </div>
               <div className="metric-card">
                 <span className="summary-number">
-                  {commentedInPeriod === undefined ? "..." : (commentedInPeriod ?? "N/A")}
+                  {commentedInPeriod === undefined
+                    ? "..."
+                    : (commentedInPeriod ?? "N/A")}
                 </span>
                 <span className="summary-label">Comments in Period</span>
               </div>
@@ -229,15 +311,21 @@ export const AdminAnalyticsPage = () => {
           {tab === "users" && (
             <div className="summary-row period-summary">
               <div className="metric-card">
-                <span className="summary-number">{userPeriodSummary?.activeInPeriod ?? "..."}</span>
+                <span className="summary-number">
+                  {userPeriodSummary?.activeInPeriod ?? "..."}
+                </span>
                 <span className="summary-label">Active Users in Period</span>
               </div>
               <div className="metric-card">
-                <span className="summary-number">{userPeriodSummary?.inactiveInPeriod ?? "..."}</span>
+                <span className="summary-number">
+                  {userPeriodSummary?.inactiveInPeriod ?? "..."}
+                </span>
                 <span className="summary-label">Inactive Users in Period</span>
               </div>
               <div className="metric-card">
-                <span className="summary-number">{userPeriodSummary?.bannedInPeriod ?? "..."}</span>
+                <span className="summary-number">
+                  {userPeriodSummary?.bannedInPeriod ?? "..."}
+                </span>
                 <span className="summary-label">Banned Users in Period</span>
               </div>
             </div>
@@ -247,7 +335,9 @@ export const AdminAnalyticsPage = () => {
             <div className="analytics-grid">
               <div className="analytics-card">
                 <h2>Event Trends</h2>
-                <p className="analytics-subtitle">Events published per {publishGranularity}</p>
+                <p className="analytics-subtitle">
+                  Events published per {publishGranularity}
+                </p>
                 {publishTrends.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={publishTrends}>
@@ -255,7 +345,13 @@ export const AdminAnalyticsPage = () => {
                       <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
-                      <Line type="monotone" dataKey="count" stroke="#9b5cf6" strokeWidth={2} name="Events" />
+                      <Line
+                        type="monotone"
+                        dataKey="count"
+                        stroke="#9b5cf6"
+                        strokeWidth={2}
+                        name="Events"
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
@@ -265,7 +361,9 @@ export const AdminAnalyticsPage = () => {
 
               <div className="analytics-card">
                 <h2>Event Schedule</h2>
-                <p className="analytics-subtitle">Events starting per {startGranularity}</p>
+                <p className="analytics-subtitle">
+                  Events starting per {startGranularity}
+                </p>
                 {startTrends.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={startTrends}>
@@ -273,7 +371,13 @@ export const AdminAnalyticsPage = () => {
                       <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
-                      <Line type="monotone" dataKey="count" stroke="#6d28d9" strokeWidth={2} name="Events" />
+                      <Line
+                        type="monotone"
+                        dataKey="count"
+                        stroke="#6d28d9"
+                        strokeWidth={2}
+                        name="Events"
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
@@ -283,7 +387,9 @@ export const AdminAnalyticsPage = () => {
 
               <div className="analytics-card">
                 <h2>Save Activity</h2>
-                <p className="analytics-subtitle">User saves per {saveGranularity}</p>
+                <p className="analytics-subtitle">
+                  User saves per {saveGranularity}
+                </p>
                 {saveTrends.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={saveTrends}>
@@ -291,7 +397,13 @@ export const AdminAnalyticsPage = () => {
                       <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
-                      <Line type="monotone" dataKey="count" stroke="#7c3aed" strokeWidth={2} name="Saves" />
+                      <Line
+                        type="monotone"
+                        dataKey="count"
+                        stroke="#7c3aed"
+                        strokeWidth={2}
+                        name="Saves"
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
@@ -307,7 +419,12 @@ export const AdminAnalyticsPage = () => {
                     <BarChart data={popularEvents} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" allowDecimals={false} />
-                      <YAxis dataKey="eventName" type="category" width={120} tick={{ fontSize: 12 }} />
+                      <YAxis
+                        dataKey="eventName"
+                        type="category"
+                        width={120}
+                        tick={{ fontSize: 12 }}
+                      />
                       <Tooltip />
                       <Bar dataKey="saveCount" name="Saves">
                         {popularEvents.map((_, i) => (
@@ -349,7 +466,9 @@ export const AdminAnalyticsPage = () => {
             <div className="analytics-grid">
               <div className="analytics-card">
                 <h2>User Growth</h2>
-                <p className="analytics-subtitle">New registrations per {userGrowthGranularity}</p>
+                <p className="analytics-subtitle">
+                  New registrations per {userGrowthGranularity}
+                </p>
                 {userGrowth.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={userGrowth}>
@@ -357,7 +476,13 @@ export const AdminAnalyticsPage = () => {
                       <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
-                      <Line type="monotone" dataKey="count" stroke="#7c3aed" strokeWidth={2} name="New Users" />
+                      <Line
+                        type="monotone"
+                        dataKey="count"
+                        stroke="#7c3aed"
+                        strokeWidth={2}
+                        name="New Users"
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
@@ -367,13 +492,20 @@ export const AdminAnalyticsPage = () => {
 
               <div className="analytics-card">
                 <h2>Most Active Creators</h2>
-                <p className="analytics-subtitle">Users with most events created</p>
+                <p className="analytics-subtitle">
+                  Users with most events created
+                </p>
                 {topCreators.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={topCreators} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" allowDecimals={false} />
-                      <YAxis dataKey="creator" type="category" width={120} tick={{ fontSize: 12 }} />
+                      <YAxis
+                        dataKey="creator"
+                        type="category"
+                        width={120}
+                        tick={{ fontSize: 12 }}
+                      />
                       <Tooltip />
                       <Bar dataKey="eventCount" name="Events">
                         {topCreators.map((_, i) => (

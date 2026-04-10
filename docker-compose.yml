@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - MONGO_URI=mongodb://mongo:27017/cosc360db
+      - JWT_SECRET=anyrandomstring
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

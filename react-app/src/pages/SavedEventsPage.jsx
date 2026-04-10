@@ -22,7 +22,7 @@ export const SavedEventsPage = () => {
   const savedEventIds = savedEvents.map((event) => event._id?.toString());
 
   const fetchSaved = () => {
-    fetch(`http://localhost:3001/api/savedevents?userId=${currentUserId}`)
+    fetch(`/api/savedevents?userId=${currentUserId}`)
       .then((res) => res.json())
       .then((data) => setSavedEvents(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error fetching saved events:", err));
@@ -39,7 +39,7 @@ export const SavedEventsPage = () => {
     const alreadySaved = savedEventIds.includes(eventId);
     const method = alreadySaved ? "DELETE" : "POST";
 
-    fetch("http://localhost:3001/api/savedevents", {
+    fetch("/api/savedevents", {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: currentUserId, eventId }),
@@ -55,7 +55,7 @@ export const SavedEventsPage = () => {
   const handleDelete = (eventId) => {
     if (!currentUserId) return;
 
-    fetch(`http://localhost:3001/api/events/${eventId}`, {
+    fetch(`/api/events/${eventId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     })

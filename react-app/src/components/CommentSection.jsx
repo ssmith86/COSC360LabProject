@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
 import "./css files/CommentSection.css";
 
-const API = "http://localhost:3001/api/comments";
+const API = "/api/comments";
 
 // single comment display component
-const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLoggedIn, currentUserId, isAdmin }) => {
+const CommentItem = ({
+  comment,
+  replies,
+  allComments,
+  onReply,
+  onDelete,
+  isLoggedIn,
+  currentUserId,
+  isAdmin,
+}) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [replySubmitting, setReplySubmitting] = useState(false);
@@ -27,7 +36,8 @@ const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLogge
   const replyToComment = comment.replyToCommentId
     ? allComments.find((c) => c._id === comment.replyToCommentId)
     : null;
-  const replyTargetDeleted = comment.replyToCommentId != null && replyToComment == null;
+  const replyTargetDeleted =
+    comment.replyToCommentId != null && replyToComment == null;
 
   // dont show "reply to xxx" for comments reply to root comment
   const showReplyTarget =
@@ -49,91 +59,99 @@ const CommentItem = ({ comment, replies, allComments, onReply, onDelete, isLogge
   };
 
   const avatarUrl = comment.userId?.avatar
-    ? (comment.userId.avatar.startsWith("/uploads/")
-      ? `http://localhost:3001${comment.userId.avatar}`
-      : comment.userId.avatar)
+    ? comment.userId.avatar.startsWith("/uploads/")
+      ? `${comment.userId.avatar}`
+      : comment.userId.avatar
     : null;
 
   return (
     <div className="comment-item">
-        <div className="comment-header">
-          {avatarUrl ? (
-            <img src={avatarUrl} alt={userName} className="comment-avatar-img" />
-          ) : (
-            <div className="comment-avatar-placeholder" />
-          )}
-          <span className="comment-author">{userName}</span>
-          {showReplyTarget && (
-            <>
-              <span className="comment-reply-arrow">›</span>
-              <span className="comment-reply-target">
-                {replyTargetDeleted ? (
-                  <em className="comment-reply-target-deleted">deleted comment</em>
-                ) : (
-                  replyToComment.userId?.userName || "Unknown"
-                )}
-              </span>
-            </>
-          )}
-          <span className="comment-date">{formatDate(comment.createdAt)}</span>
-        </div>
-        <div className="comment-content">
-          {isDeleted ? (
-            <span className="comment-deleted">This comment has been deleted</span>
-          ) : (
-            comment.content
-          )}
-        </div>
-
-        {isLoggedIn && !isDeleted && (
-          <div className="comment-actions">
-            <button className="comment-reply-btn" onClick={() => setShowReplyBox(!showReplyBox)}>
-              {showReplyBox ? "Cancel" : "Reply"}
-            </button>
-            {(currentUserId === comment.userId?._id || isAdmin) && (
-              <button className="comment-delete-btn" onClick={() => onDelete(comment._id)}>
-                Delete
-              </button>
-            )}
-          </div>
+      <div className="comment-header">
+        {avatarUrl ? (
+          <img src={avatarUrl} alt={userName} className="comment-avatar-img" />
+        ) : (
+          <div className="comment-avatar-placeholder" />
         )}
+        <span className="comment-author">{userName}</span>
+        {showReplyTarget && (
+          <>
+            <span className="comment-reply-arrow">›</span>
+            <span className="comment-reply-target">
+              {replyTargetDeleted ? (
+                <em className="comment-reply-target-deleted">
+                  deleted comment
+                </em>
+              ) : (
+                replyToComment.userId?.userName || "Unknown"
+              )}
+            </span>
+          </>
+        )}
+        <span className="comment-date">{formatDate(comment.createdAt)}</span>
+      </div>
+      <div className="comment-content">
+        {isDeleted ? (
+          <span className="comment-deleted">This comment has been deleted</span>
+        ) : (
+          comment.content
+        )}
+      </div>
 
-        {showReplyBox && (
-          <div className="comment-reply-input">
-            <textarea
-              className="comment-textarea"
-              placeholder={`Reply to ${userName}...`}
-              value={replyContent}
-              onChange={(e) => setReplyContent(e.target.value)}
-              rows={2}
-            />
+      {isLoggedIn && !isDeleted && (
+        <div className="comment-actions">
+          <button
+            className="comment-reply-btn"
+            onClick={() => setShowReplyBox(!showReplyBox)}
+          >
+            {showReplyBox ? "Cancel" : "Reply"}
+          </button>
+          {(currentUserId === comment.userId?._id || isAdmin) && (
             <button
-              className="comment-submit-btn"
-              onClick={handleReplySubmit}
-              disabled={replySubmitting || !replyContent.trim()}
+              className="comment-delete-btn"
+              onClick={() => onDelete(comment._id)}
             >
-              {replySubmitting ? "Posting..." : "Reply"}
+              Delete
             </button>
-          </div>
-        )}
+          )}
+        </div>
+      )}
 
-        {replies.length > 0 && (
-          <div className="comment-replies">
-            {replies.map((reply) => (
-              <CommentItem
-                key={reply._id}
-                comment={reply}
-                replies={[]}
-                allComments={allComments}
-                onReply={onReply}
-                onDelete={onDelete}
-                isLoggedIn={isLoggedIn}
-                currentUserId={currentUserId}
-                isAdmin={isAdmin}
-              />
-            ))}
-          </div>
-        )}
+      {showReplyBox && (
+        <div className="comment-reply-input">
+          <textarea
+            className="comment-textarea"
+            placeholder={`Reply to ${userName}...`}
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            rows={2}
+          />
+          <button
+            className="comment-submit-btn"
+            onClick={handleReplySubmit}
+            disabled={replySubmitting || !replyContent.trim()}
+          >
+            {replySubmitting ? "Posting..." : "Reply"}
+          </button>
+        </div>
+      )}
+
+      {replies.length > 0 && (
+        <div className="comment-replies">
+          {replies.map((reply) => (
+            <CommentItem
+              key={reply._id}
+              comment={reply}
+              replies={[]}
+              allComments={allComments}
+              onReply={onReply}
+              onDelete={onDelete}
+              isLoggedIn={isLoggedIn}
+              currentUserId={currentUserId}
+              isAdmin={isAdmin}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -236,7 +254,9 @@ export const CommentSection = ({ eventId }) => {
 
   return (
     <div className="comment-section">
-      <h2 className="comment-section-title">Comments ({comments.filter((c) => !c.isDeleted).length})</h2>
+      <h2 className="comment-section-title">
+        Comments ({comments.filter((c) => !c.isDeleted).length})
+      </h2>
 
       {isLoggedIn && (
         <div className="comment-input-box">

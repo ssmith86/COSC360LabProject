@@ -4,7 +4,7 @@ const { connectDB } = require("./db");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 4000;
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -16,7 +16,10 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 const searchRoutes = require("./routes/searchRoutes");
 
 app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    process.env.CORS_ORIGIN || "http://localhost:5173",
+  );
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PATCH, PUT, DELETE",
@@ -37,6 +40,17 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/search", searchRoutes);
+
+// serve built React app
+app.use(express.static(path.join(__dirname, "../react-app/dist")));
+
+// send React's index.html for any non-API route
+app.get("/{*path}", (req, res, next) => {
+  if (req.path.startsWith("/api") || req.path.startsWith("/search")) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, "../react-app/dist", "index.html"));
+});
 
 // add multer validaton image when upload image exceeds 6mb
 app.use((err, req, res, next) => {

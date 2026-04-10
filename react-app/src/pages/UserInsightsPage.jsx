@@ -2,11 +2,29 @@ import { useState, useEffect, useCallback } from "react";
 import { NavigationBar } from "../components/NavigationBar";
 import { SideBar } from "../components/SideBar";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
 } from "recharts";
 import "./AnalyticsPage.css";
 
-const COLORS = ["#9b5cf6", "#7c3aed", "#6d28d9", "#5b21b6", "#4c1d95", "#a78bfa", "#c4b5fd", "#ddd6fe", "#ede9fe", "#f5f3ff"];
+const COLORS = [
+  "#9b5cf6",
+  "#7c3aed",
+  "#6d28d9",
+  "#5b21b6",
+  "#4c1d95",
+  "#a78bfa",
+  "#c4b5fd",
+  "#ddd6fe",
+  "#ede9fe",
+  "#f5f3ff",
+];
 
 const PRESETS = [
   { label: "3D", days: 3 },
@@ -21,7 +39,10 @@ function getPresetRange(days) {
   const to = new Date();
   const from = new Date();
   from.setDate(from.getDate() - days);
-  return { from: from.toISOString().split("T")[0], to: to.toISOString().split("T")[0] };
+  return {
+    from: from.toISOString().split("T")[0],
+    to: to.toISOString().split("T")[0],
+  };
 }
 
 function buildQuery(from, to) {
@@ -32,7 +53,7 @@ function buildQuery(from, to) {
   return qs ? `?${qs}` : "";
 }
 
-const API = "http://localhost:3001/api/analytics";
+const API = "/api/analytics";
 
 export const UserInsightsPage = () => {
   const [startDate, setStartDate] = useState("");
@@ -56,9 +77,18 @@ export const UserInsightsPage = () => {
     const { from, to } = getRange();
     const qs = buildQuery(from, to);
 
-    fetch(`${API}/popular-events${qs}`).then((r) => r.json()).then(setPopularEvents).catch(() => {});
-    fetch(`${API}/top-creators${qs}`).then((r) => r.json()).then(setTopCreators).catch(() => {});
-    fetch(`${API}/location-distribution${qs}`).then((r) => r.json()).then(setLocationDist).catch(() => {});
+    fetch(`${API}/popular-events${qs}`)
+      .then((r) => r.json())
+      .then(setPopularEvents)
+      .catch(() => {});
+    fetch(`${API}/top-creators${qs}`)
+      .then((r) => r.json())
+      .then(setTopCreators)
+      .catch(() => {});
+    fetch(`${API}/location-distribution${qs}`)
+      .then((r) => r.json())
+      .then(setLocationDist)
+      .catch(() => {});
   }, [getRange]);
 
   return (
@@ -76,7 +106,11 @@ export const UserInsightsPage = () => {
                   {PRESETS.map((p) => (
                     <button
                       key={p.label}
-                      className={activePreset === p.label ? "preset-btn active" : "preset-btn"}
+                      className={
+                        activePreset === p.label
+                          ? "preset-btn active"
+                          : "preset-btn"
+                      }
                       onClick={() => setActivePreset(p.label)}
                     >
                       {p.label}
@@ -84,10 +118,21 @@ export const UserInsightsPage = () => {
                   ))}
                 </div>
                 <div className="date-filter-custom">
-                  <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
                   <span className="date-separator">to</span>
-                  <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                  <button className="preset-btn custom-apply" onClick={() => setActivePreset("custom")}>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                  <button
+                    className="preset-btn custom-apply"
+                    onClick={() => setActivePreset("custom")}
+                  >
                     Apply
                   </button>
                 </div>
@@ -104,7 +149,12 @@ export const UserInsightsPage = () => {
                   <BarChart data={popularEvents} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" allowDecimals={false} />
-                    <YAxis dataKey="eventName" type="category" width={120} tick={{ fontSize: 12 }} />
+                    <YAxis
+                      dataKey="eventName"
+                      type="category"
+                      width={120}
+                      tick={{ fontSize: 12 }}
+                    />
                     <Tooltip />
                     <Bar dataKey="saveCount" name="Saves">
                       {popularEvents.map((_, i) => (
@@ -142,13 +192,20 @@ export const UserInsightsPage = () => {
 
             <div className="analytics-card">
               <h2>Most Active Creators</h2>
-              <p className="analytics-subtitle">Users with most events created</p>
+              <p className="analytics-subtitle">
+                Users with most events created
+              </p>
               {topCreators.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={topCreators} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" allowDecimals={false} />
-                    <YAxis dataKey="creator" type="category" width={120} tick={{ fontSize: 12 }} />
+                    <YAxis
+                      dataKey="creator"
+                      type="category"
+                      width={120}
+                      tick={{ fontSize: 12 }}
+                    />
                     <Tooltip />
                     <Bar dataKey="eventCount" name="Events">
                       {topCreators.map((_, i) => (
