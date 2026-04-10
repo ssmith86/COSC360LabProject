@@ -468,4 +468,30 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/total-comments
+  describe("GET /api/analytics/total-comments", () => {
+    test("returns total comment count", async () => {
+      mockAdmin();
+      Comment.countDocuments.mockResolvedValue(42);
+
+      const res = await request(app).get(
+        `/api/analytics/total-comments?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({ totalComments: 42 });
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      mockAdmin();
+      Comment.countDocuments.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        `/api/analytics/total-comments?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
