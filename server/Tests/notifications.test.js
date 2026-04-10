@@ -131,6 +131,21 @@ describe("Notification Routes", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body.success).toBe(true);
     });
+
+    test("deletes notifications by category and returns success", async () => {
+      Notification.deleteMany.mockResolvedValue({});
+
+      const res = await request(app)
+        .delete("/api/notifications/clear-all")
+        .send({ userId: "u1", category: "system" });
+
+      expect(Notification.deleteMany).toHaveBeenCalledWith({
+        userId: "u1",
+        category: "system",
+      });
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+    });
   });
 
   // DELETE /api/notifications/:id
