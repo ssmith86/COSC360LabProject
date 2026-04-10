@@ -140,3 +140,22 @@
   border-radius: 6px;
   margin-bottom: 1rem;
 }
+
+@media (max-width: 700px) {
+  .event-details-main {
+    padding: 1rem;
+    padding-bottom: 80px;
+  }
+
+  .event-details-image {
+    height: 200px;
+  }
+
+  .event-details-title {
+    font-size: 1.3rem;
+  }
+
+  .event-details-actions {
+    flex-direction: column;
+  }
+}

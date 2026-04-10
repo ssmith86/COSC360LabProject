@@ -24,7 +24,15 @@
 
 @media (max-width: 700px) {
   .sidebar-area {
-    display: none;
+    width: 0;
+    min-width: 0;
+    border: none;
+    overflow: visible;
+  }
+
+  .main-content {
+    padding: 1rem;
+    padding-bottom: 80px;
   }
 }
 

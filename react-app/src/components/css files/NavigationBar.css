@@ -136,3 +136,18 @@
   width: 100%;
 }
 
+@media (max-width: 600px) {
+  .navbar-logo img {
+    max-height: 3rem;
+  }
+
+  .navbar-container {
+    padding: 0.5rem 1rem;
+  }
+
+  .notifications-dropdown {
+    min-width: 220px;
+    right: -60px;
+  }
+}
+

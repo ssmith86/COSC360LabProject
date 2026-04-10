@@ -129,3 +129,14 @@
 .profile-btn:hover {
     background-color: #7c3aed;
 }
+
+@media (max-width: 700px) {
+    .profile-page-body {
+        flex-direction: column;
+    }
+
+    .profile-content {
+        padding: 1rem;
+        padding-bottom: 80px;
+    }
+}
