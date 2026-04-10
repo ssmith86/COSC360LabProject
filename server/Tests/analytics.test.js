@@ -398,4 +398,36 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/user-total-summary
+  describe("GET /api/analytics/user-total-summary", () => {
+    test("returns total, active, and banned user counts", async () => {
+      mockAdmin();
+      User.countDocuments
+        .mockResolvedValueOnce(100) // totalUsers
+        .mockResolvedValueOnce(5); // bannedUsers
+
+      const res = await request(app).get(
+        `/api/analytics/user-total-summary?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({
+        totalUsers: 100,
+        activeUsers: 95,
+        bannedUsers: 5,
+      });
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      mockAdmin();
+      User.countDocuments.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        `/api/analytics/user-total-summary?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
