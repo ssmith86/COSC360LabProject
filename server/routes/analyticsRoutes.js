@@ -11,7 +11,7 @@ router.get("/event-total-summary", checkAdmin, ctrl.getEventTotalSummary);
 router.get("/event-period-summary", checkAdmin, ctrl.getEventPeriodSummary);
 router.get("/event-start-trends", checkAdmin, ctrl.getEventStartTrends);
 router.get("/save-trends", checkAdmin, ctrl.getSaveTrends);
-router.get("/top-creators", ctrl.getTopCreators);
+router.get("/most-active-creators", ctrl.getMostActiveCreators);
 router.get("/most-popular-creators", ctrl.getMostPopularCreators);
 router.get("/user-total-summary", checkAdmin, ctrl.getUserTotalSummary);
 router.get("/user-period-summary", checkAdmin, ctrl.getUserPeriodSummary);
