@@ -31,5 +31,19 @@ describe("Search Routes", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual(mockEvents);
     });
+
+    test("returns empty array when no results match", async () => {
+      User.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue([]),
+      });
+      Event.find.mockReturnValue({
+        populate: jest.fn().mockResolvedValue([]),
+      });
+
+      const res = await request(app).get("/search/?q=nonexistent");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([]);
+    });
   });
 });
