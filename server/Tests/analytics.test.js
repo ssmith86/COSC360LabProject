@@ -258,4 +258,36 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/event-period-summary
+  describe("GET /api/analytics/event-period-summary", () => {
+    test("returns period summary counts", async () => {
+      mockAdmin();
+      Event.countDocuments.mockResolvedValue(3);
+      SavedEvent.countDocuments.mockResolvedValue(7);
+      Comment.countDocuments.mockResolvedValue(12);
+
+      const res = await request(app).get(
+        `/api/analytics/event-period-summary?userId=${ADMIN_ID}&from=2025-01-01&to=2025-03-31`,
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({
+        publishedInPeriod: 3,
+        savedInPeriod: 7,
+        commentedInPeriod: 12,
+      });
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      mockAdmin();
+      Event.countDocuments.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        `/api/analytics/event-period-summary?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
