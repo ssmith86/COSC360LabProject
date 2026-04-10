@@ -15,7 +15,7 @@ export const EditEventPage = () => {
   // use useEffect to fetch the event data from backend db when
   // EditEventPage is loaded
   useEffect(() => {
-    fetch(`http://localhost:3001/api/events/${eventId}`)
+    fetch(`/api/events/${eventId}`)
       .then((res) => res.json())
       .then((data) => {
         setEventData(data);

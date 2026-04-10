@@ -25,7 +25,7 @@ export const ProfilePage = () => {
 
   useEffect(() => {
     if (!userId) return;
-    fetch("http://localhost:3001/api/users/" + userId)
+    fetch("/api/users/" + userId)
       .then((res) => res.json())
       .then((data) => {
         setUser(data);
@@ -48,13 +48,10 @@ export const ProfilePage = () => {
     const formData = new FormData();
     formData.append("avatar", avatarFile);
 
-    const res = await fetch(
-      `http://localhost:3001/api/users/${userId}/avatar`,
-      {
-        method: "PATCH",
-        body: formData,
-      },
-    );
+    const res = await fetch(`/api/users/${userId}/avatar`, {
+      method: "PATCH",
+      body: formData,
+    });
 
     if (res.ok) {
       const data = await res.json();
@@ -106,7 +103,7 @@ export const ProfilePage = () => {
       return;
     }
 
-    const res = await fetch("http://localhost:3001/api/users/" + userId, {
+    const res = await fetch("/api/users/" + userId, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ firstName, lastName, userName, email }),
@@ -150,7 +147,7 @@ export const ProfilePage = () => {
       return;
     }
 
-    const res = await fetch("http://localhost:3001/api/users/" + userId, {
+    const res = await fetch("/api/users/" + userId, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: newPassword, currentPassword }),
@@ -195,7 +192,7 @@ export const ProfilePage = () => {
             <h2>Profile Picture</h2>
             {user?.avatar && (
               <img
-                src={`http://localhost:3001${user.avatar}`}
+                src={`${user.avatar}`}
                 alt="Current avatar"
                 style={{
                   width: 80,

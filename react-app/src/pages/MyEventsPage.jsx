@@ -35,44 +35,21 @@ export const MyEventsPage = () => {
   // create savedEventIds to pass to EventGrid
   const savedEventIds = savedEvents.map((event) => event._id?.toString());
 
-  // useEffect(() => {
-  //   fetch("http://localhost:3001/api/events/upcoming")
-  //     .then((res) => res.json())
-  //     .then((data) => setUpcomingEvents(Array.isArray(data) ? data : []))
-  //     .catch((err) => console.error("Error fetching upcoming events:", err));
-  // }, []);
-
-  // useEffect(() => {
-  //   fetch(
-  //     `http://localhost:3001/api/events/myevents?ownerId=${currentUserId}`,
-  //   )
-  //     .then((res) => res.json())
-  //     .then((data) => setMyEvents(Array.isArray(data) ? data : []))
-  //     .catch((err) => console.error("Error fetching my events:", err));
-  // }, []);
-
-  // useEffect(() => {
-  //   fetch(`http://localhost:3001/api/savedevents?userId=${currentUserId}`)
-  //     .then((res) => res.json())
-  //     .then((data) => setSavedEvents(Array.isArray(data) ? data : []))
-  //     .catch((err) => console.error("Error fetching saved events:", err));
-  // }, []);
-
   // Add polling to achieve asynchonous update in real time
   // so changes made by any user (e.g. admin deleting an event) reflect without a page refresh
   // combine fetches into one function, poll every 3 seconds
   const fetchAll = () => {
-    fetch("http://localhost:3001/api/events/upcoming")
+    fetch("/api/events/upcoming")
       .then((res) => res.json())
       .then((data) => setUpcomingEvents(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error fetching upcoming events:", err));
 
-    fetch(`http://localhost:3001/api/events/myevents?ownerId=${currentUserId}`)
+    fetch(`/api/events/myevents?ownerId=${currentUserId}`)
       .then((res) => res.json())
       .then((data) => setMyEvents(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error fetching my events:", err));
 
-    fetch(`http://localhost:3001/api/savedevents?userId=${currentUserId}`)
+    fetch(`/api/savedevents?userId=${currentUserId}`)
       .then((res) => res.json())
       .then((data) => setSavedEvents(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Error fetching saved events:", err));
@@ -96,7 +73,7 @@ export const MyEventsPage = () => {
     // this enables us to un-save an event
     const method = alreadySaved ? "DELETE" : "POST";
 
-    fetch("http://localhost:3001/api/savedevents", {
+    fetch("/api/savedevents", {
       // update here to use the above defined method var
       method: method,
       headers: { "Content-Type": "application/json" },
@@ -106,7 +83,7 @@ export const MyEventsPage = () => {
       .then((data) => {
         console.log(data.message);
         // re-fetch saved events to update the UI
-        fetch(`http://localhost:3001/api/savedevents?userId=${currentUserId}`)
+        fetch(`/api/savedevents?userId=${currentUserId}`)
           .then((res) => res.json())
           .then((data) => setSavedEvents(Array.isArray(data) ? data : []));
       })
@@ -117,7 +94,7 @@ export const MyEventsPage = () => {
   const handleDelete = (eventId) => {
     if (!currentUserId) return;
 
-    fetch(`http://localhost:3001/api/events/${eventId}`, {
+    fetch(`/api/events/${eventId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     })
@@ -125,13 +102,11 @@ export const MyEventsPage = () => {
       .then((data) => {
         console.log(data.message);
         // re-fetch all event lists so UI is updated
-        fetch("http://localhost:3001/api/events/upcoming")
+        fetch("/api/events/upcoming")
           .then((res) => res.json())
           .then((data) => setUpcomingEvents(Array.isArray(data) ? data : []));
 
-        fetch(
-          `http://localhost:3001/api/events/myevents?ownerId=${currentUserId}`,
-        )
+        fetch(`/api/events/myevents?ownerId=${currentUserId}`)
           .then((res) => res.json())
           .then((data) => setMyEvents(Array.isArray(data) ? data : []));
       })

@@ -89,7 +89,7 @@ export default function SignUpForm() {
       formData.append("avatar", avatarFile);
     }
 
-    const response = await fetch("http://localhost:3001/api/register", {
+    const response = await fetch("/api/register", {
       method: "POST",
       body: formData,
     });

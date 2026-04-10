@@ -175,7 +175,7 @@ export function EditEventForm({
       formData.append("image", imageFile);
     }
 
-    fetch(`http://localhost:3001/api/events/${eventId}`, {
+    fetch(`/api/events/${eventId}`, {
       method: "PUT",
       body: formData,
     })

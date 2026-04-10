@@ -24,7 +24,7 @@ export const EventDetailsPage = () => {
 
   // fetch event data from backend when the page is loaded
   useEffect(() => {
-    fetch(`http://localhost:3001/api/events/${eventId}`)
+    fetch(`/api/events/${eventId}`)
       .then((res) => res.json())
       .then((data) => {
         setEventData(data);
@@ -44,7 +44,7 @@ export const EventDetailsPage = () => {
     );
     if (!confirmed) return;
 
-    fetch(`http://localhost:3001/api/events/${eventId}`, { method: "DELETE" })
+    fetch(`/api/events/${eventId}`, { method: "DELETE" })
       .then((res) => res.json())
       .then(() => navigate("/"))
       .catch(() => alert("Failed to delete event. Please try again."));
@@ -95,7 +95,7 @@ export const EventDetailsPage = () => {
 
   // connect backend URL for upload image file, otherwise use default
   const imageUrl = eventData?.imageUrl?.startsWith("/uploads/")
-    ? `http://localhost:3001${eventData.imageUrl}`
+    ? `${eventData.imageUrl}`
     : eventData?.imageUrl || "/sportImage.webp";
 
   return (
@@ -112,7 +112,8 @@ export const EventDetailsPage = () => {
           </button>
           {isBanned && (
             <div className="banned-banner">
-              Your account has been banned. You can browse events but cannot perform any actions.
+              Your account has been banned. You can browse events but cannot
+              perform any actions.
             </div>
           )}
           <div className="event-details-card">

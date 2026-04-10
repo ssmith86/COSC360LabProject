@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import {FaSearch} from "react-icons/fa";
-import './css files/SearchBar.css';
+import React, { useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import "./css files/SearchBar.css";
 
 export const SearchBar = ({ setSearchResults, setHasSearched }) => {
   const [input, setInput] = useState("");
@@ -8,7 +8,7 @@ export const SearchBar = ({ setSearchResults, setHasSearched }) => {
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`http://localhost:3001/search?q=${input}`);
+    const response = await fetch(`/search?q=${input}`);
     const data = await response.json();
 
     setSearchResults(data);
