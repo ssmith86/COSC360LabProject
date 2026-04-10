@@ -168,6 +168,16 @@ describe("Notification Routes", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body.success).toBe(true);
     });
+
+    test("returns 500 if the database throws an error", async () => {
+      Notification.deleteMany.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app)
+        .delete("/api/notifications/clear-all")
+        .send({ userId: "u1" });
+
+      expect(res.statusCode).toBe(500);
+    });
   });
 
   // DELETE /api/notifications/:id
