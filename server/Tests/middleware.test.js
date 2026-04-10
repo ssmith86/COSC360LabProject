@@ -3,6 +3,13 @@ const app = require("../server");
 
 // simulate MongoDB connection
 jest.mock("../models/User");
+jest.mock("../models/SavedEvent");
+jest.mock("../models/Comment");
+jest.mock("../models/Event");
+
+const SavedEvent = require("../models/SavedEvent");
+const Comment = require("../models/Comment");
+const Event = require("../models/Event");
 
 const User = require("../models/User");
 
@@ -46,24 +53,17 @@ describe("Middleware", () => {
     });
 
     test("passes through to the next handler if the user is an admin", async () => {
-      User.findById
-        // checkAdmin checks the requesting user
-        .mockReturnValueOnce({
-          select: jest.fn().mockResolvedValue({ isAdmin: true }),
-        })
-        // deleteUser controller checks the target user
-        .mockResolvedValueOnce(null);
-
-      const mockSavedEvent = require("../models/SavedEvent");
-      jest.mock("../models/SavedEvent");
-      const SavedEvent = require("../models/SavedEvent");
-      SavedEvent.deleteMany = jest.fn().mockResolvedValue({});
+      User.findById.mockReturnValueOnce({
+        select: jest.fn().mockResolvedValue({ isAdmin: true }),
+      });
+      User.findByIdAndDelete.mockResolvedValue({});
+      SavedEvent.deleteMany.mockResolvedValue({});
 
       const res = await request(app)
         .delete("/api/users/u1")
         .send({ userId: VALID_OBJECT_ID });
 
-      // deleteUser controller runs expects status 200
+      // deleteUser ran (not blocked by checkAdmin) — 200 proves middleware passed
       expect(res.statusCode).toBe(200);
     });
 
@@ -96,10 +96,9 @@ describe("Middleware", () => {
     test("passes through if userId is not a valid ObjectId", async () => {
       const res = await request(app)
         .post("/api/comments/")
-        .send({ eventId: "e1", userId: "not-valid", content: "Hello" });
+        .send({ eventId: "e1", userId: "not-valid" }); // no content — triggers controller's 400
 
-      // checkBanned passed — controller runs and returns status 400
-      // because "not-valid" fails the controller's own validation
+      // checkBanned passed — controller ran and returned 400 because content is missing
       expect(res.statusCode).toBe(400);
     });
 
@@ -120,24 +119,17 @@ describe("Middleware", () => {
       User.findById.mockReturnValue({
         select: jest.fn().mockResolvedValue({ isBanned: false }),
       });
-
-      // postComment calls Comment.create
-      const Comment = require("../models/Comment");
-      jest.mock("../models/Comment");
-      Comment.create = jest.fn().mockResolvedValue({
+      Comment.create.mockResolvedValue({
         _id: "c1",
         populate: jest.fn().mockResolvedValue({ _id: "c1", content: "Hello" }),
       });
-
-      const Event = require("../models/Event");
-      jest.mock("../models/Event");
-      Event.findById = jest.fn().mockResolvedValue(null);
+      Event.findById.mockResolvedValue(null);
 
       const res = await request(app)
         .post("/api/comments/")
         .send({ eventId: "e1", userId: VALID_OBJECT_ID, content: "Hello" });
 
-      // checkBanned passes controller with status 201
+      // 201 proves checkBanned passed through to the controller
       expect(res.statusCode).toBe(201);
     });
 
