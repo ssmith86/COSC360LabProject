@@ -7,14 +7,22 @@ const app = require("../server");
 describe("Event API", () => {
   test("returns 400 if event title is missing", async () => {
     const res = await request(app)
+<<<<<<< HEAD
       .post("/api/events/")
+=======
+      .post("/api/events")
+>>>>>>> 06b40c2578e91020af67d5bc9c53e1348abb4707
       .send({ description: "a test event" });
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toBe("Invalid event data received.");
   });
 
   test("returns 400 if no data is sent", async () => {
+<<<<<<< HEAD
     const res = await request(app).post("/api/events/").send({});
+=======
+    const res = await request(app).post("/api/events").send({});
+>>>>>>> 06b40c2578e91020af67d5bc9c53e1348abb4707
     expect(res.statusCode).toBe(400);
   });
 
