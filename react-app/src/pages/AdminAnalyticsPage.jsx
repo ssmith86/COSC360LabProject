@@ -76,6 +76,7 @@ export const AdminAnalyticsPage = () => {
   const [saveGranularity, setSaveGranularity] = useState("month");
   const [popularEvents, setPopularEvents] = useState([]);
   const [topCreators, setTopCreators] = useState([]);
+  const [mostPopularCreators, setMostPopularCreators] = useState([]);
   const [locationDist, setLocationDist] = useState([]);
   const [userGrowth, setUserGrowth] = useState([]);
   const [userGrowthGranularity, setUserGrowthGranularity] = useState("month");
@@ -137,6 +138,10 @@ export const AdminAnalyticsPage = () => {
     fetch(`${API}/top-creators${qs}`)
       .then((r) => r.json())
       .then(setTopCreators)
+      .catch(() => {});
+    fetch(`${API}/most-popular-creators${qs}`)
+      .then((r) => r.json())
+      .then(setMostPopularCreators)
       .catch(() => {});
     fetch(`${API}/location-distribution${qs}`)
       .then((r) => r.json())
@@ -516,6 +521,35 @@ export const AdminAnalyticsPage = () => {
                   </ResponsiveContainer>
                 ) : (
                   <p className="no-data">No creator data available</p>
+                )}
+              </div>
+
+              <div className="analytics-card">
+                <h2>Most Popular Creators</h2>
+                <p className="analytics-subtitle">
+                  Users whose events received the most saves
+                </p>
+                {mostPopularCreators.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={mostPopularCreators} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" allowDecimals={false} />
+                      <YAxis
+                        dataKey="creator"
+                        type="category"
+                        width={120}
+                        tick={{ fontSize: 12 }}
+                      />
+                      <Tooltip />
+                      <Bar dataKey="totalSaves" name="Total Saves">
+                        {mostPopularCreators.map((_, i) => (
+                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="no-data">No popularity data available</p>
                 )}
               </div>
             </div>
