@@ -361,8 +361,8 @@ describe("Analytics Routes", () => {
     });
   });
 
-  // GET /api/analytics/top-creators
-  describe("GET /api/analytics/top-creators", () => {
+  // GET /api/analytics/most-active-creators
+  describe("GET /api/analytics/most-active-creators", () => {
     test("returns top event creators", async () => {
       Event.find.mockReturnValue({
         populate: jest.fn().mockResolvedValue([
@@ -372,7 +372,7 @@ describe("Analytics Routes", () => {
         ]),
       });
 
-      const res = await request(app).get("/api/analytics/top-creators");
+      const res = await request(app).get("/api/analytics/most-active-creators");
 
       expect(res.statusCode).toBe(200);
       expect(res.body[0]).toEqual({ creator: "alice", eventCount: 2 });
@@ -384,7 +384,7 @@ describe("Analytics Routes", () => {
         populate: jest.fn().mockResolvedValue([{ ownerId: null }]),
       });
 
-      const res = await request(app).get("/api/analytics/top-creators");
+      const res = await request(app).get("/api/analytics/most-active-creators");
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual([{ creator: "Unknown", eventCount: 1 }]);
@@ -395,7 +395,7 @@ describe("Analytics Routes", () => {
         populate: jest.fn().mockRejectedValue(new Error("DB error")),
       });
 
-      const res = await request(app).get("/api/analytics/top-creators");
+      const res = await request(app).get("/api/analytics/most-active-creators");
 
       expect(res.statusCode).toBe(500);
     });
