@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
+const { EJSON } = require("bson");
 
 function loadJSON(filePath) {
   const fs = require("fs");
   try {
     const content = fs.readFileSync(filePath, "utf8").trim();
     if (!content) return [];
-    return JSON.parse(content);
+    return EJSON.parse(content);
   } catch (e) {
     return [];
   }
