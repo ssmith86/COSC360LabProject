@@ -62,5 +62,19 @@ describe("Search Routes", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual(mockEvents);
     });
+
+    test("handles empty query parameter", async () => {
+      User.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue([]),
+      });
+      Event.find.mockReturnValue({
+        populate: jest.fn().mockResolvedValue([]),
+      });
+
+      const res = await request(app).get("/search/");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([]);
+    });
   });
 });
