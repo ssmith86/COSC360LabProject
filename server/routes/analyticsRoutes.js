@@ -16,6 +16,7 @@ router.get("/most-popular-creators", ctrl.getMostPopularCreators);
 router.get("/user-total-summary", checkAdmin, ctrl.getUserTotalSummary);
 router.get("/user-period-summary", checkAdmin, ctrl.getUserPeriodSummary);
 router.get("/total-comments", checkAdmin, ctrl.getTotalComments);
+router.get("/comment-trends", checkAdmin, ctrl.getCommentTrends);
 router.get("/hot-events-trend", checkAdmin, ctrl.getHotEventsTrend);
 
 module.exports = router;

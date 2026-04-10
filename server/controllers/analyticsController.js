@@ -345,6 +345,32 @@ exports.getTotalComments = async (req, res) => {
   }
 };
 
+exports.getCommentTrends = async (req, res) => {
+  try {
+    const { from, to } = parseDateRange(req.query);
+    const granularity = getGranularity(from, to);
+    const filter = {};
+    if (from || to) {
+      filter.createdAt = {};
+      if (from) filter.createdAt.$gte = from;
+      if (to) filter.createdAt.$lte = to;
+    }
+    const comments = await Comment.find(filter);
+    const counts = {};
+    comments.forEach((c) => {
+      if (!c.createdAt) return;
+      const key = dateToKey(new Date(c.createdAt), granularity);
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    const result = Object.entries(counts)
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    res.json({ granularity, data: result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.getHotEventsTrend = async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
