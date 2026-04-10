@@ -257,6 +257,49 @@ exports.getTopCreators = async (req, res) => {
   }
 };
 
+exports.getMostPopularCreators = async (req, res) => {
+  try {
+    const { from, to } = parseDateRange(req.query);
+    const matchStage = {};
+    if (from || to) {
+      matchStage.savedAt = {};
+      if (from) matchStage.savedAt.$gte = from;
+      if (to) matchStage.savedAt.$lte = to;
+    }
+    const pipeline = [
+      ...(Object.keys(matchStage).length ? [{ $match: matchStage }] : []),
+      {
+        $lookup: {
+          from: "events",
+          localField: "eventId",
+          foreignField: "_id",
+          as: "event",
+        },
+      },
+      { $unwind: "$event" },
+      { $group: { _id: "$event.ownerId", totalSaves: { $sum: 1 } } },
+      { $sort: { totalSaves: -1 } },
+      { $limit: 10 },
+    ];
+    const topOwners = await SavedEvent.aggregate(pipeline);
+    const ownerIds = topOwners.map((o) => o._id);
+    const users = await User.find({ _id: { $in: ownerIds } }).select(
+      "userName firstName lastName",
+    );
+    const userMap = {};
+    users.forEach((u) => {
+      userMap[u._id.toString()] = u.userName;
+    });
+    const result = topOwners.map((o) => ({
+      creator: userMap[o._id?.toString()] || "Unknown",
+      totalSaves: o.totalSaves,
+    }));
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.getUserTotalSummary = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
