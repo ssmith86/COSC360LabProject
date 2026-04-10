@@ -1,0 +1,35 @@
+const request = require("supertest");
+const app = require("../server");
+
+// to run test: `cd server`, `npm test`
+
+// use jest.mock so no real Mongo DB conn is required
+jest.mock("../models/Event");
+jest.mock("../models/User");
+
+const Event = require("../models/Event");
+const User = require("../models/User");
+
+describe("Search Routes", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // GET /search/
+  describe("GET /search/", () => {
+    test("returns matching events by title", async () => {
+      User.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue([]),
+      });
+      const mockEvents = [{ _id: "e1", title: "Music Festival" }];
+      Event.find.mockReturnValue({
+        populate: jest.fn().mockResolvedValue(mockEvents),
+      });
+
+      const res = await request(app).get("/search/?q=music");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual(mockEvents);
+    });
+  });
+});
