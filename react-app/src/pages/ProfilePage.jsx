@@ -22,6 +22,7 @@ export const ProfilePage = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarMessage, setAvatarMessage] = useState("");
   const [avatarMessageType, setAvatarMessageType] = useState("");
+  const [commentHistory, setCommentHistory] = useState([]);
 
   useEffect(() => {
     if (!userId) return;
@@ -34,6 +35,10 @@ export const ProfilePage = () => {
         setUserName(data.userName || "");
         setEmail(data.email || "");
       });
+    fetch("/api/comments/user/" + userId)
+      .then((res) => res.json())
+      .then((data) => setCommentHistory(Array.isArray(data) ? data : []))
+      .catch(() => {});
   }, [userId]);
 
   // add new handleUpdateAvatar function
@@ -271,6 +276,32 @@ export const ProfilePage = () => {
                 Save Changes
               </button>
             </form>
+          </div>
+
+          <div className="profile-section comment-history-section">
+            <h2>Comment History</h2>
+            {commentHistory.length === 0 ? (
+              <p className="comment-history-empty">You haven't posted any comments yet.</p>
+            ) : (
+              <ul className="comment-history-list">
+                {commentHistory.map((c) => (
+                  <li key={c._id} className="comment-history-item">
+                    <div className="comment-history-meta">
+                      <a href={`/event/${c.eventId}`} className="comment-history-event">
+                        {c.eventTitle}
+                      </a>
+                      <span className="comment-history-badge">
+                        {c.isReply ? "Reply" : "Comment"}
+                      </span>
+                      <span className="comment-history-date">
+                        {new Date(c.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="comment-history-content">{c.content}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="profile-section">
