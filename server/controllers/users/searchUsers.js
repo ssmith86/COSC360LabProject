@@ -5,7 +5,8 @@ module.exports = async (req, res) => {
   const searchTerm = req.query.q || "";
   if (!searchTerm.trim()) return res.json({ users: [], events: [] });
   try {
-    const regex = { $regex: searchTerm, $options: "i" };
+    const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = { $regex: escaped, $options: "i" };
     const users = await User.find({
       $or: [
         { userName: regex },
@@ -16,7 +17,7 @@ module.exports = async (req, res) => {
     }).select("-password");
     const events = await Event.find({
       $or: [{ title: regex }, { description: regex }],
-    });
+    }).populate("ownerId", "userName");
     res.json({ users, events });
   } catch (err) {
     res.status(500).json({ error: err.message });
