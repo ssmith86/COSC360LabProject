@@ -1,9 +1,9 @@
 // run test `cd react-app` and run `npm test`
 // test Event Card frontend functionality
 
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import "@testing-library/jest-dom/vitest";
+import { describe, test, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import EventCard from "../src/components/EventCard";
 
 // simulate useNavigate since EventCard uses react-router-dom
@@ -38,10 +38,6 @@ const defaultProps = {
 describe("EventCard Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    cleanup();
   });
 
   test("redirects to /register when a logged-out user clicks save", () => {

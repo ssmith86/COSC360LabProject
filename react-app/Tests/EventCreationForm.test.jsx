@@ -2,9 +2,9 @@
 // Test: core functionality, logic-heavy code, and edge case in
 // EventCreationForm
 
-import { describe, test, expect, vi, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import "@testing-library/jest-dom/vitest";
+import { describe, test, expect, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import EventCreationForm from "../src/components/EventCreationForm";
 
 // create a fake function called simulateNavigate to prevent router crash
@@ -14,11 +14,6 @@ vi.mock("react-router-dom", () => ({
 }));
 
 describe("EventCreationForm Component", () => {
-  // clean up after each test to prevent corruption
-  afterEach(() => {
-    cleanup();
-  });
-
   test("render the event creation form fields", () => {
     render(<EventCreationForm />);
     expect(
