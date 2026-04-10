@@ -10,6 +10,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
   Cell,
 } from "recharts";
@@ -84,6 +85,8 @@ export const AdminAnalyticsPage = () => {
   const [savedInPeriod, setSavedInPeriod] = useState(null);
   const [commentedInPeriod, setCommentedInPeriod] = useState(undefined);
   const [userPeriodSummary, setUserPeriodSummary] = useState(null);
+  const [hotEventsTrend, setHotEventsTrend] = useState({ events: [], data: [] });
+  const [hotGranularity, setHotGranularity] = useState("month");
 
   const getRange = useCallback(() => {
     if (activePreset === "custom") {
@@ -165,6 +168,13 @@ export const AdminAnalyticsPage = () => {
     fetch(`${API}/user-period-summary${qs}`)
       .then((r) => r.json())
       .then(setUserPeriodSummary)
+      .catch(() => {});
+    fetch(`${API}/hot-events-trend${qs}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setHotEventsTrend({ events: d.events || [], data: d.data || [] });
+        setHotGranularity(d.granularity || "month");
+      })
       .catch(() => {});
   }, [getRange]);
 
@@ -462,6 +472,61 @@ export const AdminAnalyticsPage = () => {
                   </ResponsiveContainer>
                 ) : (
                   <p className="no-data">No location data available</p>
+                )}
+              </div>
+
+              <div className="analytics-card analytics-card--full">
+                <h2>Hot Events Trend</h2>
+                <p className="analytics-subtitle">
+                  Save activity for top 5 events per {hotGranularity}
+                </p>
+                {hotEventsTrend.data.length > 0 ? (
+                  <>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={hotEventsTrend.data}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+                        <YAxis allowDecimals={false} />
+                        <Tooltip />
+                        <Legend />
+                        {hotEventsTrend.events.map((name, i) => (
+                          <Line
+                            key={name}
+                            type="monotone"
+                            dataKey={name}
+                            stroke={COLORS[i % COLORS.length]}
+                            strokeWidth={2}
+                            dot={false}
+                          />
+                        ))}
+                      </LineChart>
+                    </ResponsiveContainer>
+
+                    <div className="hot-events-table-wrapper">
+                      <table className="hot-events-table">
+                        <thead>
+                          <tr>
+                            <th>Period</th>
+                            {hotEventsTrend.events.map((name) => (
+                              <th key={name}>{name}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {hotEventsTrend.data.map((row) => (
+                            <tr key={row.label}>
+                              <td>{row.label}</td>
+                              {hotEventsTrend.events.map((name) => (
+                                <td key={name}>{row[name] ?? 0}</td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                ) : (
+                  <p className="no-data">No hot events data available</p>
                 )}
               </div>
             </div>
