@@ -191,4 +191,39 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/user-growth
+  describe("GET /api/analytics/user-growth", () => {
+    test("returns user growth data grouped by month", async () => {
+      mockAdmin();
+      User.find.mockResolvedValue([
+        { createdAt: new Date("2025-01-10T12:00:00") },
+        { createdAt: new Date("2025-01-20T12:00:00") },
+        { createdAt: new Date("2025-02-15T12:00:00") },
+      ]);
+
+      const res = await request(app).get(
+        `/api/analytics/user-growth?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ label: "2025-01", count: 2 }),
+          expect.objectContaining({ label: "2025-02", count: 1 }),
+        ]),
+      );
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      mockAdmin();
+      User.find.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        `/api/analytics/user-growth?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
