@@ -229,7 +229,7 @@ exports.getSaveTrends = async (req, res) => {
   }
 };
 
-exports.getTopCreators = async (req, res) => {
+exports.getMostActiveCreators = async (req, res) => {
   try {
     const { from, to } = parseDateRange(req.query);
     const filter = {};
