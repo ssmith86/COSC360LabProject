@@ -290,4 +290,38 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/event-start-trends
+  describe("GET /api/analytics/event-start-trends", () => {
+    test("returns event start date trends", async () => {
+      mockAdmin();
+      Event.find.mockResolvedValue([
+        { startDate: new Date("2025-04-10T12:00:00") },
+        { startDate: new Date("2025-04-15T12:00:00") },
+      ]);
+
+      const res = await request(app).get(
+        `/api/analytics/event-start-trends?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ label: "2025-04", count: 2 }),
+        ]),
+      );
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      mockAdmin();
+      Event.find.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        `/api/analytics/event-start-trends?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
+
 });
