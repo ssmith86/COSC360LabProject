@@ -401,6 +401,56 @@ describe("Analytics Routes", () => {
     });
   });
 
+  // GET /api/analytics/most-popular-creators
+  describe("GET /api/analytics/most-popular-creators", () => {
+    test("returns creators ranked by total saves on their events", async () => {
+      SavedEvent.aggregate.mockResolvedValue([
+        { _id: "owner1", totalSaves: 10 },
+        { _id: "owner2", totalSaves: 4 },
+      ]);
+      User.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue([
+          { _id: { toString: () => "owner1" }, userName: "alice" },
+          { _id: { toString: () => "owner2" }, userName: "bob" },
+        ]),
+      });
+
+      const res = await request(app).get(
+        "/api/analytics/most-popular-creators",
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([
+        { creator: "alice", totalSaves: 10 },
+        { creator: "bob", totalSaves: 4 },
+      ]);
+    });
+
+    test("returns empty array when no saves exist", async () => {
+      SavedEvent.aggregate.mockResolvedValue([]);
+      User.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue([]),
+      });
+
+      const res = await request(app).get(
+        "/api/analytics/most-popular-creators",
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([]);
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      SavedEvent.aggregate.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        "/api/analytics/most-popular-creators",
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
+
   // GET /api/analytics/user-total-summary
   describe("GET /api/analytics/user-total-summary", () => {
     test("returns total, active, and banned user counts", async () => {
