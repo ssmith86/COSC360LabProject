@@ -1,6 +1,8 @@
 const request = require("supertest");
 const app = require("../server");
 
+// to run test: `cd server`, `npm test`
+
 // use jest.mock so no real Mongo DB conn is required
 jest.mock("../models/User");
 jest.mock("../models/Event");
