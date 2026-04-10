@@ -55,7 +55,7 @@ describe("Saved Events Routes", () => {
     test("filters out null eventId entries", async () => {
       const mockSavedRecords = [
         { eventId: { _id: "e1", title: "Event 1" } },
-        { eventId: null }, // deleted event
+        { eventId: null },
       ];
       SavedEvent.find.mockReturnValue({
         populate: jest.fn().mockResolvedValue(mockSavedRecords),
@@ -99,11 +99,7 @@ describe("Saved Events Routes", () => {
     });
 
     test("returns 409 if the event is already saved", async () => {
-      SavedEvent.findOne.mockResolvedValue({
-        _id: "s1",
-        userId: "u1",
-        eventId: "e1",
-      });
+      SavedEvent.findOne.mockResolvedValue({ _id: "s1", userId: "u1", eventId: "e1" });
 
       const res = await request(app)
         .post("/api/savedevents/")
@@ -116,7 +112,7 @@ describe("Saved Events Routes", () => {
     test("saves the event and returns 201", async () => {
       SavedEvent.findOne.mockResolvedValue(null);
       SavedEvent.create.mockResolvedValue({});
-      Event.findById.mockResolvedValue(null); // no owner, no notification
+      Event.findById.mockResolvedValue(null);
 
       const res = await request(app)
         .post("/api/savedevents/")
@@ -129,10 +125,7 @@ describe("Saved Events Routes", () => {
     test("sends a notification to the event owner when event is saved", async () => {
       SavedEvent.findOne.mockResolvedValue(null);
       SavedEvent.create.mockResolvedValue({});
-      Event.findById.mockResolvedValue({
-        ownerId: "owner1",
-        title: "Test Event",
-      });
+      Event.findById.mockResolvedValue({ ownerId: "owner1", title: "Test Event" });
       User.findById.mockReturnValue({
         select: jest.fn().mockResolvedValue({ userName: "john" }),
       });
