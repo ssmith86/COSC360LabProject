@@ -38,6 +38,16 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/search", searchRoutes);
 
+// add multer validaton image when upload image exceeds 6mb
+app.use((err, req, res, next) => {
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res
+      .status(400)
+      .json({ message: "Image file size must be less than 6MB." });
+  }
+  res.status(500).json({ error: err.message });
+});
+
 if (require.main === module) {
   connectDB()
     .then(() =>
