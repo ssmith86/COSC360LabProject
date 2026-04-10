@@ -61,7 +61,7 @@ export const UserInsightsPage = () => {
   const [activePreset, setActivePreset] = useState("All");
 
   const [popularEvents, setPopularEvents] = useState([]);
-  const [topCreators, setTopCreators] = useState([]);
+  const [mostActiveCreators, setMostActiveCreators] = useState([]);
   const [locationDist, setLocationDist] = useState([]);
 
   const getRange = useCallback(() => {
@@ -81,9 +81,9 @@ export const UserInsightsPage = () => {
       .then((r) => r.json())
       .then(setPopularEvents)
       .catch(() => {});
-    fetch(`${API}/top-creators${qs}`)
+    fetch(`${API}/most-active-creators${qs}`)
       .then((r) => r.json())
-      .then(setTopCreators)
+      .then(setMostActiveCreators)
       .catch(() => {});
     fetch(`${API}/location-distribution${qs}`)
       .then((r) => r.json())
@@ -195,9 +195,9 @@ export const UserInsightsPage = () => {
               <p className="analytics-subtitle">
                 Users with most events created
               </p>
-              {topCreators.length > 0 ? (
+              {mostActiveCreators.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={topCreators} layout="vertical">
+                  <BarChart data={mostActiveCreators} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" allowDecimals={false} />
                     <YAxis
@@ -208,7 +208,7 @@ export const UserInsightsPage = () => {
                     />
                     <Tooltip />
                     <Bar dataKey="eventCount" name="Events">
-                      {topCreators.map((_, i) => (
+                      {mostActiveCreators.map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Bar>
