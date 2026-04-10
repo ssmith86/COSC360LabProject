@@ -45,5 +45,22 @@ describe("Search Routes", () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual([]);
     });
+
+    test("returns results when query matches a username (owner)", async () => {
+      User.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue([{ _id: "u1" }]),
+      });
+      const mockEvents = [
+        { _id: "e1", title: "John's Party", ownerId: "u1" },
+      ];
+      Event.find.mockReturnValue({
+        populate: jest.fn().mockResolvedValue(mockEvents),
+      });
+
+      const res = await request(app).get("/search/?q=john");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual(mockEvents);
+    });
   });
 });
