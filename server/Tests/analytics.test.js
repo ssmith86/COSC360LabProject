@@ -149,4 +149,46 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/location-distribution
+  describe("GET /api/analytics/location-distribution", () => {
+    test("returns event counts grouped by city", async () => {
+      Event.find.mockResolvedValue([
+        { location: { city: "Vancouver" } },
+        { location: { city: "Vancouver" } },
+        { location: { city: "Toronto" } },
+      ]);
+
+      const res = await request(app).get(
+        "/api/analytics/location-distribution",
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([
+        { city: "Vancouver", count: 2 },
+        { city: "Toronto", count: 1 },
+      ]);
+    });
+
+    test("uses 'Unknown' for events without a city", async () => {
+      Event.find.mockResolvedValue([{ location: {} }, { location: null }]);
+
+      const res = await request(app).get(
+        "/api/analytics/location-distribution",
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual([{ city: "Unknown", count: 2 }]);
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      Event.find.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        "/api/analytics/location-distribution",
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
