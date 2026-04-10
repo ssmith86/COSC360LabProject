@@ -324,4 +324,38 @@ describe("Analytics Routes", () => {
     });
   });
 
+  // GET /api/analytics/save-trends
+  describe("GET /api/analytics/save-trends", () => {
+    test("returns save trends grouped by month", async () => {
+      mockAdmin();
+      SavedEvent.find.mockResolvedValue([
+        { savedAt: new Date("2025-02-10") },
+        { savedAt: new Date("2025-02-20") },
+        { savedAt: new Date("2025-03-05") },
+      ]);
+
+      const res = await request(app).get(
+        `/api/analytics/save-trends?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ label: "2025-02", count: 2 }),
+          expect.objectContaining({ label: "2025-03", count: 1 }),
+        ]),
+      );
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      mockAdmin();
+      SavedEvent.find.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        `/api/analytics/save-trends?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
