@@ -166,15 +166,20 @@ export const CommentSection = ({ eventId }) => {
   const isLoggedIn = !!currentUserId;
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
-  // fetch comments for this event
+  // fetch comments for this event, poll every 3 seconds so other users' comments appear without refresh
   useEffect(() => {
-    fetch(`${API}/${eventId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setComments(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    const fetchComments = () => {
+      fetch(`${API}/${eventId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setComments(data);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    };
+    fetchComments();
+    const interval = setInterval(fetchComments, 3000);
+    return () => clearInterval(interval);
   }, [eventId]);
 
   // submit a new root comment

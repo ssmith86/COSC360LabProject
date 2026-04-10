@@ -129,3 +129,80 @@
 .profile-btn:hover {
     background-color: #7c3aed;
 }
+
+/* Comment History */
+.comment-history-section {
+  max-width: 600px;
+}
+
+.comment-history-empty {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.comment-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.comment-history-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.comment-history-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+
+.comment-history-event {
+  font-weight: 600;
+  color: #7c3aed;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.comment-history-event:hover {
+  text-decoration: underline;
+}
+
+.comment-history-badge {
+  font-size: 0.75rem;
+  background: #f3f4f6;
+  color: #6b7280;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+.comment-history-date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-left: auto;
+}
+
+.comment-history-content {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+@media (max-width: 700px) {
+    .profile-page-body {
+        flex-direction: column;
+    }
+
+    .profile-content {
+        padding: 1rem;
+        padding-bottom: 80px;
+    }
+}

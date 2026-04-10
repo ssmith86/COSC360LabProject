@@ -4,7 +4,8 @@ const User = require("../models/User");
 module.exports = async (req, res) => {
   const searchTerm = req.query.q || "";
   try {
-    const regex = { $regex: searchTerm, $options: "i" };
+    const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = { $regex: escaped, $options: "i" };
     const matchingUsers = await User.find({ userName: regex }).select("_id");
     const matchingUserIds = matchingUsers.map((u) => u._id);
     const results = await Event.find({

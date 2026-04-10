@@ -344,3 +344,92 @@ exports.getTotalComments = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getCommentTrends = async (req, res) => {
+  try {
+    const { from, to } = parseDateRange(req.query);
+    const granularity = getGranularity(from, to);
+    const filter = {};
+    if (from || to) {
+      filter.createdAt = {};
+      if (from) filter.createdAt.$gte = from;
+      if (to) filter.createdAt.$lte = to;
+    }
+    const comments = await Comment.find(filter);
+    const counts = {};
+    comments.forEach((c) => {
+      if (!c.createdAt) return;
+      const key = dateToKey(new Date(c.createdAt), granularity);
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    const result = Object.entries(counts)
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    res.json({ granularity, data: result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getHotEventsTrend = async (req, res) => {
+  try {
+    const { from, to } = parseDateRange(req.query);
+    const granularity = getGranularity(from, to);
+
+    // Find top 5 events by save count within the date range
+    const matchStage = {};
+    if (from || to) {
+      matchStage.savedAt = {};
+      if (from) matchStage.savedAt.$gte = from;
+      if (to) matchStage.savedAt.$lte = to;
+    }
+    const topPipeline = [
+      ...(Object.keys(matchStage).length ? [{ $match: matchStage }] : []),
+      { $group: { _id: "$eventId", saveCount: { $sum: 1 } } },
+      { $sort: { saveCount: -1 } },
+      { $limit: 5 },
+    ];
+    const topEvents = await SavedEvent.aggregate(topPipeline);
+    if (topEvents.length === 0) {
+      return res.json({ granularity, events: [], data: [] });
+    }
+
+    const topEventIds = topEvents.map((e) => e._id);
+    const events = await Event.find({ _id: { $in: topEventIds } }).select("title");
+    const eventMap = {};
+    events.forEach((e) => {
+      eventMap[e._id.toString()] = e.title;
+    });
+
+    // Get all saves for those events in the period
+    const savesFilter = { eventId: { $in: topEventIds } };
+    if (from || to) {
+      savesFilter.savedAt = {};
+      if (from) savesFilter.savedAt.$gte = from;
+      if (to) savesFilter.savedAt.$lte = to;
+    }
+    const saves = await SavedEvent.find(savesFilter);
+
+    // Build pivot: { label -> { eventName -> count } }
+    const pivot = {};
+    saves.forEach((s) => {
+      if (!s.savedAt) return;
+      const key = dateToKey(new Date(s.savedAt), granularity);
+      const name = eventMap[s.eventId?.toString()] || "Unknown";
+      if (!pivot[key]) pivot[key] = {};
+      pivot[key][name] = (pivot[key][name] || 0) + 1;
+    });
+
+    const eventNames = topEventIds
+      .filter((id) => eventMap[id.toString()])
+      .map((id) => eventMap[id.toString()]);
+
+    const data = Object.entries(pivot)
+      .map(([label, counts]) => ({ label, ...counts }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    res.json({ granularity, events: eventNames, data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

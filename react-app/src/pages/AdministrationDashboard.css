@@ -106,3 +106,29 @@
     max-height: 80vh;
     overflow-y: auto;
 }
+
+@media (max-width: 700px) {
+    .admin-page-body {
+        flex-direction: column;
+    }
+
+    .admin-content {
+        padding: 1rem;
+        padding-bottom: 80px;
+        width: 100%;
+    }
+
+    .users-table {
+        width: 100%;
+        font-size: 0.8rem;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 0.5rem 0.4rem;
+    }
+
+    .edit-box {
+        width: 92vw;
+    }
+}
