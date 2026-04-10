@@ -1,15 +1,22 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const User = require("./models/User");
-const Event = require("./models/Event");
-const SavedEvent = require("./models/SavedEvent");
+function loadJSON(filePath) {
+  const fs = require("fs");
+  try {
+    const content = fs.readFileSync(filePath, "utf8").trim();
+    if (!content) return [];
+    return JSON.parse(content);
+  } catch (e) {
+    return [];
+  }
+}
 
-const users = require("./data/users.json");
-const events = require("./data/events.json");
-const savedEvents = require("./data/savedEvents.json");
-const notifications = require("./data/notifications.json");
-const comments = require("./data/comments.json");
+const users = loadJSON("./data/users.json");
+const events = loadJSON("./data/events.json");
+const savedEvents = loadJSON("./data/savedEvents.json");
+const notifications = loadJSON("./data/notifications.json");
+const comments = loadJSON("./data/comments.json");
 
 async function seedAll() {
   await mongoose.connect(process.env.MONGO_URI, { dbName: "cosc360db" });
