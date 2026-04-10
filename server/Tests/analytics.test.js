@@ -226,4 +226,36 @@ describe("Analytics Routes", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  // GET /api/analytics/event-total-summary
+  describe("GET /api/analytics/event-total-summary", () => {
+    test("returns total counts for events, saves, and comments", async () => {
+      mockAdmin();
+      Event.countDocuments.mockResolvedValue(10);
+      SavedEvent.countDocuments.mockResolvedValue(25);
+      Comment.countDocuments.mockResolvedValue(40);
+
+      const res = await request(app).get(
+        `/api/analytics/event-total-summary?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({
+        totalEvents: 10,
+        totalSaves: 25,
+        totalComments: 40,
+      });
+    });
+
+    test("returns 500 if the database throws an error", async () => {
+      mockAdmin();
+      Event.countDocuments.mockRejectedValue(new Error("DB error"));
+
+      const res = await request(app).get(
+        `/api/analytics/event-total-summary?userId=${ADMIN_ID}`,
+      );
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
