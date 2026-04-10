@@ -16,4 +16,4 @@ COPY server/ ./
 COPY --from=frontend-build /app/react-app/dist ../react-app/dist
 
 EXPOSE 4000
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node seedAll.js && node server.js"]
