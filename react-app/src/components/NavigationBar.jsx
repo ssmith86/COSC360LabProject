@@ -66,6 +66,15 @@ export function NavigationBar() {
     if (!dropdownOpen) markAllRead();
   };
 
+  const deleteNotification = (id) => {
+    fetch(`/api/notifications/${id}`, { method: "DELETE" })
+      .then((res) => {
+        if (!res.ok) throw new Error("delete failed");
+        setNotifications((prev) => prev.filter((n) => n._id !== id));
+      })
+      .catch(() => {});
+  };
+
   return (
     <>
       <header className="navbar">
@@ -104,7 +113,16 @@ export function NavigationBar() {
                           key={n._id}
                           className={`notification-item${n.isRead ? "" : " unread"}`}
                         >
-                          {n.message}
+                          <span className="notification-message">
+                            {n.message}
+                          </span>
+                          <button
+                            className="notification-delete-btn"
+                            onClick={() => deleteNotification(n._id)}
+                            aria-label="Delete notification"
+                          >
+                            ×
+                          </button>
                         </div>
                       ))
                     )}
