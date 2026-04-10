@@ -120,6 +120,16 @@ describe("Notification Routes", () => {
 
   // DELETE /api/notifications/clear-all
   describe("DELETE /api/notifications/clear-all", () => {
+    test("returns 400 if userId is missing", async () => {
+      const res = await request(app)
+        .delete("/api/notifications/clear-all")
+        .send({});
+
+      expect(Notification.deleteMany).not.toHaveBeenCalled();
+      expect(res.statusCode).toBe(400);
+      expect(res.body.message).toBe("userId is required");
+    });
+
     test("deletes all notifications for a user and returns success", async () => {
       Notification.deleteMany.mockResolvedValue({});
 
