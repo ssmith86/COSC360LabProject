@@ -5,8 +5,10 @@ const app = require("../server");
 // run tests: cd into server folder and run `npm test` in command line
 
 describe("Event API", () => {
-  test("returns 400 if event_name is missing", async () => {
+  test("returns 400 if event title is missing", async () => {
     const res = await request(app)
+
+      .post("/api/events/")
       .post("/api/events/")
       .send({ description: "a test event" });
     expect(res.statusCode).toBe(400);
@@ -14,6 +16,8 @@ describe("Event API", () => {
   });
 
   test("returns 400 if no data is sent", async () => {
+
+    const res = await request(app).post("/api/events/").send({});
     const res = await request(app).post("/api/events/").send({});
     expect(res.statusCode).toBe(400);
   });
