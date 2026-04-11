@@ -1,63 +1,81 @@
-import { useState } from "react";
-import { SearchBar } from "../components/SearchBar";
-import EventCard from "../components/EventCard";
-import sportImg from "../assets/sportImage.webp";
+import { useState, useEffect } from "react";
 import { NavigationBar } from "../components/NavigationBar";
+import { SearchBar } from "../components/SearchBar";
+import { EventGrid } from "../components/EventGrid";
+import { CategoryFilter } from "../components/CategoryFilter";
+import "./MyEventsPage.css";
 
 export const HomePage = () => {
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [upcomingExpanded, setUpcomingExpanded] = useState(true);
 
-  // for processing EventCard.jsx
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  useEffect(() => {
+    const fetchEvents = () => {
+      fetch("/api/events/upcoming")
+        .then((res) => res.json())
+        .then((data) => setUpcomingEvents(Array.isArray(data) ? data : []))
+        .catch(() => {});
+    };
+    fetchEvents();
+    const interval = setInterval(fetchEvents, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const filterByCategory = (events) => {
+    if (selectedCategories.length === 0) return events;
+    return events.filter((e) => selectedCategories.includes(e.category));
+  };
 
   return (
-    <div>
+    <div className="page-wrapper">
       <NavigationBar />
-      <SearchBar
-        setSearchResults={setSearchResults}
-        setHasSearched={setHasSearched}
-      />
-      {hasSearched ? (
-        searchResults.length === 0 ? (
-          <p className="no-results">No results found.</p>
-        ) : (
-          searchResults.map((item, index) => (
-            <EventCard
-              key={index}
-              image={sportImg}
-              title={item.title}
-              startDateTime={item.startDate}
-              endDateTime={item.endDate}
-              location={`${item.location?.street}, ${item.location?.city}`}
-              status={item.status}
-              isSaved={false}
-              isOwner={false}
-              isAdmin={isAdmin}
-              isLoggedIn={isLoggedIn}
-              onSave={() => console.log("save", item._id)}
-              onEdit={() => console.log("edit", item._id)}
-              onDelete={() => console.log("delete", item._id)}
+      <div className="page-body">
+        <div className="main-content">
+          <div className="search-bar-area">
+            <SearchBar
+              setSearchResults={setSearchResults}
+              setHasSearched={setHasSearched}
             />
-          ))
-        )
-      ) : (
-        <EventCard
-          image={sportImg}
-          title="Alamo Bowl 2025"
-          startDateTime="12/31/2025 17:00"
-          endDateTime="12/31/2025 23:00"
-          location="Alamodome, San Antonio, TX"
-          isSaved={false}
-          isOwner={false}
-          isAdmin={isAdmin}
-          isLoggedIn={isLoggedIn}
-          onSave={() => console.log("save")}
-          onEdit={() => console.log("edit")}
-          onDelete={() => console.log("delete")}
-        />
-      )}
+          </div>
+
+          <CategoryFilter
+            selectedCategories={selectedCategories}
+            onCategoryChange={setSelectedCategories}
+          />
+
+          {hasSearched && (
+            <section className="events-section">
+              <h2 className="section-title">Search Results</h2>
+              <div className="events-scroll-container">
+                <EventGrid events={searchResults} />
+              </div>
+            </section>
+          )}
+
+          <section className="events-section">
+            <div className="section-header-row">
+              <div>
+                <h2 className="section-title">Upcoming Events</h2>
+                <p className="section-subtitle">Browse all upcoming events</p>
+              </div>
+              <button
+                className="collapse-btn"
+                onClick={() => setUpcomingExpanded(!upcomingExpanded)}
+              >
+                {upcomingExpanded ? "▲" : "▼"}
+              </button>
+            </div>
+            {upcomingExpanded && (
+              <div className="events-scroll-container">
+                <EventGrid events={filterByCategory(upcomingEvents)} />
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
     </div>
   );
 };

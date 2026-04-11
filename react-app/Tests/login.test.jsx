@@ -53,7 +53,7 @@ describe('Login Tests', () => {
     expect(passwordInput.value).toBe('password');
   });
 
-  test('navigates to /dashboard on successful regular user login', async () => {
+  test('navigates to /my-events on successful regular user login', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -70,7 +70,7 @@ describe('Login Tests', () => {
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/dashboard'));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/my-events'));
     expect(localStorage.getItem('isLoggedIn')).toBe('true');
     expect(localStorage.getItem('isAdmin')).toBe('false');
     expect(localStorage.getItem('userId')).toBe('42');

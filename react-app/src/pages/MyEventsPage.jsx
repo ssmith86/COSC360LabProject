@@ -172,7 +172,7 @@ export const MyEventsPage = () => {
               <div>
                 <h2 className="section-title">Upcoming Events</h2>
                 <p className="section-subtitle">
-                  Events happening in the next 30 days
+                  Browse all upcoming events
                 </p>
               </div>
               <button

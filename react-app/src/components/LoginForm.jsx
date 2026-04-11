@@ -40,7 +40,7 @@ export default function LoginForm() {
         navigate("/admin");
       } else {
         localStorage.setItem("isAdmin", "false");
-        navigate("/dashboard");
+        navigate("/my-events");
       }
     }
   };

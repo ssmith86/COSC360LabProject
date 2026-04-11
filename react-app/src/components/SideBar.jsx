@@ -1,4 +1,4 @@
-import {MdDashboard, MdEvent, MdFavorite, MdPerson, MdAdminPanelSettings, MdBarChart} from "react-icons/md";
+import {MdEvent, MdFavorite, MdPerson, MdAdminPanelSettings, MdBarChart} from "react-icons/md";
 import './css files/SideBar.css';
 import {useNavigate, useLocation} from "react-router-dom";
 
@@ -20,10 +20,6 @@ export function SideBar() {
                 <span>Admin Dashboard</span>
             </li>
         )}
-        <li className={location.pathname === '/dashboard' ? 'active' : ''} onClick={() => navigate('/dashboard')}>
-            <MdDashboard/>
-            <span>My Dashboard</span>
-        </li>
         <li className={location.pathname === '/my-events' ? 'active' : ''} onClick={() => navigate('/my-events')}>
             <MdEvent/>
             <span>My Events</span>

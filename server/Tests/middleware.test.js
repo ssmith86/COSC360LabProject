@@ -6,11 +6,12 @@ jest.mock("../models/User");
 jest.mock("../models/SavedEvent");
 jest.mock("../models/Comment");
 jest.mock("../models/Event");
+jest.mock("../models/Notification");
 
 const SavedEvent = require("../models/SavedEvent");
 const Comment = require("../models/Comment");
 const Event = require("../models/Event");
-
+const Notification = require("../models/Notification");
 const User = require("../models/User");
 
 const VALID_OBJECT_ID = "507f1f77bcf86cd799439011";
@@ -56,8 +57,13 @@ describe("Middleware", () => {
       User.findById.mockReturnValueOnce({
         select: jest.fn().mockResolvedValue({ isAdmin: true }),
       });
+      Event.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue([]),
+      });
       User.findByIdAndDelete.mockResolvedValue({});
       SavedEvent.deleteMany.mockResolvedValue({});
+      Comment.deleteMany.mockResolvedValue({});
+      Notification.deleteMany.mockResolvedValue({});
 
       const res = await request(app)
         .delete("/api/users/u1")

@@ -9,12 +9,14 @@ jest.mock("../models/User");
 jest.mock("../models/Event");
 jest.mock("../models/SavedEvent");
 jest.mock("../models/Notification");
+jest.mock("../models/Comment");
 jest.mock("bcrypt");
 
 const User = require("../models/User");
 const Event = require("../models/Event");
 const SavedEvent = require("../models/SavedEvent");
 const Notification = require("../models/Notification");
+const Comment = require("../models/Comment");
 const bcrypt = require("bcrypt");
 
 // checkAdmin requires a valid ObjectId format to pass through
@@ -75,7 +77,9 @@ describe("User Routes", () => {
       User.find.mockReturnValue({
         select: jest.fn().mockResolvedValue(mockUsers),
       });
-      Event.find.mockResolvedValue(mockEvents);
+      Event.find.mockReturnValue({
+        populate: jest.fn().mockResolvedValue(mockEvents),
+      });
 
       const res = await request(app).get("/api/users/search?q=john");
 
@@ -157,8 +161,13 @@ describe("User Routes", () => {
       User.findById.mockReturnValue({
         select: jest.fn().mockResolvedValue({ isAdmin: true }),
       });
+      Event.find.mockReturnValue({
+        select: jest.fn().mockResolvedValue([]),
+      });
       User.findByIdAndDelete.mockResolvedValue({});
       SavedEvent.deleteMany.mockResolvedValue({});
+      Comment.deleteMany.mockResolvedValue({});
+      Notification.deleteMany.mockResolvedValue({});
 
       const res = await request(app)
         .delete("/api/users/u1")
