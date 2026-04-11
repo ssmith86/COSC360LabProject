@@ -66,6 +66,35 @@ export function NavigationBar() {
     if (!dropdownOpen) markAllRead();
   };
 
+  const deleteNotification = (id) => {
+    fetch(`/api/notifications/${id}`, { method: "DELETE" })
+      .then((res) => {
+        if (!res.ok) throw new Error("delete failed");
+        setNotifications((prev) => prev.filter((n) => n._id !== id));
+      })
+      .catch(() => {});
+  };
+
+  const clearCurrentTab = () => {
+    if (filteredNotifications.length === 0) return;
+    const body = { userId };
+    if (activeTab !== "all") body.category = activeTab;
+    fetch("/api/notifications/clear-all", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("clear failed");
+        setNotifications((prev) =>
+          activeTab === "all"
+            ? []
+            : prev.filter((n) => n.category !== activeTab),
+        );
+      })
+      .catch(() => {});
+  };
+
   return (
     <>
       <header className="navbar">
@@ -84,7 +113,17 @@ export function NavigationBar() {
                 </button>
                 {dropdownOpen && (
                   <div className="notifications-dropdown">
-                    <p className="notifications-title">Notifications</p>
+                    <div className="notifications-header">
+                      <p className="notifications-title">Notifications</p>
+                      {filteredNotifications.length > 0 && (
+                        <button
+                          className="notifications-clear-btn"
+                          onClick={clearCurrentTab}
+                        >
+                          Clear this tab
+                        </button>
+                      )}
+                    </div>
                     <div className="notifications-tabs">
                       {["all", "system", "interaction"].map((tab) => (
                         <button
@@ -104,7 +143,16 @@ export function NavigationBar() {
                           key={n._id}
                           className={`notification-item${n.isRead ? "" : " unread"}`}
                         >
-                          {n.message}
+                          <span className="notification-message">
+                            {n.message}
+                          </span>
+                          <button
+                            className="notification-delete-btn"
+                            onClick={() => deleteNotification(n._id)}
+                            aria-label="Delete notification"
+                          >
+                            ×
+                          </button>
                         </div>
                       ))
                     )}

@@ -72,13 +72,32 @@
   z-index: 100;
 }
 
-.notifications-title {
-  font-weight: 600;
+.notifications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.75rem 1rem 0.5rem;
   border-bottom: 1px solid #e5e7eb;
+}
+
+.notifications-title {
+  font-weight: 600;
   margin: 0;
   font-size: 0.9rem;
   color: #111827;
+}
+
+.notifications-clear-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.notifications-clear-btn:hover {
+  text-decoration: underline;
 }
 
 .notifications-tabs {
@@ -120,11 +139,32 @@
   font-size: 0.875rem;
   color: #374151;
   border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 .notification-item.unread {
   background: #eff6ff;
   font-weight: 500;
+}
+
+.notification-message {
+  flex: 1;
+}
+
+.notification-delete-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.notification-delete-btn:hover {
+  color: #dc2626;
 }
 
 .banned-banner {
