@@ -199,7 +199,7 @@ function EventCreationForm() {
     }
 
     // implement the fetch to send data
-    fetch("/api/createEventsForm", {
+    fetch("/api/events", {
       method: "POST",
       // headers: {
       //   "Content-Type": "application/json",
