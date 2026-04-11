@@ -75,7 +75,7 @@ export const SavedEventsPage = () => {
 
   const filterByCategory = (events) => {
     if (selectedCategories.length === 0) return events;
-    return events.filter((e) => selectedCategories.includes(e.event?.category));
+    return events.filter((e) => selectedCategories.includes(e.category));
   };
 
   return (
