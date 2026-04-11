@@ -72,11 +72,16 @@ export const AdministrationDashboard = () => {
   };
 
   const handleDelete = async () => {
-    const res = await fetch("/api/users/" + userToDelete._id, {
+    const adminId = localStorage.getItem("userId");
+    const res = await fetch(`/api/users/${userToDelete._id}?userId=${adminId}`, {
       method: "DELETE",
     });
     if (res.ok) {
       setUsers(users.filter((u) => u._id !== userToDelete._id));
+      setEvents(events.filter((e) => {
+        const ownerId = e.ownerId?._id || e.ownerId;
+        return ownerId?.toString() !== userToDelete._id;
+      }));
       setUserToDelete(null);
     }
   };

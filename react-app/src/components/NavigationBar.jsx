@@ -3,13 +3,14 @@ import "./css files/NavigationBar.css";
 import RegisterButton from "./RegisterButton";
 import LoginButton from "./LoginButton";
 import UserProfileIconButton from "./UserProfileIconButton";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useContext } from "react";
 import { FaBell } from "react-icons/fa";
 import { UserAvatarContext } from "../context/UserAvatarContext";
 
 export function NavigationBar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const { isBanned } = useContext(UserAvatarContext);
   const userId = localStorage.getItem("userId");
@@ -23,14 +24,24 @@ export function NavigationBar() {
     if (!isLoggedIn || !userId) return;
     const fetchNotifications = () => {
       fetch(`/api/notifications?userId=${userId}`)
-        .then((res) => res.json())
-        .then((data) => setNotifications(Array.isArray(data) ? data : []))
+        .then((res) => {
+          if (res.status === 401) {
+            localStorage.clear();
+            localStorage.setItem("loginMessage", "Your account has been deleted.");
+            navigate("/login");
+            return null;
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (data) setNotifications(Array.isArray(data) ? data : []);
+        })
         .catch(() => {});
     };
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 5000);
     return () => clearInterval(interval);
-  }, [isLoggedIn, userId]);
+  }, [isLoggedIn, userId, navigate]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
