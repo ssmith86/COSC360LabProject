@@ -28,7 +28,7 @@ async function seedAll() {
   const collections = [
     { name: "users", data: users },
     { name: "events", data: events },
-    { name: "savedevents", data: savedEvents },
+    { name: "savedEvents", data: savedEvents },
     { name: "notifications", data: notifications },
     { name: "comments", data: comments },
   ];
