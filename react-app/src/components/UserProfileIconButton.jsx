@@ -8,6 +8,7 @@ import { UserAvatarContext } from "../context/UserAvatarContext";
 export default function UserProfileIconButton() {
   const { avatar } = useContext(UserAvatarContext);
   const [open, setOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
@@ -25,10 +26,11 @@ export default function UserProfileIconButton() {
         type="button"
         onClick={() => setOpen(!open)}
       >
-        {avatar ? (
+        {avatar && !imgError ? (
           <img
             src={avatar}
             alt="Profile"
+            onError={() => setImgError(true)}
             style={{
               width: "32px",
               height: "32px",

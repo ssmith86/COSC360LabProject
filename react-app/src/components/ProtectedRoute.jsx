@@ -16,7 +16,7 @@ export const ProtectedRoute = ({ children, adminOnly = false }) => {
   if (adminOnly && !isAdmin) {
     // replace will replace browser history entry rather than pushing to it
     // so the back button on browser won't loop back to protected page
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/my-events" replace />;
   }
 
   return children;

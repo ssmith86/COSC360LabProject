@@ -10,8 +10,6 @@ import { LoginPage } from "./pages/LogInPage";
 import { MyEventsPage } from "./pages/MyEventsPage";
 import { NewEventCreationPage } from "./pages/NewEventCreationPage";
 import { RegistrationPage } from "./pages/RegisterationPage";
-import { RegisteredUserDashboard } from "./pages/RegisteredUserDashboard";
-import { UnregisteredUserPage } from "./pages/UnregisteredUserPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SavedEventsPage } from "./pages/SavedEventsPage";
@@ -28,7 +26,6 @@ export const Routes = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationPage />} />
-        <Route path="/browse" element={<UnregisteredUserPage />} />
         <Route path="/event/:eventId" element={<EventDetailsPage />} />
         {/* Apply ProtectedRoute to the following to prevent back button loop to protected page */}
         <Route
@@ -52,14 +49,6 @@ export const Routes = () => {
           element={
             <ProtectedRoute>
               <NewEventCreationPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <RegisteredUserDashboard />
             </ProtectedRoute>
           }
         />

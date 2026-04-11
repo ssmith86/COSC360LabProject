@@ -1,23 +1,37 @@
 import { NavigationBar } from "../components/NavigationBar";
 import { SideBar } from "../components/SideBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./ProfilePage.css";
 import { useNavigate } from "react-router-dom";
+
+const DEFAULT_PREFS = {
+  commentOnMyEvent: true,
+  favouritedEventUpdated: true,
+  favouritedEventDeleted: true,
+  newEventInMyArea: true,
+  commentOnCommentedEvent: true,
+  attendingEventCancelled: true,
+  newEventInFollowedCategory: true,
+};
 
 export const SettingsPage = () => {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-  const [notifications, setNotifications] = useState({
-    commentOnMyEvent: true,
-    favouritedEventUpdated: true,
-    favouritedEventDeleted: true,
-    newEventInMyArea: true,
-    commentOnCommentedEvent: true,
-    attendingEventCancelled: true,
-    newEventInFollowedCategory: true,
-  });
+  const [notifications, setNotifications] = useState(DEFAULT_PREFS);
+
+  useEffect(() => {
+    if (!userId) return;
+    fetch("/api/users/" + userId)
+      .then((r) => r.json())
+      .then((user) => {
+        if (user.notificationPreferences) {
+          setNotifications({ ...DEFAULT_PREFS, ...user.notificationPreferences });
+        }
+      })
+      .catch(() => {});
+  }, [userId]);
 
   const handleNotifications = async () => {
     const res = await fetch("/api/users/" + userId + "/notifications", {

@@ -6,8 +6,10 @@ const app = require("../server");
 // getNotifications.js, markAllRead.js, markOneRead.js, deleteAllNotifications.js, and deleteOneNotification.js
 // to run test: `cd server`, `npm test`
 jest.mock("../models/Notification");
+jest.mock("../models/User");
 
 const Notification = require("../models/Notification");
+const User = require("../models/User");
 
 describe("Notification Routes", () => {
   beforeEach(() => {
@@ -33,6 +35,9 @@ describe("Notification Routes", () => {
         },
         { _id: "n2", userId: "u1", message: "Event updated", isRead: true },
       ];
+      User.findById.mockReturnValue({
+        select: jest.fn().mockResolvedValue({ _id: "u1" }),
+      });
       Notification.find.mockReturnValue({
         sort: jest.fn().mockResolvedValue(mockNotifications),
       });
