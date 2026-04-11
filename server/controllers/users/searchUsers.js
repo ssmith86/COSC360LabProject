@@ -15,8 +15,23 @@ module.exports = async (req, res) => {
         { lastName: regex },
       ],
     }).select("-password");
+    const matchingUserIds = users.map((u) => u._id);
+
     const events = await Event.find({
-      $or: [{ title: regex }, { description: regex }],
+      $or: [
+        { title: regex },
+        { description: regex },
+        { ownerId: { $in: matchingUserIds } },
+        {
+          $expr: {
+            $regexMatch: {
+              input: { $dateToString: { format: "%Y-%m-%d", date: "$startDate" } },
+              regex: escaped,
+              options: "i",
+            },
+          },
+        },
+      ],
     }).populate("ownerId", "userName");
     res.json({ users, events });
   } catch (err) {

@@ -6,7 +6,11 @@ import { UserAvatarContext } from "../context/UserAvatarContext";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [responseMessage, setResponseMessage] = useState("");
+  const [responseMessage, setResponseMessage] = useState(() => {
+    const msg = localStorage.getItem("loginMessage");
+    if (msg) localStorage.removeItem("loginMessage");
+    return msg || "";
+  });
   const navigate = useNavigate();
   const { refreshAvatar } = useContext(UserAvatarContext);
 
