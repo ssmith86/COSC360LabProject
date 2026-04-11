@@ -27,32 +27,40 @@ module.exports = async (req, res) => {
     if (!parentCommentId) {
       const event = await Event.findById(eventId);
       if (event && event.ownerId && event.ownerId.toString() !== userId) {
-        const commenter = await User.findById(userId).select("userName");
-        await Notification.create({
-          userId: event.ownerId,
-          type: "new_comment",
-          category: "interaction",
-          message: `${commenter?.userName || "Someone"} commented on your event "${event?.title || "An event"}".`,
-          relatedEventId: eventId,
-          relatedCommentId: comment._id,
-          isRead: false,
-        });
+        const owner = await User.findById(event.ownerId).select("userName notificationPreferences");
+        const wantsNotif = owner?.notificationPreferences?.commentOnMyEvent !== false;
+        if (wantsNotif) {
+          const commenter = await User.findById(userId).select("userName");
+          await Notification.create({
+            userId: event.ownerId,
+            type: "new_comment",
+            category: "interaction",
+            message: `${commenter?.userName || "Someone"} commented on your event "${event?.title || "An event"}".`,
+            relatedEventId: eventId,
+            relatedCommentId: comment._id,
+            isRead: false,
+          });
+        }
       }
     }
 
     if (replyToCommentId) {
       const repliedComment = await Comment.findById(replyToCommentId);
       if (repliedComment && repliedComment.userId.toString() !== userId) {
-        const replier = await User.findById(userId).select("userName");
-        await Notification.create({
-          userId: repliedComment.userId,
-          type: "comment_reply",
-          category: "interaction",
-          message: `${replier?.userName || "Someone"} replied to your comment.`,
-          relatedEventId: eventId,
-          relatedCommentId: comment._id,
-          isRead: false,
-        });
+        const recipient = await User.findById(repliedComment.userId).select("notificationPreferences");
+        const wantsNotif = recipient?.notificationPreferences?.commentOnCommentedEvent !== false;
+        if (wantsNotif) {
+          const replier = await User.findById(userId).select("userName");
+          await Notification.create({
+            userId: repliedComment.userId,
+            type: "comment_reply",
+            category: "interaction",
+            message: `${replier?.userName || "Someone"} replied to your comment.`,
+            relatedEventId: eventId,
+            relatedCommentId: comment._id,
+            isRead: false,
+          });
+        }
       }
     }
 
